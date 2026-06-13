@@ -1,0 +1,61 @@
+:root {
+  --bg: #0b1020;
+  --panel: #121a33;
+  --panel-soft: #17213f;
+  --text: #f7f7fb;
+  --muted: #aab3d1;
+  --line: rgba(255,255,255,.12);
+  --primary: #8ee6c8;
+  --primary-dark: #50caa0;
+  --danger: #ff8d8d;
+  --warning: #ffd479;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+a { color: inherit; }
+button, input, textarea, select { font: inherit; }
+
+.wrapper { min-height: 100vh; padding: 40px 20px 64px; background: radial-gradient(circle at top left, rgba(142,230,200,.18), transparent 30%), radial-gradient(circle at top right, rgba(121,147,255,.16), transparent 32%), var(--bg); }
+.container { width: min(1080px, 100%); margin: 0 auto; }
+.nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 56px; }
+.brand { display: flex; gap: 10px; align-items: center; font-weight: 800; letter-spacing: -.02em; }
+.logo { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), #9aa9ff); }
+.badge { border: 1px solid var(--line); color: var(--muted); border-radius: 999px; padding: 8px 12px; font-size: 14px; }
+.grid { display: grid; grid-template-columns: 1.03fr .97fr; gap: 28px; align-items: start; }
+.hero h1 { font-size: clamp(42px, 6vw, 72px); line-height: .98; margin: 0 0 22px; letter-spacing: -.06em; }
+.hero p { color: var(--muted); font-size: 18px; line-height: 1.7; margin: 0 0 22px; max-width: 640px; }
+.panel { background: rgba(18,26,51,.88); border: 1px solid var(--line); border-radius: 24px; padding: 24px; box-shadow: 0 24px 80px rgba(0,0,0,.22); backdrop-filter: blur(10px); }
+.field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+label { color: var(--muted); font-size: 14px; }
+input, textarea, select { width: 100%; background: var(--panel-soft); color: var(--text); border: 1px solid var(--line); border-radius: 14px; padding: 13px 14px; outline: none; }
+textarea { min-height: 104px; resize: vertical; }
+input:focus, textarea:focus, select:focus { border-color: rgba(142,230,200,.7); box-shadow: 0 0 0 4px rgba(142,230,200,.08); }
+.cta { width: 100%; border: 0; border-radius: 16px; padding: 15px 18px; background: var(--primary); color: #07130f; font-weight: 800; cursor: pointer; }
+.cta:hover { background: var(--primary-dark); }
+.cta.secondary { background: transparent; color: var(--text); border: 1px solid var(--line); }
+.cta:disabled { opacity: .65; cursor: not-allowed; }
+.stack { display: grid; gap: 14px; }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 26px; }
+.card { border: 1px solid var(--line); border-radius: 20px; padding: 18px; background: rgba(255,255,255,.04); }
+.card strong { display: block; margin-bottom: 8px; }
+.card span { color: var(--muted); font-size: 14px; line-height: 1.5; }
+.price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 18px 0; }
+.price-card { border: 1px solid var(--line); border-radius: 18px; padding: 18px; background: rgba(255,255,255,.04); cursor: pointer; }
+.price-card.active { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(142,230,200,.08); }
+.price { font-size: 34px; font-weight: 900; letter-spacing: -.04em; margin: 8px 0; }
+.muted { color: var(--muted); }
+.notice { border: 1px solid rgba(255,212,121,.3); color: #ffe5aa; background: rgba(255,212,121,.08); border-radius: 16px; padding: 14px; line-height: 1.55; }
+.error { border: 1px solid rgba(255,141,141,.35); color: #ffd0d0; background: rgba(255,141,141,.08); border-radius: 16px; padding: 14px; line-height: 1.55; }
+.report { white-space: pre-wrap; line-height: 1.75; color: #eef2ff; }
+.report h2 { margin-top: 0; }
+.steps { counter-reset: step; display: grid; gap: 12px; margin-top: 22px; }
+.step { counter-increment: step; border: 1px solid var(--line); border-radius: 16px; padding: 14px 14px 14px 50px; position: relative; color: var(--muted); line-height: 1.55; }
+.step::before { content: counter(step); position: absolute; left: 14px; top: 14px; width: 24px; height: 24px; border-radius: 99px; background: var(--primary); color: #07130f; display: grid; place-items: center; font-weight: 800; }
+.footer { margin-top: 42px; color: var(--muted); font-size: 13px; }
+
+@media (max-width: 860px) {
+  .grid { grid-template-columns: 1fr; }
+  .cards, .price-grid { grid-template-columns: 1fr; }
+  .nav { margin-bottom: 36px; }
+}
