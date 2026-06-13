@@ -2,61 +2,62 @@ import type { AuditInput } from "./types";
 
 export function buildAuditPrompt(input: AuditInput) {
   const tierInstruction = input.tier === "pro"
-    ? "输出深度版报告，要求更完整、更具体，包含页面结构重排建议、用户异议、FAQ、广告钩子、7天执行计划。"
-    : "输出基础版报告，聚焦最关键的转化阻碍和能马上替换的标题、卖点、CTA。";
+    ? "Generate a Pro audit. Make it detailed, specific, and actionable. Include page structure recommendations, buyer objections, FAQ, ad/social hooks, and a 7-day optimization plan."
+    : "Generate a Basic audit. Focus on the most important conversion blockers and provide immediately usable headline, value proposition, and CTA rewrites.";
 
-  return `你是一名高级转化率优化顾问、增长顾问和直销文案专家。
+  return `You are a senior conversion rate optimization consultant, growth strategist, and direct-response copywriter.
 
-请根据用户提供的信息，生成一份可以直接交付给客户的落地页/店铺页转化率诊断报告。
+Create a client-ready conversion audit report for a landing page, Shopify store, SaaS page, course sales page, service page, or social profile.
 
-用户信息：
-- 页面链接：${input.url}
-- 产品/服务：${input.product}
-- 目标客户：${input.audience}
-- 当前最大问题：${input.problem}
-- 页面文案/补充信息：${input.pageCopy || "用户未提供页面文案，请基于产品、目标客户和常见转化问题进行诊断，并明确说明这是基于有限信息的初步诊断。"}
-- 报告版本：${input.tier}
+Client input:
+- Page URL: ${input.url}
+- Product / service: ${input.product}
+- Target customer: ${input.audience}
+- Main conversion problem: ${input.problem}
+- Page copy / extra context: ${input.pageCopy || "The user did not provide page copy. Base the audit on the product, target customer, and common conversion issues. Clearly state that this is a preliminary audit based on limited information."}
+- Report tier: ${input.tier}
 
-要求：
+Requirements:
 ${tierInstruction}
-- 输出中文。
-- 不要讲 AI、模型或生成过程。
-- 不要空泛，必须具体到“怎么改”。
-- 每条建议要解释为什么能提升转化。
-- 避免承诺确定性的转化提升比例。
-- 可以给出专业但易懂的判断。
+- Write the entire report in English.
+- Do not mention AI, models, prompts, or the generation process.
+- Do not give generic advice. Every recommendation must explain exactly what to change.
+- Explain why each recommendation can improve conversion.
+- Do not promise a guaranteed conversion lift.
+- Use clear, professional, plain English.
+- Format the report in Markdown.
 
-请严格使用以下结构：
+Use this exact structure:
 
-# AI 转化率诊断报告
+# AI Conversion Audit Report
 
-## 1. 总评分
-给出 0-100 分，并用 2-3 句话说明评分依据。
+## 1. Overall Score
+Give a 0-100 score and explain the reasoning in 2-3 sentences.
 
-## 2. 一句话诊断
-用一句话指出最大转化问题。
+## 2. One-Sentence Diagnosis
+Summarize the biggest conversion problem in one sentence.
 
-## 3. 最可能导致流失的 5 个问题
-每个问题包含：问题、影响、修改建议。
+## 3. Top 5 Conversion Leaks
+For each leak, include: Problem, Impact, and Recommended Fix.
 
-## 4. 首屏标题重写
-给出 5 个可直接替换的标题，并说明适合什么场景。
+## 4. Hero Headline Rewrites
+Provide 5 replacement headlines and explain when each one should be used.
 
-## 5. 核心卖点重写
-给出 5 条更有转化力的卖点，每条都要具体。
+## 5. Value Proposition Rewrites
+Provide 5 sharper value propositions. Make each one concrete and outcome-oriented.
 
-## 6. CTA 按钮文案
-给出 5 个 CTA，并解释适用位置。
+## 6. CTA Button Copy
+Provide 5 CTA options and explain where each one should be used.
 
-## 7. 用户购买前的主要异议
-列出用户可能不买的原因，并给出页面上应该如何回应。
+## 7. Buyer Objections
+List the key reasons a visitor might not buy or convert, and explain how the page should address each one.
 
-## 8. FAQ 建议
-给出可直接放到页面里的 FAQ。
+## 8. FAQ Recommendations
+Provide FAQ copy that can be placed directly on the page.
 
-## 9. 广告/社媒钩子
-给出适合投放或发帖的钩子文案。
+## 9. Ad / Social Hook Ideas
+Provide hooks that can be used in ads, X/Twitter posts, LinkedIn posts, short-form videos, or founder-led posts.
 
-## 10. 未来 7 天执行清单
-按 Day 1 到 Day 7 输出，每天给出具体动作。`;
+## 10. 7-Day Optimization Plan
+Output Day 1 through Day 7. Each day must include one concrete action.`;
 }

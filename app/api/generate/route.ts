@@ -7,9 +7,9 @@ export const runtime = "nodejs";
 function validateInput(input: Partial<AuditInput>) {
   const required: Array<keyof AuditInput> = ["url", "product", "audience", "problem", "email", "tier"];
   for (const key of required) {
-    if (!input[key]) return `缺少字段：${key}`;
+    if (!input[key]) return `Missing field: ${key}`;
   }
-  if (input.tier !== "basic" && input.tier !== "pro") return "报告版本无效";
+  if (input.tier !== "basic" && input.tier !== "pro") return "Invalid report tier";
   return "";
 }
 
@@ -110,7 +110,7 @@ async function generateWithAI(input: AuditInput) {
   const temperature = 0.4;
   const maxTokens = input.tier === "pro" ? 4200 : 2600;
 
-  // 优先使用 DeepSeek，适合中国大陆地区部署和结算。
+  // Prefer DeepSeek when configured.
   if (deepseekKey) {
     const baseUrl = (process.env.LLM_BASE_URL || "https://api.deepseek.com").replace(/\/+$/, "");
     const model = process.env.LLM_MODEL || "deepseek-v4-flash";
@@ -126,7 +126,7 @@ async function generateWithAI(input: AuditInput) {
         messages: [
           {
             role: "system",
-            content: "你是一名高级转化率优化顾问和直销文案专家。请输出中文、具体、可执行的诊断报告。"
+            content: "You are a senior conversion rate optimization consultant and direct-response copywriter. Write the entire report in English. Be specific, practical, and conversion-focused."
           },
           {
             role: "user",
@@ -141,16 +141,16 @@ async function generateWithAI(input: AuditInput) {
 
     if (!response.ok) {
       const text = await response.text();
-      throw new Error(`DeepSeek API 错误：${response.status} ${text}`);
+      throw new Error(`DeepSeek API error: ${response.status} ${text}`);
     }
 
     const data = await response.json();
     const report = data.choices?.[0]?.message?.content || "";
-    if (!report) throw new Error("DeepSeek API 没有返回报告内容");
+    if (!report) throw new Error("DeepSeek API returned an empty report");
     return { report, demo: false };
   }
 
-  // 保留 OpenAI 作为海外备用。
+  // Keep OpenAI as a fallback provider.
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: {
@@ -167,12 +167,12 @@ async function generateWithAI(input: AuditInput) {
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(`OpenAI API 错误：${response.status} ${text}`);
+    throw new Error(`OpenAI API error: ${response.status} ${text}`);
   }
 
   const data = await response.json();
   const report = data.output_text || data.output?.flatMap((item: any) => item.content || []).map((content: any) => content.text || "").join("\\n") || "";
-  if (!report) throw new Error("OpenAI API 没有返回报告内容");
+  if (!report) throw new Error("OpenAI API returned an empty report");
   return { report, demo: false };
 }
 
@@ -197,6 +197,6 @@ export async function POST(request: NextRequest) {
     return Response.json({ ok: true, report, demo });
   } catch (error) {
     console.error("GENERATE_REPORT_ERROR", error);
-    return Response.json({ ok: false, error: error instanceof Error ? error.message : "生成失败" }, { status: 500 });
+    return Response.json({ ok: false, error: error instanceof Error ? error.message : "Report generation failed" }, { status: 500 });
   }
 }

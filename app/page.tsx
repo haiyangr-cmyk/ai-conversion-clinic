@@ -33,61 +33,61 @@ export default function HomePage() {
     <main className="wrapper">
       <div className="container">
         <nav className="nav">
-          <div className="brand"><span className="logo" />AI 转化率急诊室</div>
-          <span className="badge">3 分钟生成报告 · PayPal 收款版</span>
+          <div className="brand"><span className="logo" />AI Conversion Clinic</div>
+          <span className="badge">Conversion audit in minutes · PayPal checkout</span>
         </nav>
 
         <section className="grid">
           <div className="hero">
-            <h1>你的页面为什么有人看，却没人买？</h1>
-            <p>输入落地页、Shopify 店铺、SaaS 页面、课程销售页或社媒主页信息，AI 会生成一份可执行的转化率诊断报告，告诉你标题、卖点、CTA、FAQ 和广告钩子应该怎么改。</p>
+            <h1>Why are visitors not buying from your page?</h1>
+            <p>Submit your landing page, Shopify store, SaaS page, course sales page, service page, or social profile. Get an actionable conversion audit with headline rewrites, value proposition fixes, CTA ideas, FAQ recommendations, and ad hooks.</p>
 
             <div className="cards">
-              <div className="card"><strong>首屏诊断</strong><span>判断用户 5 秒内是否能理解价值。</span></div>
-              <div className="card"><strong>文案重写</strong><span>直接给出标题、卖点和 CTA 替换稿。</span></div>
-              <div className="card"><strong>执行清单</strong><span>给你未来 7 天可以照做的优化动作。</span></div>
+              <div className="card"><strong>Hero Diagnosis</strong><span>See whether visitors can understand your value in the first 5 seconds.</span></div>
+              <div className="card"><strong>Copy Rewrites</strong><span>Get replacement headlines, value propositions, and CTA copy you can use immediately.</span></div>
+              <div className="card"><strong>Action Plan</strong><span>Follow a simple 7-day optimization plan instead of guessing what to change.</span></div>
             </div>
 
             <div className="steps">
-              <div className="step">提交页面和产品信息。</div>
-              <div className="step">通过 PayPal 支付基础版或深度版。</div>
-              <div className="step">输入 PayPal 邮箱/交易号，生成诊断报告。</div>
+              <div className="step">Submit your page and product details.</div>
+              <div className="step">Pay with PayPal for the Basic or Pro audit.</div>
+              <div className="step">Enter your PayPal email or transaction ID and generate the report.</div>
             </div>
           </div>
 
           <form className="panel" onSubmit={handleSubmit}>
             <div className="field">
-              <label>页面链接</label>
+              <label>Page URL</label>
               <input required type="url" placeholder="https://your-site.com" value={form.url} onChange={(e) => update("url", e.target.value)} />
             </div>
 
             <div className="field">
-              <label>产品/服务名称</label>
-              <input required placeholder="例如：Shopify 宠物用品店 / AI 简历工具 / 线上课程" value={form.product} onChange={(e) => update("product", e.target.value)} />
+              <label>Product / service name</label>
+              <input required placeholder="Example: Shopify pet store / AI resume tool / online course" value={form.product} onChange={(e) => update("product", e.target.value)} />
             </div>
 
             <div className="field">
-              <label>目标客户</label>
-              <input required placeholder="例如：美国 25-40 岁养狗人群 / 想转码的留学生" value={form.audience} onChange={(e) => update("audience", e.target.value)} />
+              <label>Target customer</label>
+              <input required placeholder="Example: US dog owners aged 25-40 / indie SaaS founders / career switchers" value={form.audience} onChange={(e) => update("audience", e.target.value)} />
             </div>
 
             <div className="field">
-              <label>当前最大问题</label>
-              <input required placeholder="例如：有点击但没有购买 / 广告点击贵 / 咨询少" value={form.problem} onChange={(e) => update("problem", e.target.value)} />
+              <label>Main conversion problem</label>
+              <input required placeholder="Example: traffic but no sales / expensive clicks / low demo bookings" value={form.problem} onChange={(e) => update("problem", e.target.value)} />
             </div>
 
             <div className="field">
-              <label>页面文案或补充信息，可选但强烈建议填写</label>
-              <textarea placeholder="粘贴首屏标题、卖点、价格、FAQ、广告文案等。第一版不自动爬网页，粘贴越多，报告越准。" value={form.pageCopy} onChange={(e) => update("pageCopy", e.target.value)} />
+              <label>Page copy or extra context, optional but recommended</label>
+              <textarea placeholder="Paste your hero headline, benefits, pricing, FAQ, ad copy, or any important page text. The first version does not crawl websites automatically, so more context makes the audit more accurate." value={form.pageCopy} onChange={(e) => update("pageCopy", e.target.value)} />
             </div>
 
             <div className="field">
-              <label>接收报告的邮箱</label>
+              <label>Email to receive the report</label>
               <input required type="email" placeholder="you@example.com" value={form.email} onChange={(e) => update("email", e.target.value)} />
             </div>
 
             <div className="field">
-              <label>选择报告版本</label>
+              <label>Choose your report</label>
               <div className="price-grid">
                 {(Object.keys(tiers) as Tier[]).map((tier) => (
                   <button
@@ -104,8 +104,8 @@ export default function HomePage() {
               </div>
             </div>
 
-            <button className="cta" type="submit">继续付款</button>
-            <p className="footer">提示：这是第一天 MVP。PayPal 付款采用链接/按钮方式，付款验证可先人工抽查。</p>
+            <button className="cta" type="submit">Continue to payment</button>
+            <p className="footer">Secure payment is handled through PayPal. After payment, enter your PayPal email or transaction ID to generate your report.</p>
           </form>
         </section>
       </div>

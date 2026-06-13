@@ -32,15 +32,15 @@ export default function ReportPage() {
     <main className="wrapper">
       <div className="container">
         <nav className="nav">
-          <div className="brand"><span className="logo" />AI 转化率急诊室</div>
-          <a className="badge" href="/">生成新报告</a>
+          <div className="brand"><span className="logo" />AI Conversion Clinic</div>
+          <a className="badge" href="/">Generate a new report</a>
         </nav>
 
         <section className="panel">
-          {demo && <div className="notice" style={{ marginBottom: 18 }}>当前没有配置 OPENAI_API_KEY，所以这是演示报告。部署正式版前请在 Vercel 环境变量里填写 OpenAI API Key。</div>}
+          {demo && <div className="notice" style={{ marginBottom: 18 }}>No AI API key is configured yet, so this is a demo report. Add your production AI provider key in Vercel environment variables before selling this publicly.</div>}
           <div style={{ display: "flex", gap: 12, justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginBottom: 18 }}>
-            <h1 style={{ margin: 0 }}>诊断报告</h1>
-            <button className="cta" style={{ width: "auto" }} onClick={copyReport}>{copied ? "已复制" : "复制报告"}</button>
+            <h1 style={{ margin: 0 }}>Conversion Audit Report</h1>
+            <button className="cta" style={{ width: "auto" }} onClick={copyReport}>{copied ? "Copied" : "Copy report"}</button>
           </div>
           <article className="report">{report}</article>
         </section>

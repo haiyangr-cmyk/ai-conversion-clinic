@@ -45,11 +45,11 @@ export default function CheckoutPage() {
         body: JSON.stringify(payload)
       });
       const data = (await res.json()) as GenerateResponse;
-      if (!data.ok || !data.report) throw new Error(data.error || "生成失败");
+      if (!data.ok || !data.report) throw new Error(data.error || "Report generation failed");
       localStorage.setItem("audit-report", JSON.stringify({ report: data.report, input: payload, demo: data.demo || false, generatedAt: new Date().toISOString() }));
       router.push("/report");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "生成失败，请稍后重试");
+      setError(err instanceof Error ? err.message : "Report generation failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -61,50 +61,50 @@ export default function CheckoutPage() {
     <main className="wrapper">
       <div className="container">
         <nav className="nav">
-          <div className="brand"><span className="logo" />AI 转化率急诊室</div>
-          <a className="badge" href="/">返回修改信息</a>
+          <div className="brand"><span className="logo" />AI Conversion Clinic</div>
+          <a className="badge" href="/">Edit details</a>
         </nav>
 
         <section className="grid">
           <div className="panel">
-            <h1 style={{ marginTop: 0 }}>确认订单</h1>
-            <p className="muted">你选择的是 <strong>{tiers[input.tier].name}</strong>，价格 <strong>{tiers[input.tier].price}</strong>。</p>
+            <h1 style={{ marginTop: 0 }}>Confirm your order</h1>
+            <p className="muted">You selected <strong>{tiers[input.tier].name}</strong> for <strong>{tiers[input.tier].price}</strong>.</p>
 
             <div className="card" style={{ margin: "18px 0" }}>
               <strong>{input.product}</strong>
               <span>{input.url}</span><br />
-              <span>目标客户：{input.audience}</span><br />
-              <span>当前问题：{input.problem}</span>
+              <span>Target customer: {input.audience}</span><br />
+              <span>Main problem: {input.problem}</span>
             </div>
 
             <a className="cta" style={{ display: "block", textAlign: "center", textDecoration: "none" }} href={paymentLink} target="_blank" rel="noreferrer">
-              打开 PayPal 完成付款
+              Open PayPal and complete payment
             </a>
 
-            <p className="footer">付款时建议在 PayPal 备注里填写你的邮箱：{input.email}</p>
+            <p className="footer">Tip: Add your email in the PayPal note if possible: {input.email}</p>
           </div>
 
           <form className="panel" onSubmit={generateReport}>
-            <h2 style={{ marginTop: 0 }}>付款后生成报告</h2>
-            <div className="notice">第一天版本采用 PayPal 收款链接，不做自动支付回调。你可以先让用户付款后输入 PayPal 邮箱或交易号，后台人工抽查即可。</div>
+            <h2 style={{ marginTop: 0 }}>Generate your report after payment</h2>
+            <div className="notice">After completing payment, enter your PayPal payer email or transaction ID below so the order can be matched and your report can be generated.</div>
 
             <div className="field" style={{ marginTop: 18 }}>
-              <label>PayPal 付款邮箱</label>
+              <label>PayPal payer email</label>
               <input required type="email" placeholder="payer@example.com" value={paypalEmail} onChange={(e) => setPaypalEmail(e.target.value)} />
             </div>
 
             <div className="field">
-              <label>PayPal 交易号或付款备注</label>
-              <input required placeholder="例如：9AB12345CD6789012" value={paypalTransactionId} onChange={(e) => setPaypalTransactionId(e.target.value)} />
+              <label>PayPal transaction ID or payment note</label>
+              <input required placeholder="Example: 9AB12345CD6789012" value={paypalTransactionId} onChange={(e) => setPaypalTransactionId(e.target.value)} />
             </div>
 
             {error && <div className="error">{error}</div>}
 
             <button className="cta" disabled={loading} type="submit" style={{ marginTop: 16 }}>
-              {loading ? "正在生成报告..." : "我已付款，生成报告"}
+              {loading ? "Generating report..." : "I have paid. Generate my report"}
             </button>
 
-            <button className="cta secondary" type="button" style={{ marginTop: 12 }} onClick={() => router.push("/")}>返回修改信息</button>
+            <button className="cta secondary" type="button" style={{ marginTop: 12 }} onClick={() => router.push("/")}>Edit details</button>
           </form>
         </section>
       </div>
