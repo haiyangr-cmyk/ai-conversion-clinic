@@ -100,24 +100,68 @@ async function sendLeadWebhook(input: AuditInput, report: string) {
   }
 }
 
-async function generateWithOpenAI(input: AuditInput) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return { report: demoReport(input), demo: true };
+async function generateWithAI(input: AuditInput) {
+  const deepseekKey = process.env.DEEPSEEK_API_KEY;
+  const openaiKey = process.env.OPENAI_API_KEY;
+
+  if (!deepseekKey && !openaiKey) return { report: demoReport(input), demo: true };
 
   const prompt = buildAuditPrompt(input);
-  const model = process.env.OPENAI_MODEL || "gpt-4.1-mini";
+  const temperature = 0.4;
+  const maxTokens = input.tier === "pro" ? 4200 : 2600;
 
+  // 优先使用 DeepSeek，适合中国大陆地区部署和结算。
+  if (deepseekKey) {
+    const baseUrl = (process.env.LLM_BASE_URL || "https://api.deepseek.com").replace(/\/+$/, "");
+    const model = process.env.LLM_MODEL || "deepseek-v4-flash";
+
+    const response = await fetch(`${baseUrl}/chat/completions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${deepseekKey}`
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          {
+            role: "system",
+            content: "你是一名高级转化率优化顾问和直销文案专家。请输出中文、具体、可执行的诊断报告。"
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ],
+        temperature,
+        max_tokens: maxTokens,
+        stream: false
+      })
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`DeepSeek API 错误：${response.status} ${text}`);
+    }
+
+    const data = await response.json();
+    const report = data.choices?.[0]?.message?.content || "";
+    if (!report) throw new Error("DeepSeek API 没有返回报告内容");
+    return { report, demo: false };
+  }
+
+  // 保留 OpenAI 作为海外备用。
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`
+      Authorization: `Bearer ${openaiKey}`
     },
     body: JSON.stringify({
-      model,
+      model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
       input: prompt,
-      temperature: 0.4,
-      max_output_tokens: input.tier === "pro" ? 4200 : 2600
+      temperature,
+      max_output_tokens: maxTokens
     })
   });
 
@@ -127,7 +171,7 @@ async function generateWithOpenAI(input: AuditInput) {
   }
 
   const data = await response.json();
-  const report = data.output_text || data.output?.flatMap((item: any) => item.content || []).map((content: any) => content.text || "").join("\n") || "";
+  const report = data.output_text || data.output?.flatMap((item: any) => item.content || []).map((content: any) => content.text || "").join("\\n") || "";
   if (!report) throw new Error("OpenAI API 没有返回报告内容");
   return { report, demo: false };
 }
@@ -147,7 +191,7 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString()
     });
 
-    const { report, demo } = await generateWithOpenAI(input);
+    const { report, demo } = await generateWithAI(input);
     await sendLeadWebhook(input, report);
 
     return Response.json({ ok: true, report, demo });
