@@ -37,7 +37,7 @@ export default function CheckoutPage() {
 
   const paypalSdkUrl = useMemo(() => {
     if (!clientId) return "";
-    return `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=${encodeURIComponent(currency)}&intent=capture&components=buttons`;
+    return `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=${encodeURIComponent(currency)}&intent=capture&components=buttons&locale=en_US&disable-funding=paylater`;
   }, [clientId, currency]);
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export default function CheckoutPage() {
 
         onError(err: unknown) {
           console.error("PAYPAL_BUTTON_ERROR", err);
-          setError("PayPal checkout failed. Please refresh and try again.");
+          setError("PayPal checkout failed. Please refresh the page or try again in a few seconds.");
         }
       }).render(paypalRef.current);
     }
@@ -144,7 +144,7 @@ export default function CheckoutPage() {
     script.onload = renderButtons;
     script.onerror = () => {
       setPaypalLoading(false);
-      setError("Could not load PayPal checkout. Please refresh and try again.");
+      setError("PayPal checkout did not load. Please refresh the page or try again in a few seconds.");
     };
     document.body.appendChild(script);
   }, [input, clientId, currency, paypalSdkUrl, paymentComplete]);
@@ -225,7 +225,7 @@ export default function CheckoutPage() {
                 <div className="notice" style={{ marginBottom: 18 }}>
                   Complete payment securely with PayPal. Your report can only be generated after PayPal confirms the payment.
                 </div>
-                {paypalLoading && <p className="muted">Loading PayPal checkout...</p>}
+                {paypalLoading && <p className="muted">Preparing secure PayPal checkout...</p>}
                 <div ref={paypalRef} />
               </>
             )}

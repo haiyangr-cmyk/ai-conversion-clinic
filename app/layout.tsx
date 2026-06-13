@@ -9,6 +9,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://www.paypal.com" />
+        <link rel="preconnect" href="https://www.paypalobjects.com" />
+        <link rel="dns-prefetch" href="https://www.paypal.com" />
+        <link rel="dns-prefetch" href="https://www.paypalobjects.com" />
+      </head>
       <body>{children}</body>
     </html>
   );
