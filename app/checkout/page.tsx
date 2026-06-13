@@ -10,6 +10,7 @@ export default function CheckoutPage() {
   const [input, setInput] = useState<AuditInput | null>(null);
   const [paypalEmail, setPaypalEmail] = useState("");
   const [paypalTransactionId, setPaypalTransactionId] = useState("");
+  const [accessCode, setAccessCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -38,7 +39,7 @@ export default function CheckoutPage() {
     setError("");
 
     try {
-      const payload: AuditInput = { ...input, paypalEmail, paypalTransactionId };
+      const payload: AuditInput = { ...input, paypalEmail, paypalTransactionId, accessCode };
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -86,7 +87,7 @@ export default function CheckoutPage() {
 
           <form className="panel" onSubmit={generateReport}>
             <h2 style={{ marginTop: 0 }}>Generate your report after payment</h2>
-            <div className="notice">After completing payment, enter your PayPal payer email or transaction ID below so the order can be matched and your report can be generated.</div>
+            <div className="notice">After completing payment, send us your PayPal payer email or transaction ID. Once payment is verified, you will receive an access code to generate your report.</div>
 
             <div className="field" style={{ marginTop: 18 }}>
               <label>PayPal payer email</label>
@@ -96,6 +97,11 @@ export default function CheckoutPage() {
             <div className="field">
               <label>PayPal transaction ID or payment note</label>
               <input required placeholder="Example: 9AB12345CD6789012" value={paypalTransactionId} onChange={(e) => setPaypalTransactionId(e.target.value)} />
+            </div>
+
+            <div className="field">
+              <label>Access code</label>
+              <input required placeholder="Enter the code you received after payment verification" value={accessCode} onChange={(e) => setAccessCode(e.target.value.trim())} />
             </div>
 
             {error && <div className="error">{error}</div>}

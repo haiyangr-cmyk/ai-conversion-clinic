@@ -182,6 +182,14 @@ export async function POST(request: NextRequest) {
     const error = validateInput(input);
     if (error) return Response.json({ ok: false, error }, { status: 400 });
 
+    const expectedAccessCode = process.env.PAYMENT_ACCESS_CODE;
+    if (expectedAccessCode && input.accessCode !== expectedAccessCode) {
+      return Response.json({
+        ok: false,
+        error: "Invalid access code. Please complete PayPal payment and contact support to receive your access code."
+      }, { status: 403 });
+    }
+
     console.log("NEW_AUDIT_ORDER", {
       email: input.email,
       paypalEmail: input.paypalEmail,
