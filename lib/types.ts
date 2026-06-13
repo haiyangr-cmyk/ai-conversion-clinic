@@ -9,6 +9,8 @@ export type AuditInput = {
   email: string;
   paypalEmail?: string;
   paypalTransactionId?: string;
+  paypalOrderId?: string;
+  paymentToken?: string;
   accessCode?: string;
   tier: Tier;
 };
