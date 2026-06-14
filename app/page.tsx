@@ -15,24 +15,67 @@ const initialForm: AuditInput = {
   tier: "basic"
 };
 
+
 const useCases = [
   {
-    title: "Shopify stores",
-    text: "For stores with traffic, product views, or add-to-carts, but weak sales."
+    title: "Hero Diagnosis",
+    text: "Check whether visitors understand your value in the first 5 seconds."
   },
   {
-    title: "SaaS pages",
-    text: "For pages with low trial signups, low demo bookings, or unclear positioning."
+    title: "Copy Rewrites",
+    text: "Get headline, value proposition, CTA, and objection-handling ideas."
   },
   {
-    title: "Sales pages",
-    text: "For course, coaching, consulting, agency, and service pages that need stronger messaging."
-  },
-  {
-    title: "Ad landing pages",
-    text: "For founders and marketers who want to find obvious leaks before spending more on ads."
+    title: "Action Plan",
+    text: "Receive a prioritized 7-day plan you can execute step by step."
   }
 ];
+
+
+const productSuggestions = [
+  "Ad landing page for a paid campaign",
+  "Agency or consulting service page",
+  "AI SaaS landing page",
+  "App landing page",
+  "Coaching or creator offer",
+  "Ecommerce product page",
+  "Local service business page",
+  "Mobile app landing page",
+  "Newsletter or community page",
+  "Online course sales page",
+  "SaaS pricing page",
+  "Shopify store selling physical products"
+].sort((a, b) => a.localeCompare(b));
+
+const audienceSuggestions = [
+  "B2B SaaS buyers",
+  "B2B SaaS founders",
+  "Coaches and consultants",
+  "Course creators",
+  "Ecommerce shoppers",
+  "Enterprise buyers",
+  "Local business customers",
+  "Mobile app users",
+  "Newsletter subscribers",
+  "Paid ad visitors",
+  "Sales teams",
+  "Shopify store owners"
+].sort((a, b) => a.localeCompare(b));
+
+const problemSuggestions = [
+  "High cart abandonment",
+  "High bounce rate",
+  "Low add-to-cart rate",
+  "Low checkout completion",
+  "Low demo bookings",
+  "Low email signups",
+  "Low free trial signups",
+  "Low lead form submissions",
+  "Low purchase conversion",
+  "Low signup rate",
+  "Traffic but no sales",
+  "Visitors leave without clicking the CTA"
+].sort((a, b) => a.localeCompare(b));
 
 export default function HomePage() {
   const router = useRouter();
@@ -60,11 +103,7 @@ export default function HomePage() {
           <div className="hero">
             <div className="eyebrow">AI-powered landing page audit</div>
             <h1>Why are visitors not buying from your page?</h1>
-            <p>
-              Submit your landing page, Shopify store, SaaS page, course sales page, service page,
-              or sales page. Get an actionable conversion audit with headline rewrites, CTA ideas,
-              buyer objections, FAQ recommendations, ad/social hooks, and a 7-day optimization plan.
-            </p>
+            <p>Submit your landing page, Shopify store, SaaS page, course sales page, service page, or sales page. Get an actionable conversion audit with headline rewrites, CTA ideas, buyer objections, FAQ recommendations, ad/social hooks, and a 7-day optimization plan.</p>
 
             <div className="hero-actions">
               <a className="mini-cta" href="#audit-form">Start audit</a>
@@ -82,7 +121,7 @@ export default function HomePage() {
               <div className="step">Choose Basic or Pro and complete secure PayPal checkout.</div>
               <div className="step">Get your AI-generated conversion audit after payment confirmation.</div>
             </div>
-          </div>
+</div>
 
           <form id="audit-form" className="panel" onSubmit={handleSubmit}>
             <div className="field">
@@ -90,19 +129,121 @@ export default function HomePage() {
               <input required type="url" placeholder="https://your-site.com" value={form.url} onChange={(e) => update("url", e.target.value)} />
             </div>
 
-            <div className="field">
+            <div className="field compact-suggest-field">
               <label>Product / service</label>
-              <input required placeholder="Shopify pet store / AI SaaS / online course" value={form.product} onChange={(e) => update("product", e.target.value)} />
+              <div className="compact-combo">
+                <input
+                  required
+                  placeholder="Example: Shopify store / SaaS / course page"
+                  value={form.product}
+                  onChange={(e) => update("product", e.target.value)}
+                />
+
+                <details
+                  className="compact-dropdown"
+                  onBlur={(e) => {
+                    const nextFocus = e.relatedTarget as Node | null;
+
+                    if (!nextFocus || !e.currentTarget.contains(nextFocus)) {
+                      e.currentTarget.removeAttribute("open");
+                    }
+                  }}
+                >
+                  <summary aria-label="Show product suggestions">▾</summary>
+                  <div className="compact-dropdown-menu">
+                    {productSuggestions.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={(e) => {
+                          update("product", option);
+                          (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open");
+                        }}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </details>
+              </div>
             </div>
 
-            <div className="field">
+            <div className="field compact-suggest-field">
               <label>Target customer</label>
-              <input required placeholder="Active dog owners, SaaS founders, coaches, consultants" value={form.audience} onChange={(e) => update("audience", e.target.value)} />
+              <div className="compact-combo">
+                <input
+                  required
+                  placeholder="Example: US dog owners / SaaS founders / sales teams"
+                  value={form.audience}
+                  onChange={(e) => update("audience", e.target.value)}
+                />
+
+                <details
+                  className="compact-dropdown"
+                  onBlur={(e) => {
+                    const nextFocus = e.relatedTarget as Node | null;
+
+                    if (!nextFocus || !e.currentTarget.contains(nextFocus)) {
+                      e.currentTarget.removeAttribute("open");
+                    }
+                  }}
+                >
+                  <summary aria-label="Show audience suggestions">▾</summary>
+                  <div className="compact-dropdown-menu">
+                    {audienceSuggestions.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={(e) => {
+                          update("audience", option);
+                          (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open");
+                        }}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </details>
+              </div>
             </div>
 
-            <div className="field">
+            <div className="field compact-suggest-field">
               <label>Main conversion problem</label>
-              <input required placeholder="Traffic but no sales / low demo bookings / low signup rate" value={form.problem} onChange={(e) => update("problem", e.target.value)} />
+              <div className="compact-combo">
+                <input
+                  required
+                  placeholder="Example: Traffic but no sales / low signups"
+                  value={form.problem}
+                  onChange={(e) => update("problem", e.target.value)}
+                />
+
+                <details
+                  className="compact-dropdown"
+                  onBlur={(e) => {
+                    const nextFocus = e.relatedTarget as Node | null;
+
+                    if (!nextFocus || !e.currentTarget.contains(nextFocus)) {
+                      e.currentTarget.removeAttribute("open");
+                    }
+                  }}
+                >
+                  <summary aria-label="Show problem suggestions">▾</summary>
+                  <div className="compact-dropdown-menu">
+                    {problemSuggestions.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={(e) => {
+                          update("problem", option);
+                          (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open");
+                        }}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </details>
+              </div>
             </div>
 
             <div className="field">
@@ -176,6 +317,73 @@ export default function HomePage() {
 
             <div className="plan-strip">
               7-Day Plan: rewrite hero · move proof near CTA · clarify shipping/returns · add FAQ · test headline variations
+            </div>
+          </div>
+        </section>
+
+        <section className="section comparison-section" id="compare-plans">
+          <div className="section-heading compact">
+            <span className="eyebrow">Basic vs Pro</span>
+            <h2>Choose the depth you need</h2>
+            <p>
+              Basic gives you a quick diagnosis. Pro gives you a fuller action plan for pages with traffic,
+              paid campaigns, or a real offer you want to improve.
+            </p>
+          </div>
+
+          <div className="compare-table" role="table" aria-label="Basic and Pro audit comparison">
+            <div className="compare-row compare-head" role="row">
+              <div role="columnheader">What you get</div>
+              <div role="columnheader">Basic Audit · $9</div>
+              <div role="columnheader">Pro Audit · $29</div>
+            </div>
+
+            <div className="compare-row" role="row">
+              <div className="compare-label" role="cell">Best for</div>
+              <div role="cell">A quick first check before making obvious page fixes.</div>
+              <div role="cell">Pages with traffic, paid ads, SaaS funnels, Shopify stores, or serious offers.</div>
+            </div>
+
+            <div className="compare-row" role="row">
+              <div className="compare-label" role="cell">Report depth</div>
+              <div role="cell">Short, direct diagnosis.</div>
+              <div role="cell">More complete conversion action plan.</div>
+            </div>
+
+            <div className="compare-row" role="row">
+              <div className="compare-label" role="cell">Score breakdown</div>
+              <div role="cell">Core conversion score and key weak spots.</div>
+              <div role="cell">Detailed score breakdown across clarity, offer, trust, CTA, friction, and objections.</div>
+            </div>
+
+            <div className="compare-row" role="row">
+              <div className="compare-label" role="cell">Conversion leaks</div>
+              <div role="cell">Top 3 issues to fix first.</div>
+              <div role="cell">Top 3 issues with stronger reasoning, examples, and priority guidance.</div>
+            </div>
+
+            <div className="compare-row" role="row">
+              <div className="compare-label" role="cell">Copy rewrites</div>
+              <div role="cell">Basic headline, CTA, and messaging suggestions.</div>
+              <div role="cell">Headline, subheadline, CTA, value proposition, trust section, and FAQ copy.</div>
+            </div>
+
+            <div className="compare-row" role="row">
+              <div className="compare-label" role="cell">Category review</div>
+              <div role="cell">Not included.</div>
+              <div role="cell">Shopify, SaaS, sales page, course, service, or ad landing page specific checks.</div>
+            </div>
+
+            <div className="compare-row" role="row">
+              <div className="compare-label" role="cell">Action plan</div>
+              <div role="cell">Short 7-day plan.</div>
+              <div role="cell">Detailed 7-day plan with quick wins and bigger fixes.</div>
+            </div>
+
+            <div className="compare-row" role="row">
+              <div className="compare-label" role="cell">FAQ & hooks</div>
+              <div role="cell">Limited suggestions.</div>
+              <div role="cell">Buyer objections, FAQ copy, and ad/social hooks you can test.</div>
             </div>
           </div>
         </section>
