@@ -483,7 +483,8 @@ function V2Report({ report }: { report: AuditReportV2 }) {
 
 
 function FormattedTextReport({ text }: { text: string }) {
-  const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
+  const rawLines = text.split("\n").map((line) => line.trim()).filter(Boolean);
+  const lines = rawLines[0]?.startsWith("# ") ? rawLines.slice(1) : rawLines;
 
   return (
     <article className="formatted-report">
