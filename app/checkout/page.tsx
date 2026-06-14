@@ -183,6 +183,7 @@ export default function CheckoutPage() {
 
       localStorage.setItem("audit-report", JSON.stringify({
         report: data.report,
+      reportV2: data.reportV2 || null,
         input: payload,
         demo: data.demo || false,
         generatedAt: new Date().toISOString()

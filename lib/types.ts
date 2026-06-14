@@ -18,6 +18,7 @@ export type AuditInput = {
 export type GenerateResponse = {
   ok: boolean;
   report?: string;
+  reportV2?: unknown;
   error?: string;
   demo?: boolean;
 };
