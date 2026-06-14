@@ -79,15 +79,148 @@ const problemSuggestions = [
 export default function HomePage() {
   const router = useRouter();
   const [form, setForm] = useState<AuditInput>(initialForm);
+  const [diagnosisLoading, setDiagnosisLoading] = useState(false);
+  const [diagnosisError, setDiagnosisError] = useState("");
 
   function update<K extends keyof AuditInput>(key: K, value: AuditInput[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    localStorage.setItem("audit-input", JSON.stringify(form));
-    router.push("/checkout");
+
+    const payload: AuditInput = {
+      ...form,
+      tier: "basic"
+    };
+
+    localStorage.setItem("audit-input", JSON.stringify(payload));
+    setDiagnosisLoading(true);
+    setDiagnosisError("");
+
+    try {
+      const sampleReport = {
+        meta: {
+          tier: "basic",
+          pageType: "landing_page",
+          evidenceQuality: "medium",
+          inputSummary: "Sample local diagnosis for testing the ACC 2.0 flow without calling the AI API."
+        },
+        executiveSummary: {
+          overallScore: 64,
+          oneSentenceDiagnosis: "The page explains the product, but it does not make the buyer outcome, trust proof, and next step clear enough in the first 5 seconds.",
+          biggestOpportunity: "Make the hero section more outcome-specific and show proof before asking visitors to act.",
+          primaryAction: "Rewrite the above-the-fold message around the visitor's desired outcome and add trust signals near the primary CTA."
+        },
+        scoreBreakdown: [
+          { label: "Offer clarity", score: 62, reason: "The offer is visible, but the visitor outcome is not specific enough." },
+          { label: "CTA strength", score: 58, reason: "The CTA does not clearly communicate what the visitor gets next." },
+          { label: "Trust signals", score: 52, reason: "The page needs stronger proof, examples, or reassurance near the decision point." },
+          { label: "Friction", score: 70, reason: "The flow is understandable, but the next step could feel lower-risk." }
+        ],
+        topLeaks: [
+          {
+            title: "Weak positioning above the fold",
+            impact: "high",
+            whyItHurts: "Visitors may understand the category but not why this offer matters to them right now.",
+            whatToChange: "Lead with the target customer's desired outcome, not only the product category.",
+            betterExample: "Turn more launch traffic into signups with a clear, conversion-focused page diagnosis."
+          },
+          {
+            title: "Generic CTA",
+            impact: "medium",
+            whyItHurts: "A generic CTA creates uncertainty about what happens after the click.",
+            whatToChange: "Use an action-oriented CTA that describes the next step.",
+            betterExample: "Run Free Diagnosis"
+          },
+          {
+            title: "Missing trust proof",
+            impact: "medium",
+            whyItHurts: "Users need evidence before trusting recommendations or paying for a fix plan.",
+            whatToChange: "Add a sample diagnosis, support policy, and clear explanation of what is included.",
+            betterExample: "See an example diagnosis before unlocking the full fix plan."
+          }
+        ],
+        rewrites: [
+          {
+            type: "hero_headline",
+            before: "AI-powered landing page audit",
+            after: "Find out why your landing page isn’t converting.",
+            whyThisWorks: "It names the pain directly and creates a reason to run the diagnosis."
+          },
+          {
+            type: "primary_cta",
+            before: "Get audit",
+            after: "Run Free Diagnosis",
+            whyThisWorks: "It lowers the first-step risk and aligns with the free diagnosis model."
+          }
+        ],
+        categoryAudit: {
+          summary: "This sample diagnosis focuses on the free diagnosis flow.",
+          checks: []
+        },
+        priorityFixes: {
+          quickWins: [
+            {
+              title: "Clarify the first-step value",
+              action: "Make the first CTA about diagnosis, not payment.",
+              expectedOutcome: "More visitors understand they can try the tool before paying."
+            },
+            {
+              title: "Show a locked solution preview",
+              action: "List the exact modules users can unlock after the diagnosis.",
+              expectedOutcome: "Users see what the paid fix plan contains."
+            }
+          ],
+          biggerFixes: []
+        },
+        buyerObjections: [],
+        faqIdeas: [],
+        hooks: [],
+        sevenDayPlan: [
+          { day: 1, title: "Rewrite hero message", action: "Use a pain-led headline and diagnosis-focused CTA.", expectedOutcome: "Visitors understand the offer faster." },
+          { day: 2, title: "Add solution preview", action: "Show what is locked behind the paid solution.", expectedOutcome: "Unlock intent becomes clearer." },
+          { day: 3, title: "Add trust support", action: "Keep Support, Refund, and Privacy visible.", expectedOutcome: "Payment risk feels lower." }
+        ],
+        disclaimer: "This sample diagnosis is for local testing only. Recommendations should be validated with analytics, customer feedback, and A/B testing."
+      };
+
+      const sampleText = `# Free Conversion Diagnosis
+
+Overall Score: 64/100
+
+The page explains the product, but it does not make the buyer outcome, trust proof, and next step clear enough in the first 5 seconds.
+
+## Top Conversion Blockers
+
+1. Weak positioning above the fold — High severity
+Visitors may understand the category but not why this offer matters to them right now.
+
+2. Generic CTA — Medium severity
+A generic CTA creates uncertainty about what happens after the click.
+
+3. Missing trust proof — Medium severity
+Users need evidence before trusting recommendations or paying for a fix plan.
+
+## Solution Preview
+
+We found practical fixes for positioning, hero copy, CTA, trust proof, offer framing, and launch follow-up copy.`;
+
+      localStorage.setItem("audit-report", JSON.stringify({
+        report: sampleText,
+        reportV2: sampleReport,
+        input: payload,
+        demo: true,
+        mode: "diagnosis",
+        generatedAt: new Date().toISOString()
+      }));
+
+      router.push("/report");
+    } catch (err) {
+      setDiagnosisError(err instanceof Error ? err.message : "Sample diagnosis failed. Please try again.");
+    } finally {
+      setDiagnosisLoading(false);
+    }
   }
 
   return (
@@ -321,7 +454,10 @@ export default function HomePage() {
               </div>
             </div>
 
-            <button className="cta" type="submit">Run Free Diagnosis</button>
+            <button className="cta" type="submit" disabled={diagnosisLoading}>
+              {diagnosisLoading ? "Generating diagnosis..." : "Run Free Diagnosis"}
+            </button>
+            {diagnosisError ? <p className="form-error">{diagnosisError}</p> : null}
             <p className="footer">Free diagnosis first · Secure PayPal checkout for the full solution</p>
           </form>
         </section>

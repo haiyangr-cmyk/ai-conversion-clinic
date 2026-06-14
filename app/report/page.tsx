@@ -487,6 +487,7 @@ export default function ReportPage() {
   const [reportV2, setReportV2] = useState<AuditReportV2 | null>(null);
   const [demo, setDemo] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [reportMode, setReportMode] = useState<"diagnosis" | "solution">("solution");
 
   useEffect(() => {
     const raw = localStorage.getItem("audit-report");
@@ -499,6 +500,7 @@ export default function ReportPage() {
     setReport(parsed.report || "");
     setReportV2(parsed.reportV2 || null);
     setDemo(Boolean(parsed.demo));
+    setReportMode(parsed.mode === "diagnosis" ? "diagnosis" : "solution");
   }, [router]);
 
   const exportText = useMemo(() => {
@@ -530,6 +532,26 @@ export default function ReportPage() {
     setTimeout(() => setCopied(false), 1800);
   }
 
+  function unlockConversionSolution() {
+    const raw = localStorage.getItem("audit-report");
+
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed.input) {
+          localStorage.setItem("audit-input", JSON.stringify({
+            ...parsed.input,
+            tier: "basic"
+          }));
+        }
+      } catch {
+        // Keep checkout fallback behavior.
+      }
+    }
+
+    router.push("/checkout");
+  }
+
   if (!report && !reportV2) return null;
 
   return (
@@ -537,16 +559,16 @@ export default function ReportPage() {
       <div className="container">
         <nav className="nav">
           <div className="brand"><img className="brand-logo" src="/logo.jpeg" alt="AI Conversion Clinic logo" />AI Conversion Clinic</div>
-          <a className="badge" href="/">Generate a new report</a>
+          <a className="badge" href="/">{reportMode === "diagnosis" ? "Run another diagnosis" : "Generate a new report"}</a>
         </nav>
 
         <section className="panel report-panel">
-          {demo && <div className="notice" style={{ marginBottom: 18 }}>No AI API key is configured yet, so this is a demo report. Add your production AI provider key in Vercel environment variables before selling this publicly.</div>}
+          {demo && reportMode !== "diagnosis" && <div className="notice" style={{ marginBottom: 18 }}>No AI API key is configured yet, so this is a demo report. Add your production AI provider key in Vercel environment variables before selling this publicly.</div>}
 
           <div className="report-header">
             <div>
-              <span className="eyebrow">Generated solution</span>
-              <h1>Conversion Solution</h1>
+              <span className="eyebrow">{reportMode === "diagnosis" ? "Generated diagnosis" : "Generated solution"}</span>
+              <h1>{reportMode === "diagnosis" ? "Your Conversion Diagnosis" : "Conversion Solution"}</h1>
             </div>
                         <button
               className="report-export-button primary-export-button"
@@ -565,10 +587,66 @@ export default function ReportPage() {
             >
               Download DOCX
             </button>
-<button className="cta copy-button" onClick={copyReport}>{copied ? "Copied" : "Copy solution"}</button>
+<button className="cta copy-button" onClick={copyReport}>{copied ? "Copied" : reportMode === "diagnosis" ? "Copy diagnosis" : "Copy solution"}</button>
           </div>
 
-          {reportV2 ? (
+          {reportMode === "diagnosis" && reportV2 ? (
+            <section className="diagnosis-result">
+              <div className="diagnosis-score-card">
+                <span>Conversion Score</span>
+                <strong>{reportV2.executiveSummary.overallScore} / 100</strong>
+                <p>{reportV2.executiveSummary.oneSentenceDiagnosis}</p>
+              </div>
+
+              <div className="diagnosis-section">
+                <p className="eyebrow">Free Diagnosis</p>
+                <h2>Top Conversion Blockers</h2>
+
+                <div className="diagnosis-blocker-grid">
+                  {reportV2.topLeaks.slice(0, 3).map((leak, index) => (
+                    <article className="diagnosis-blocker-card" key={`${leak.title}-${index}`}>
+                      <span>#{index + 1} · {leak.impact} severity</span>
+                      <h3>{leak.title}</h3>
+                      <p>{leak.whyItHurts}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+
+              <div className="diagnosis-section solution-preview-box">
+                <p className="eyebrow">Solution Preview</p>
+                <h2>We found practical fixes for this page.</h2>
+                <p>
+                  Unlock the full Conversion Solution to get copy-ready fixes for positioning,
+                  hero copy, CTA, trust proof, offer framing, implementation plan, and launch follow-up copy.
+                </p>
+              </div>
+
+              <section className="locked-solution-card">
+                <div>
+                  <p className="eyebrow">Locked Conversion Solution</p>
+                  <h2>Unlock your full fix plan</h2>
+                  <p>
+                    Get the exact recommendations and copy-ready assets needed to improve this page.
+                  </p>
+                </div>
+
+                <ul>
+                  <li>Recommended positioning</li>
+                  <li>Hero rewrite</li>
+                  <li>CTA fixes</li>
+                  <li>Trust & proof fixes</li>
+                  <li>Pricing / offer fixes</li>
+                  <li>7-day action plan</li>
+                  <li>Product Hunt / Reddit follow-up copy</li>
+                </ul>
+
+                <button className="cta" type="button" onClick={unlockConversionSolution}>
+                  Unlock Conversion Solution
+                </button>
+              </section>
+            </section>
+          ) : reportV2 ? (
             <V2Report report={reportV2} />
           ) : (
             <article className="report">{report}</article>
@@ -579,7 +657,7 @@ export default function ReportPage() {
       <div className="report-bottom-help">
         <strong>Need help?</strong>
         <span>
-          If a paid report cannot be generated or downloaded, <a href="/support">contact support</a> with your PayPal order ID.
+          If your diagnosis or paid solution cannot be generated or downloaded, <a href="/support">contact support</a> with your PayPal order ID.
         </span>
       </div>
 
