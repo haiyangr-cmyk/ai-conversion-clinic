@@ -1,5 +1,14 @@
 "use client";
 
+import { jsPDF } from "jspdf";
+import {
+  Document as DocxDocument,
+  HeadingLevel,
+  Packer,
+  Paragraph,
+  TextRun
+} from "docx";
+
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { AuditReportV2, CheckStatus, ImpactLevel, PageType } from "../../lib/report-v2";
@@ -45,6 +54,179 @@ function scoreLevel(score: number) {
 function safeScore(score: number) {
   if (!Number.isFinite(score)) return 0;
   return Math.max(0, Math.min(100, Math.round(score)));
+}
+
+
+
+function buildReportBaseName(reportV2: AuditReportV2 | null) {
+  const tier = reportV2?.meta?.tier === "pro" ? "Pro" : "Basic";
+  const date = new Date().toISOString().slice(0, 10);
+  return `AIConversionClinic-${tier}-Audit-${date}`;
+}
+
+function normalizeExportText(text: string) {
+  return text
+    .replace(/[“”]/g, '"')
+    .replace(/[‘’]/g, "'")
+    .replace(/[–—]/g, "-")
+    .replace(/\u00a0/g, " ")
+    .trim();
+}
+
+function downloadBlobFile(filename: string, blob: Blob) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  URL.revokeObjectURL(url);
+}
+
+function downloadPdfFile(filename: string, content: string) {
+  const text = normalizeExportText(content);
+  const doc = new jsPDF({ unit: "pt", format: "a4" });
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 48;
+  const maxWidth = pageWidth - margin * 2;
+  let y = 56;
+
+  function addPageIfNeeded(height: number) {
+    if (y + height > pageHeight - margin) {
+      doc.addPage();
+      y = 56;
+    }
+  }
+
+  function writeWrapped(raw: string, options?: { size?: number; bold?: boolean; indent?: number; gap?: number }) {
+    const size = options?.size ?? 10;
+    const indent = options?.indent ?? 0;
+    const gap = options?.gap ?? 7;
+
+    doc.setFont("helvetica", options?.bold ? "bold" : "normal");
+    doc.setFontSize(size);
+
+    const wrapped = doc.splitTextToSize(raw, maxWidth - indent) as string[];
+    const lineHeight = size + 4;
+
+    addPageIfNeeded(wrapped.length * lineHeight + gap);
+    doc.text(wrapped, margin + indent, y);
+    y += wrapped.length * lineHeight + gap;
+  }
+
+  doc.setProperties({
+    title: filename.replace(/\.pdf$/i, ""),
+    subject: "AI Conversion Clinic Audit Report",
+    creator: "AI Conversion Clinic"
+  });
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.text("AI Conversion Clinic", margin, 32);
+
+  for (const line of text.split(/\r?\n/)) {
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      y += 8;
+      continue;
+    }
+
+    if (trimmed.startsWith("# ")) {
+      writeWrapped(trimmed.replace(/^#\s+/, ""), { size: 22, bold: true, gap: 14 });
+      continue;
+    }
+
+    if (trimmed.startsWith("## ")) {
+      y += 6;
+      writeWrapped(trimmed.replace(/^##\s+/, ""), { size: 14, bold: true, gap: 8 });
+      continue;
+    }
+
+    if (trimmed.startsWith("- ")) {
+      writeWrapped(`• ${trimmed.replace(/^-\s+/, "")}`, { size: 10, indent: 12, gap: 5 });
+      continue;
+    }
+
+    if (/^(Action|Success check):/i.test(trimmed)) {
+      writeWrapped(trimmed, { size: 10, indent: 14, gap: 5 });
+      continue;
+    }
+
+    writeWrapped(trimmed, { size: 10, gap: 6 });
+  }
+
+  doc.save(filename);
+}
+
+function buildDocxParagraph(line: string) {
+  const trimmed = normalizeExportText(line);
+
+  if (!trimmed) {
+    return new Paragraph({ text: "" });
+  }
+
+  if (trimmed.startsWith("# ")) {
+    return new Paragraph({
+      text: trimmed.replace(/^#\s+/, ""),
+      heading: HeadingLevel.TITLE,
+      spacing: { after: 240 }
+    });
+  }
+
+  if (trimmed.startsWith("## ")) {
+    return new Paragraph({
+      text: trimmed.replace(/^##\s+/, ""),
+      heading: HeadingLevel.HEADING_2,
+      spacing: { before: 220, after: 120 }
+    });
+  }
+
+  if (trimmed.startsWith("- ")) {
+    return new Paragraph({
+      children: [new TextRun(`• ${trimmed.replace(/^-\s+/, "")}`)],
+      spacing: { after: 80 }
+    });
+  }
+
+  const labelMatch = trimmed.match(/^(Action|Success check):\s*(.*)$/i);
+  if (labelMatch) {
+    return new Paragraph({
+      children: [
+        new TextRun({ text: `${labelMatch[1]}: `, bold: true }),
+        new TextRun(labelMatch[2])
+      ],
+      spacing: { after: 80 }
+    });
+  }
+
+  return new Paragraph({
+    children: [new TextRun(trimmed)],
+    spacing: { after: 100 }
+  });
+}
+
+async function downloadDocxFile(filename: string, content: string) {
+  const text = normalizeExportText(content);
+  const doc = new DocxDocument({
+    creator: "AI Conversion Clinic",
+    title: filename.replace(/\.docx$/i, ""),
+    description: "AI Conversion Clinic Audit Report",
+    sections: [
+      {
+        properties: {},
+        children: text.split(/\r?\n/).map(buildDocxParagraph)
+      }
+    ]
+  });
+
+  const blob = await Packer.toBlob(doc);
+  downloadBlobFile(filename, blob);
 }
 
 function V2Report({ report }: { report: AuditReportV2 }) {
@@ -319,11 +501,28 @@ export default function ReportPage() {
     setDemo(Boolean(parsed.demo));
   }, [router]);
 
-  const copyText = useMemo(() => {
-    if (report) return report;
-    if (!reportV2) return "";
-    return JSON.stringify(reportV2, null, 2);
+  const exportText = useMemo(() => {
+    const reportText = typeof report === "string" ? report.trim() : "";
+
+    if (reportText) return reportText;
+    if (reportV2) return JSON.stringify(reportV2, null, 2);
+
+    return "";
   }, [report, reportV2]);
+
+  const copyText = exportText;
+
+  function downloadPdfReport() {
+    if (!exportText) return;
+
+    downloadPdfFile(`${buildReportBaseName(reportV2)}.pdf`, exportText);
+  }
+
+  async function downloadDocxReport() {
+    if (!exportText) return;
+
+    await downloadDocxFile(`${buildReportBaseName(reportV2)}.docx`, exportText);
+  }
 
   async function copyReport() {
     await navigator.clipboard.writeText(copyText);
@@ -349,7 +548,24 @@ export default function ReportPage() {
               <span className="eyebrow">Generated report</span>
               <h1>Conversion Audit Report</h1>
             </div>
-            <button className="cta copy-button" onClick={copyReport}>{copied ? "Copied" : "Copy report"}</button>
+                        <button
+              className="report-export-button primary-export-button"
+              type="button"
+              onClick={downloadPdfReport}
+              disabled={!exportText}
+            >
+              Download PDF
+            </button>
+
+            <button
+              className="report-export-button secondary-export-button"
+              type="button"
+              onClick={downloadDocxReport}
+              disabled={!exportText}
+            >
+              Download DOCX
+            </button>
+<button className="cta copy-button" onClick={copyReport}>{copied ? "Copied" : "Copy report"}</button>
           </div>
 
           {reportV2 ? (

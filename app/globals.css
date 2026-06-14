@@ -1259,3 +1259,230 @@ input:focus, textarea:focus, select:focus { border-color: rgba(142,230,200,.7); 
   }
 }
 
+
+/* Report export actions */
+.report-download-button {
+  margin-right: 12px;
+}
+
+.report-download-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 760px) {
+  .report-download-button {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
+
+
+/* Report export buttons */
+.report-export-button {
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 18px;
+  padding: 18px 26px;
+  min-height: 58px;
+  border: 1px solid rgba(142, 230, 200, 0.35);
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.report-export-button:hover {
+  transform: translateY(-1px);
+}
+
+.report-export-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.primary-export-button {
+  background: #8ee6c8;
+  color: #06111f;
+  border-color: #8ee6c8;
+  box-shadow: 0 14px 36px rgba(142, 230, 200, 0.18);
+}
+
+.secondary-export-button {
+  margin-left: 12px;
+  background: rgba(15, 23, 42, 0.42);
+  color: #e5edf8;
+}
+
+.secondary-export-button:hover {
+  border-color: rgba(142, 230, 200, 0.72);
+}
+
+@media (max-width: 760px) {
+  .report-export-button {
+    width: 100%;
+    margin-left: 0;
+    margin-bottom: 10px;
+  }
+
+  .secondary-export-button {
+    margin-left: 0;
+  }
+}
+
+
+/* Normalize report export button sizing */
+.report-export-button {
+  min-width: 220px;
+  min-height: 72px;
+  padding: 18px 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 18px;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.primary-export-button {
+  background: #8ee6c8;
+  color: #06111f;
+  border-color: #8ee6c8;
+}
+
+.secondary-export-button,
+.copy-export-button {
+  background: rgba(15, 23, 42, 0.42);
+  color: #e5edf8;
+  border: 1px solid rgba(142, 230, 200, 0.45);
+}
+
+.secondary-export-button:hover,
+.copy-export-button:hover {
+  border-color: rgba(142, 230, 200, 0.8);
+  background: rgba(142, 230, 200, 0.08);
+}
+
+@media (max-width: 760px) {
+  .report-export-button {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+
+/* Final compact report export button sizing */
+.report-export-button,
+.primary-export-button,
+.secondary-export-button,
+.copy-export-button {
+  min-width: 168px !important;
+  min-height: 58px !important;
+  padding: 16px 22px !important;
+  border-radius: 18px !important;
+  font-size: 18px !important;
+  line-height: 1.05 !important;
+  white-space: nowrap;
+}
+
+.primary-export-button {
+  background: #8ee6c8 !important;
+  color: #06111f !important;
+  border-color: #8ee6c8 !important;
+}
+
+.secondary-export-button,
+.copy-export-button {
+  background: rgba(15, 23, 42, 0.42) !important;
+  color: #e5edf8 !important;
+  border: 1px solid rgba(142, 230, 200, 0.45) !important;
+}
+
+.copy-export-button {
+  background: #8ee6c8 !important;
+  color: #06111f !important;
+  border-color: #8ee6c8 !important;
+}
+
+@media (max-width: 760px) {
+  .report-export-button,
+  .primary-export-button,
+  .secondary-export-button,
+  .copy-export-button {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
+
+/* Extra compact report export controls */
+.report-export-button,
+.primary-export-button,
+.secondary-export-button,
+.copy-export-button {
+  min-width: 138px !important;
+  min-height: 46px !important;
+  padding: 11px 18px !important;
+  border-radius: 14px !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+}
+
+.primary-export-button,
+.copy-export-button {
+  background: #8ee6c8 !important;
+  color: #06111f !important;
+  border-color: #8ee6c8 !important;
+}
+
+.secondary-export-button {
+  background: rgba(15, 23, 42, 0.36) !important;
+  color: #e5edf8 !important;
+  border: 1px solid rgba(142, 230, 200, 0.42) !important;
+}
+
+
+/* Match Copy report button size to Download PDF */
+.copy-export-button {
+  min-width: 138px !important;
+  min-height: 46px !important;
+  padding: 11px 18px !important;
+  border-radius: 14px !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+}
+
+
+/* Force exact same size for all report export buttons */
+button.report-export-button,
+button.primary-export-button,
+button.secondary-export-button,
+button.copy-export-button {
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  min-width: 150px !important;
+  padding: 0 18px !important;
+  border-radius: 14px !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+}
+
+button.copy-export-button {
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
