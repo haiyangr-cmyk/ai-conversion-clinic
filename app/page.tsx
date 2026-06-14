@@ -125,12 +125,12 @@ export default function HomePage() {
 
           <form id="audit-form" className="panel" onSubmit={handleSubmit}>
             <div className="field">
-              <label>Page URL</label>
+              <label>Page URL <span className="required-mark">*</span></label>
               <input required type="url" placeholder="https://your-site.com" value={form.url} onChange={(e) => update("url", e.target.value)} />
             </div>
 
             <div className="field compact-suggest-field">
-              <label>Product / service</label>
+              <label>Product / service <span className="required-mark">*</span></label>
               <div className="compact-combo">
                 <input
                   required
@@ -155,9 +155,17 @@ export default function HomePage() {
                       <button
                         key={option}
                         type="button"
-                        onClick={(e) => {
+                        onPointerDown={(e) => {
+                          e.preventDefault();
                           update("product", option);
                           (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open");
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            update("product", option);
+                            (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open");
+                          }
                         }}
                       >
                         {option}
@@ -169,7 +177,7 @@ export default function HomePage() {
             </div>
 
             <div className="field compact-suggest-field">
-              <label>Target customer</label>
+              <label>Target customer <span className="required-mark">*</span></label>
               <div className="compact-combo">
                 <input
                   required
@@ -194,9 +202,17 @@ export default function HomePage() {
                       <button
                         key={option}
                         type="button"
-                        onClick={(e) => {
+                        onPointerDown={(e) => {
+                          e.preventDefault();
                           update("audience", option);
                           (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open");
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            update("audience", option);
+                            (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open");
+                          }
                         }}
                       >
                         {option}
@@ -208,7 +224,7 @@ export default function HomePage() {
             </div>
 
             <div className="field compact-suggest-field">
-              <label>Main conversion problem</label>
+              <label>Main conversion problem <span className="required-mark">*</span></label>
               <div className="compact-combo">
                 <input
                   required
@@ -233,9 +249,17 @@ export default function HomePage() {
                       <button
                         key={option}
                         type="button"
-                        onClick={(e) => {
+                        onPointerDown={(e) => {
+                          e.preventDefault();
                           update("problem", option);
                           (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open");
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            update("problem", option);
+                            (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open");
+                          }
                         }}
                       >
                         {option}
@@ -253,7 +277,8 @@ export default function HomePage() {
 
             <div className="field">
               <label>Email</label>
-              <input required type="email" placeholder="you@example.com" value={form.email} onChange={(e) => update("email", e.target.value)} />
+              <p className="field-help">Used only for payment support or report recovery.</p>
+              <input type="email" placeholder="you@example.com" value={form.email} onChange={(e) => update("email", e.target.value)} />
             </div>
 
             <div className="field">
