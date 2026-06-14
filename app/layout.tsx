@@ -15,7 +15,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://www.paypal.com" />
         <link rel="dns-prefetch" href="https://www.paypalobjects.com" />
       </head>
-      <body>{children}</body>
+      <body>{children}
+        <footer className="site-footer">
+          <div className="site-footer-inner">
+            <span>© AI Conversion Clinic</span>
+            <nav aria-label="Footer navigation">
+              <a href="/support">Support</a>
+              <a href="/refund">Refund Policy</a>
+              <a href="/privacy">Privacy Policy</a>
+            </nav>
+          </div>
+        </footer></body>
     </html>
   );
 }

@@ -1486,3 +1486,131 @@ button.copy-export-button {
   padding-bottom: 0 !important;
 }
 
+
+/* Required and optional field indicators */
+.required-mark {
+  color: #8ee6c8;
+  font-weight: 900;
+  margin-left: 2px;
+}
+
+.optional-mark {
+  color: #9fb0d0;
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.form-note {
+  margin: -4px 0 18px;
+  color: #9fb0d0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+
+/* Policy pages and global footer */
+.policy-page {
+  min-height: 100vh;
+  padding: 72px 20px;
+  background:
+    radial-gradient(circle at top left, rgba(142, 230, 200, 0.12), transparent 34%),
+    #07111f;
+  color: #e5edf8;
+}
+
+.policy-card {
+  width: min(860px, 100%);
+  margin: 0 auto;
+  padding: 42px;
+  border: 1px solid rgba(142, 230, 200, 0.22);
+  border-radius: 28px;
+  background: rgba(15, 23, 42, 0.72);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+}
+
+.policy-card h1 {
+  margin: 8px 0 18px;
+  font-size: clamp(36px, 5vw, 58px);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.policy-card h2 {
+  margin: 30px 0 10px;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+.policy-card p,
+.policy-card li {
+  color: #b8c4da;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.policy-card ul {
+  margin: 10px 0 0;
+  padding-left: 22px;
+}
+
+.policy-card a {
+  color: #8ee6c8;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.policy-card a:hover {
+  text-decoration: underline;
+}
+
+.site-footer {
+  padding: 28px 20px;
+  background: #07111f;
+  border-top: 1px solid rgba(142, 230, 200, 0.14);
+  color: #8d9bb8;
+}
+
+.site-footer-inner {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  font-size: 14px;
+}
+
+.site-footer nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.site-footer a {
+  color: #b8c4da;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.site-footer a:hover {
+  color: #8ee6c8;
+}
+
+@media (max-width: 720px) {
+  .policy-card {
+    padding: 28px 22px;
+    border-radius: 22px;
+  }
+
+  .site-footer-inner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .site-footer nav {
+    gap: 12px;
+  }
+}
+
