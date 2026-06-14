@@ -102,12 +102,12 @@ export default function HomePage() {
         <section className="grid">
           <div className="hero">
             <div className="eyebrow">AI-powered landing page audit</div>
-            <h1>Why are visitors not buying from your page?</h1>
-            <p>Submit your landing page, Shopify store, SaaS page, course sales page, service page, or sales page. Get an actionable conversion audit with headline rewrites, CTA ideas, buyer objections, FAQ recommendations, ad/social hooks, and a 7-day optimization plan.</p>
+            <h1>Find out why your landing page isn’t converting.</h1>
+            <p>AI Conversion Clinic diagnoses your landing page, identifies the biggest conversion blockers, and generates a practical fix plan you can ship this week.</p>
 
             <div className="hero-actions">
               <a className="mini-cta" href="#audit-form">Start audit</a>
-              <a className="mini-cta secondary" href="#sample-report">View sample report</a>
+              <a className="mini-cta secondary" href="#sample-report">See Example Diagnosis</a>
             </div>
 
             <div className="cards">
@@ -306,7 +306,7 @@ export default function HomePage() {
 
         <section id="sample-report" className="section">
           <div className="section-heading">
-            <span className="eyebrow">Sample report preview</span>
+            <span className="eyebrow">Example Diagnosis preview</span>
             <h2>What you get after checkout</h2>
             <p>
               The report is designed to give practical direction, not generic website feedback.
@@ -359,8 +359,8 @@ export default function HomePage() {
           <div className="compare-table" role="table" aria-label="Basic and Pro audit comparison">
             <div className="compare-row compare-head" role="row">
               <div role="columnheader">What you get</div>
-              <div role="columnheader">Basic Audit · $9</div>
-              <div role="columnheader">Pro Audit · $29</div>
+              <div role="columnheader">Conversion Solution · $9</div>
+              <div role="columnheader">Solution Pro · $29</div>
             </div>
 
             <div className="compare-row" role="row">

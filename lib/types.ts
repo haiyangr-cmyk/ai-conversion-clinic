@@ -6,7 +6,7 @@ export type AuditInput = {
   audience: string;
   problem: string;
   pageCopy?: string;
-  email: string;
+  email?: string;
   paypalEmail?: string;
   paypalTransactionId?: string;
   paypalOrderId?: string;

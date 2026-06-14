@@ -12,7 +12,7 @@ import {
 export const runtime = "nodejs";
 
 function validateInput(input: Partial<AuditInput>) {
-  const required: Array<keyof AuditInput> = ["url", "product", "audience", "problem", "email", "tier"];
+  const required: Array<keyof AuditInput> = ["url", "product", "audience", "problem", "tier"];
   for (const key of required) {
     if (!input[key]) return `Missing field: ${key}`;
   }

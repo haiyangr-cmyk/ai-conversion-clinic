@@ -233,7 +233,7 @@ function V2Report({ report }: { report: AuditReportV2 }) {
   const overallScore = safeScore(report.executiveSummary.overallScore);
   const overallLevel = scoreLevel(overallScore);
   const isPro = report.meta.tier === "pro";
-  const tierLabel = isPro ? "Pro Audit" : "Basic Audit";
+  const tierLabel = isPro ? "Solution Pro" : "Conversion Solution";
   const visibleRewrites = isPro ? report.rewrites.slice(0, 5) : report.rewrites.slice(0, 3);
   const visibleQuickWins = report.priorityFixes.quickWins.slice(0, 3);
   const visibleSevenDayPlan = report.sevenDayPlan.slice(0, 7);
@@ -545,8 +545,8 @@ export default function ReportPage() {
 
           <div className="report-header">
             <div>
-              <span className="eyebrow">Generated report</span>
-              <h1>Conversion Audit Report</h1>
+              <span className="eyebrow">Generated solution</span>
+              <h1>Conversion Solution</h1>
             </div>
                         <button
               className="report-export-button primary-export-button"
@@ -565,7 +565,7 @@ export default function ReportPage() {
             >
               Download DOCX
             </button>
-<button className="cta copy-button" onClick={copyReport}>{copied ? "Copied" : "Copy report"}</button>
+<button className="cta copy-button" onClick={copyReport}>{copied ? "Copied" : "Copy solution"}</button>
           </div>
 
           {reportV2 ? (

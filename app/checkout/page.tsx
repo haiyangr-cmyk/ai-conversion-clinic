@@ -213,13 +213,6 @@ export default function CheckoutPage() {
         <section className="grid">
           <div className="panel">
             <h1 style={{ marginTop: 0 }}>Confirm your order</h1>
-
-        <div className="payment-safety-note">
-          <strong>Need help?</strong>
-          <span>
-            If your payment succeeds but your report does not generate, <a href="/support">contact support</a> with your PayPal order ID.
-          </span>
-        </div>
             <p className="muted">
               You selected <strong>{tiers[input.tier].name}</strong> for <strong>{tiers[input.tier].price}</strong>.
             </p>
@@ -253,10 +246,10 @@ export default function CheckoutPage() {
           </div>
 
           <form className="panel" onSubmit={generateReport}>
-            <h2 style={{ marginTop: 0 }}>Generate your report</h2>
+            <h2 style={{ marginTop: 0 }}>Generate your solution</h2>
 
             <div className="notice">
-              Once your PayPal payment is confirmed, click the button below to generate your audit automatically.
+              Once your PayPal payment is confirmed, click the button below to generate your conversion solution automatically.
             </div>
 
             {error && <div className="error" style={{ marginTop: 18 }}>{error}</div>}
@@ -281,6 +274,12 @@ export default function CheckoutPage() {
 <button className="cta secondary" type="button" style={{ marginTop: 12 }} onClick={() => router.push("/")}>
               Edit details
             </button>
+        <div className="payment-safety-note checkout-action-help">
+          <strong>Need help?</strong>
+          <span>
+            If your payment succeeds but your report does not generate, <a href="/support">contact support</a> with your PayPal order ID.
+          </span>
+        </div>
           </form>
         </section>
       </div>
