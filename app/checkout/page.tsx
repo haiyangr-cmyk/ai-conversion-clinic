@@ -12,6 +12,9 @@ declare global {
 }
 
 export default function CheckoutPage() {
+  const isLocalDevCheckout =
+    typeof window !== "undefined" &&
+    window.location.hostname === "localhost";
   const router = useRouter();
   const paypalRef = useRef<HTMLDivElement | null>(null);
 
@@ -153,7 +156,7 @@ export default function CheckoutPage() {
     event.preventDefault();
     if (!input) return;
 
-    if (!paymentComplete || !paypalOrderId || !paymentToken) {
+    if (!isLocalDevCheckout && (!paymentComplete || !paypalOrderId || !paymentToken)) {
       setError("Please complete PayPal payment before generating your report.");
       return;
     }
@@ -255,7 +258,20 @@ export default function CheckoutPage() {
               {reportLoading ? "Generating report..." : paymentComplete ? "Generate my report" : "Complete PayPal payment first"}
             </button>
 
-            <button className="cta secondary" type="button" style={{ marginTop: 12 }} onClick={() => router.push("/")}>
+                      {isLocalDevCheckout && (
+            <button
+              className="secondary-button dev-skip-button"
+              type="button"
+              onClick={() => {
+                const form = document.querySelector("form");
+                form?.requestSubmit();
+              }}
+            >
+              Generate test report without PayPal
+            </button>
+          )}
+
+<button className="cta secondary" type="button" style={{ marginTop: 12 }} onClick={() => router.push("/")}>
               Edit details
             </button>
           </form>

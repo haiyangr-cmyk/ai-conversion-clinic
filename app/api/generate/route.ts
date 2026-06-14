@@ -357,6 +357,396 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
   text = text.replace(/Start free trial — state whether a credit card is required/gi, "Start free trial — clarify whether a credit card is required");
 
 
+
+  // Remove risky invented commercial promises and fake proof.
+  const hasRiskReversal =
+    has("guarantee") ||
+    has("money back") ||
+    has("refund") ||
+    has("risk reversal") ||
+    has("satisfaction guarantee");
+
+  if (!hasRiskReversal) {
+    text = text.replace(/\b100%\s+satisfaction\s+guarantee\b/gi, "add a verified risk-reversal statement if you truly offer one");
+    text = text.replace(/\bsatisfaction\s+guarantee\b/gi, "add a verified risk-reversal statement if you truly offer one");
+    text = text.replace(/\bmoney[- ]back\s+guarantee\b/gi, "add a verified refund policy if available");
+    text = text.replace(/\byour money back\b/gi, "your verified refund policy if available");
+    text = text.replace(/\bno[- ]risk\s+guarantee\b/gi, "verified risk-reversal statement if available");
+  }
+
+  const hasCallTerms =
+    has("15-minute") ||
+    has("15 minute") ||
+    has("discovery call") ||
+    has("free call") ||
+    has("free consultation") ||
+    has("demo call");
+
+  if (!hasCallTerms) {
+    text = text.replace(/\bfree\s+\d+[- ]?(minute|min)\s+(discovery\s+)?call\b/gi, "clarify your demo or consultation process honestly");
+    text = text.replace(/\b\d+[- ]?(minute|min)\s+(demo|call|consultation|discovery call)\b/gi, "your verified demo or consultation length");
+    text = text.replace(/\bfree\s+(discovery\s+)?call\b/gi, "your verified demo or consultation process");
+    text = text.replace(/\bfree\s+consultation\b/gi, "your verified consultation process");
+  }
+
+  text = text.replace(/\bbook(ed)?\s+(a\s+)?verified percentage\s+more\s+(demos|calls|sales|leads)\b/gi, "add a real customer result if available");
+  text = text.replace(/\b\d+x\s+more\s+(demos|calls|sales|leads|revenue)\b/gi, "a verified performance result");
+  text = text.replace(/\bknown\s+SaaS\s+brand\b/gi, "a real customer if available");
+  text = text.replace(/\bfrom their company\b/gi, "from a real customer");
+  text = text.replace(/\bTrusted by\.\.\./gi, "Add verified customer proof if available");
+
+
+
+  // Stronger production safety cleanup: remove invented guarantees, fake lifts, and unsupported offer terms.
+  const hasVerifiedGuarantee =
+    has("guarantee") ||
+    has("guaranteed") ||
+    has("money back") ||
+    has("refund") ||
+    has("risk reversal") ||
+    has("satisfaction guarantee");
+
+  if (!hasVerifiedGuarantee) {
+    text = text.replace(/\b\d+\s*days?\s*[-–—]\s*guaranteed?\b/gi, "after you add a verified proof-backed claim");
+    text = text.replace(/\bguaranteed?\b/gi, "only if you can verify this claim");
+    text = text.replace(/\b100%\s+satisfaction\s+guarantee\b/gi, "a verified risk-reversal statement if you truly offer one");
+    text = text.replace(/\bsatisfaction\s+guarantee\b/gi, "a verified risk-reversal statement if you truly offer one");
+    text = text.replace(/\bmoney[- ]back\s+guarantee\b/gi, "a verified refund policy if available");
+    text = text.replace(/\byour money back\b/gi, "your verified refund policy if available");
+    text = text.replace(/\bno[- ]risk\s+guarantee\b/gi, "verified risk-reversal copy if available");
+  }
+
+  const hasVerifiedFreeOffer =
+    has("free call") ||
+    has("free consultation") ||
+    has("free strategy call") ||
+    has("free discovery call") ||
+    has("free audit") ||
+    has("15-minute") ||
+    has("15 minute") ||
+    has("strategy call") ||
+    has("discovery call");
+
+  if (!hasVerifiedFreeOffer) {
+    text = text.replace(/\bfree\s+\d+[- ]?(minute|min)\s+(strategy|discovery|demo|consultation)?\s*call\b/gi, "your verified call or demo offer");
+    text = text.replace(/\b\d+[- ]?(minute|min)\s+(strategy|discovery|demo|consultation)?\s*call\b/gi, "your verified call or demo length");
+    text = text.replace(/\bfree\s+strategy\s+call\b/gi, "your verified consultation offer");
+    text = text.replace(/\bfree\s+discovery\s+call\b/gi, "your verified consultation offer");
+    text = text.replace(/\bfree\s+consultation\b/gi, "your verified consultation offer");
+    text = text.replace(/\bfree\s+audit\b/gi, "your verified audit offer");
+    text = text.replace(/\bclaim\s+your\s+free\b/gi, "request your");
+    text = text.replace(/\bget\s+my\s+free\b/gi, "request my");
+  }
+
+  const hasVerifiedOutcomeProof =
+    has("more demos") ||
+    has("more leads") ||
+    has("conversion lift") ||
+    has("case study") ||
+    has("results");
+
+  if (!hasVerifiedOutcomeProof) {
+    text = text.replace(/\bbook(ed)?\s+\d+%?\s*more\s+(demos|calls|sales|leads)\b/gi, "add a real customer result if available");
+    text = text.replace(/\b\d+%?\s*more\s+(demos|calls|sales|leads|revenue)\b/gi, "a verified customer result");
+    text = text.replace(/\b\d+x\s+more\s+(demos|calls|sales|leads|revenue)\b/gi, "a verified customer result");
+    text = text.replace(/\b3x\s+more\b/gi, "a verified improvement");
+    text = text.replace(/\b40%\s+more\b/gi, "a verified improvement");
+  }
+
+  const hasNoCommitment = has("no commitment") || has("no obligation") || has("no sales pitch");
+
+  if (!hasNoCommitment) {
+    text = text.replace(/\bno\s+commitment\b/gi, "clarify commitment expectations honestly");
+    text = text.replace(/\bno\s+obligation\b/gi, "clarify the next step honestly");
+    text = text.replace(/\bno\s+sales\s+pitch\b/gi, "clarify what happens after the CTA");
+  }
+
+  text = text.replace(/\btrusted by many companies\b/gi, "add verified customer proof if available");
+  text = text.replace(/\btrusted by companies\b/gi, "add verified customer proof if available");
+  text = text.replace(/\bknown SaaS brand\b/gi, "a real customer if available");
+  text = text.replace(/\bclient logos\b/gi, "verified customer logos if available");
+  text = text.replace(/\bcustomer logos\b/gi, "verified customer logos if available");
+  text = text.replace(/\blogo row\b/gi, "verified proof row if available");
+
+  // Clean awkward sanitizer leftovers.
+  text = text.replace(/\bonly if you can verify this claim or your verified refund policy if available\b/gi, "only if backed by a verified refund policy");
+  text = text.replace(/\bif it fits\b/gi, "if it is accurate");
+  text = text.replace(/\bstate whether a credit card is required, free\b/gi, "state whether a credit card is required");
+
+
+  // R4 final polish: remove aggressive sales claims and awkward sanitizer leftovers.
+  text = text.replace(/\bverified\s+verified\b/gi, "verified");
+  text = text.replace(/\byour verified audit offer\b/gi, "your actual offer");
+  text = text.replace(/\byour verified call or demo offer\b/gi, "your actual call or demo process");
+  text = text.replace(/\byour verified demo or consultation length\b/gi, "your actual call or demo length, if applicable");
+  text = text.replace(/\byour verified consultation offer\b/gi, "your actual consultation offer, if applicable");
+  text = text.replace(/\byour verified demo or consultation process\b/gi, "your actual demo or consultation process");
+  text = text.replace(/\bverified customer logos if available if available\b/gi, "verified customer logos if available");
+  text = text.replace(/\bverified proof row if available if available\b/gi, "verified proof row if available");
+
+  // Remove unsupported time-bound performance promises.
+  text = text.replace(/\bdouble\s+([^.,;]+?)\s+in\s+\d+\s+days?\b/gi, "improve $1 with verified proof and clearer page messaging");
+  text = text.replace(/\bdouble\s+([^.,;]+?)\s+within\s+\d+\s+days?\b/gi, "improve $1 with verified proof and clearer page messaging");
+  text = text.replace(/\bbook\s+more\s+demos\s+in\s+\d+\s+days?\b/gi, "increase demo intent with clearer proof and CTA copy");
+  text = text.replace(/\bin\s+\d+\s+days?\b/gi, "after implementation and testing");
+
+  // Remove unsupported scarcity and urgency claims.
+  text = text.replace(/\bonly\s+\d+\s+(slots|spots|seats|places)\s+left\b/gi, "add real capacity limits only if true");
+  text = text.replace(/\blimited\s+(slots|spots|seats|availability)\b/gi, "real capacity limits, if true");
+  text = text.replace(/\bspots?\s+left\b/gi, "capacity limits if true");
+  text = text.replace(/\bclaim your spot\b/gi, "request the next step");
+  text = text.replace(/\bclaim your free\b/gi, "request your");
+
+  // Remove unsupported free-call language.
+  text = text.replace(/\bfree\s+\d+[- ]?min\s+(strategy|discovery|demo|consultation)?\s*call\b/gi, "your actual call or demo process");
+  text = text.replace(/\bfree\s+\d+[- ]?minute\s+(strategy|discovery|demo|consultation)?\s*call\b/gi, "your actual call or demo process");
+  text = text.replace(/\bfree\s+strategy\s+call\b/gi, "your actual consultation process");
+  text = text.replace(/\bfree\s+discovery\s+call\b/gi, "your actual consultation process");
+  text = text.replace(/\bfree\s+conversion\s+audit\b/gi, "your audit offer");
+  text = text.replace(/\bfree\s+audit\b/gi, "your audit offer");
+
+  // Make remaining conditional language sound like recommendations, not fake copy.
+  text = text.replace(/\bif true,\s*/gi, "if accurate, ");
+  text = text.replace(/\bif it is accurate\b/gi, "if accurate");
+  text = text.replace(/\bstate whether a credit card is required\./gi, "clarify whether a credit card is required.");
+  text = text.replace(/\bstate whether a credit card is required\b/gi, "clarify whether a credit card is required");
+  text = text.replace(/\bclarify commitment expectations honestly\b/gi, "clarify what commitment, if any, is required");
+  text = text.replace(/\bclarify the next step honestly\b/gi, "clarify what happens after the CTA");
+
+  // Replace hype verbs with more professional language.
+  text = text.replace(/\bcrush\b/gi, "improve");
+  text = text.replace(/\bskyrocket\b/gi, "improve");
+  text = text.replace(/\bexplode\b/gi, "increase");
+
+
+  // R5 cleanup: remove remaining template placeholders and unsupported marketing promises.
+  text = text.replace(/\bverified\s*%\b/gi, "verified result");
+  text = text.replace(/\bverified metric\b/gi, "measurable verified outcome");
+  text = text.replace(/\bverified percentage\b/gi, "verified result");
+  text = text.replace(/\bby verified result\b/gi, "with a verified result");
+  text = text.replace(/\bby a verified result\b/gi, "with a verified result");
+
+  text = text.replace(/\[[^\]]+\]/g, (placeholder) => {
+    const cleaned = placeholder.replace(/[\[\]]/g, "").trim().toLowerCase();
+
+    if (cleaned.includes("%") || cleaned.includes("metric") || cleaned.includes("result") || cleaned.includes("x")) {
+      return "a verified result";
+    }
+
+    if (cleaned.includes("client") || cleaned.includes("customer") || cleaned.includes("company") || cleaned.includes("name")) {
+      return "a real customer if available";
+    }
+
+    if (cleaned.includes("quote") || cleaned.includes("testimonial")) {
+      return "a real customer quote if available";
+    }
+
+    return "verified information";
+  });
+
+  // Remove unsupported "free" offer language unless the customer explicitly provided a free offer.
+  const hasExplicitFreeOffer =
+    has("free audit") ||
+    has("free conversion audit") ||
+    has("free trial") ||
+    has("free consultation") ||
+    has("free call") ||
+    has("free demo") ||
+    has("free assessment");
+
+  if (!hasExplicitFreeOffer) {
+    text = text.replace(/\bfree\s+conversion\s+audit\b/gi, "conversion audit");
+    text = text.replace(/\bfree\s+audit\b/gi, "audit");
+    text = text.replace(/\bfree\s+score\b/gi, "score");
+    text = text.replace(/\bfree\s+assessment\b/gi, "assessment");
+    text = text.replace(/\bfree\s+trial\b/gi, "trial details, if accurate");
+    text = text.replace(/\bfree\s+demo\b/gi, "demo process, if accurate");
+    text = text.replace(/\bclaim\s+your\s+free\b/gi, "request your");
+    text = text.replace(/\bget\s+your\s+free\b/gi, "request your");
+    text = text.replace(/\bget\s+my\s+free\b/gi, "request my");
+  }
+
+  // Replace unsupported aggressive growth promises with safer consultant language.
+  text = text.replace(/\bdouble\s+your\s+([^.,;]+)/gi, "improve your $1 with clearer messaging and proof");
+  text = text.replace(/\bdouble\s+([^.,;]+)/gi, "improve $1 with clearer messaging and proof");
+  text = text.replace(/\bwithout\s+more\s+ad\s+spend\b/gi, "before increasing ad spend");
+  text = text.replace(/\bwithout\s+more\s+ads\b/gi, "before increasing ad spend");
+  text = text.replace(/\bincrease\s+your\s+sales\s+demo\s+conversion\s+by\s+a\s+verified\s+result\b/gi, "increase sales demo intent with clearer positioning and proof");
+  text = text.replace(/\bincrease\s+your\s+sales\s+demo\s+conversion\s+with\s+a\s+verified\s+result\b/gi, "increase sales demo intent with clearer positioning and proof");
+  text = text.replace(/\bmore\s+qualified\s+demos\s+per\s+week\b/gi, "more qualified demo intent");
+
+  // Remove unsupported ICP and company-size claims.
+  text = text.replace(/\bwe work with companies of all sizes\b/gi, "clarify which company sizes are the best fit");
+  text = text.replace(/\bcompanies of all sizes\b/gi, "your best-fit customer segment");
+  text = text.replace(/\bwith\s+\d+[-–]\d+\s+reps\b/gi, "in your stated ICP");
+  text = text.replace(/\b5[-–]50\s+reps\b/gi, "your stated ICP");
+  text = text.replace(/\bsimilar companies\b/gi, "real comparable customers if available");
+  text = text.replace(/\bspecific metrics from real customers\b/gi, "verified customer metrics if available");
+  text = text.replace(/\bspecific metrics from real comparable customers if available\b/gi, "verified customer metrics if available");
+
+  // Make remaining proof recommendations cleaner.
+  text = text.replace(/\bUsed by\s+a real customer if available\b/gi, "Add verified customer proof if available");
+  text = text.replace(/\bfrom\s+a real customer if available\b/gi, "from a real customer if available");
+  text = text.replace(/\bAdd\s+a real customer if available\b/gi, "Add a real customer example if available");
+  text = text.replace(/\byour audit offer\b/gi, "your offer");
+  text = text.replace(/\byour actual offer offer\b/gi, "your actual offer");
+
+
+  // R6 natural-language polish: make safe replacements sound like consultant advice.
+  text = text.replace(/\ba verified result\b/gi, "a measurable result you can support with proof");
+  text = text.replace(/\bverified result\b/gi, "measurable proof");
+  text = text.replace(/\bverified outcome\b/gi, "measurable proof");
+  text = text.replace(/\bmeasurable verified outcome\b/gi, "measurable proof");
+
+  text = text.replace(/\bGet your actual offer\b/gi, "Take the next step");
+  text = text.replace(/\bBook your actual offer\b/gi, "Book the next step");
+  text = text.replace(/\bBook your offer\b/gi, "Book the next step");
+  text = text.replace(/\bGet your offer\b/gi, "Take the next step");
+  text = text.replace(/\byour actual offer\b/gi, "the real next step");
+  text = text.replace(/\byour offer\b/gi, "the real next step");
+
+  text = text.replace(/\bBook Your Free Conversion Assessment\b/gi, "Request a Conversion Assessment");
+  text = text.replace(/\bGet Your Free Conversion Assessment\b/gi, "Request a Conversion Assessment");
+  text = text.replace(/\bFree Conversion Assessment\b/gi, "Conversion Assessment");
+  text = text.replace(/\bfree conversion assessment\b/gi, "conversion assessment");
+
+  text = text.replace(/\btypically with at least \d+\s+reps\b/gi, "after you define the customer segment you serve best");
+  text = text.replace(/\bat least \d+\s+reps\b/gi, "your best-fit customer segment");
+  text = text.replace(/\bin your stated ICP\b/gi, "for your stated ICP");
+
+  text = text.replace(/\bUse a measurable outcome only if the business can verify it\b/gi, "Use measurable outcome language only when you can support it with proof");
+  text = text.replace(/\bonly if you can truthfully verify this claim\b/gi, "only when the claim is accurate and supported by proof");
+  text = text.replace(/\bonly if you truly offer one\b/gi, "only if the business truly offers it");
+  text = text.replace(/\bif accurate, if accurate\b/gi, "if accurate");
+
+  text = text.replace(/\bIncrease your sales demo conversion rates by measurable proof\b/gi, "Improve sales demo intent with clearer positioning and proof");
+  text = text.replace(/\bIncrease your Sales Demo Conversion by measurable proof\b/gi, "Improve sales demo intent with clearer positioning and proof");
+  text = text.replace(/\bincrease demo conversion rates with measurable proof\b/gi, "improve demo intent with clearer positioning and proof");
+
+  text = text.replace(/\bStart Your Free Trial\b/gi, "Start Trial");
+  text = text.replace(/\bStart Free Trial\b/gi, "Start Trial");
+
+
+  // R7 delivery safety: remove remaining unsupported proof, timing, refund, and company-scale claims.
+  text = text.replace(/\baverage client sees?\s+[^.,;]+/gi, "add real customer results if available");
+  text = text.replace(/\bclients?\s+see(s)?\s+[^.,;]+/gi, "real customers may show measurable results if you have proof");
+  text = text.replace(/\bwithin\s+\d+[-–]\d+\s+weeks?\b/gi, "after implementation and testing");
+  text = text.replace(/\bwithin\s+\d+\s+weeks?\b/gi, "after implementation and testing");
+  text = text.replace(/\bwithin\s+\d+\s+days?\b/gi, "after implementation and testing");
+
+  text = text.replace(/\b\d+%[\+]?[\s-]*(lift|increase|improvement|conversion lift)\b/gi, "measurable proof if available");
+  text = text.replace(/\b\d+%[\+]?/g, "measurable proof");
+  text = text.replace(/\b\d+x\s+(more|increase|lift|growth|results?)\b/gi, "measurable proof if available");
+
+  text = text.replace(/\bif you don'?t see improvement after\s+[^.,;]+/gi, "only include a refund or guarantee if the business truly offers it");
+  text = text.replace(/\bwe'?ll refund\s+[^.,;]+/gi, "state the refund policy only if it truly exists");
+  text = text.replace(/\brefund your investment\b/gi, "state the refund policy only if it truly exists");
+  text = text.replace(/\bcomplete rebuild\b/gi, "larger implementation project");
+
+  text = text.replace(/\bwe analyzed\s+\d+\+?\s+landing pages\b/gi, "add real experience proof if available");
+  text = text.replace(/\banalyzed\s+\d+\+?\s+landing pages\b/gi, "real experience proof if available");
+  text = text.replace(/\bwe have helped\s+[^.,;]+/gi, "add verified customer proof if available");
+  text = text.replace(/\bwe specialize in\s+[^.,;]+/gi, "clarify your strongest customer segment");
+  text = text.replace(/\bwe focus on\s+[^.,;]+/gi, "clarify your strongest customer segment");
+
+  text = text.replace(/\bfor a\s+\d+[- ]?minute\s+audit\s+call\b/gi, "for the actual next step");
+  text = text.replace(/\bfor a\s+\d+[- ]?minute\s+(call|demo|consultation)\b/gi, "for the actual next step");
+  text = text.replace(/\b30[- ]?minute\s+audit\s+call\b/gi, "the actual next step");
+  text = text.replace(/\b30[- ]?minute\s+(call|demo|consultation)\b/gi, "the actual next step");
+
+  text = text.replace(/\bBook Your Conversion Strategy Call\b/gi, "Request a Conversion Review");
+  text = text.replace(/\bBook a Conversion Strategy Call\b/gi, "Request a Conversion Review");
+  text = text.replace(/\bClaim Your Free\b/gi, "Request Your");
+  text = text.replace(/\bGet Your Free\b/gi, "Request Your");
+
+  text = text.replace(/\bif true\b/gi, "if accurate");
+  text = text.replace(/\bIf true\b/g, "If accurate");
+  text = text.replace(/\bsaved\b/gi, "saved");
+  text = text.replace(/\bverified saved\b/gi, "verified time saved if available");
+
+  // Keep the final report note deterministic.
+  text = text.replace(/\bActual page content was not reviewed\.?/gi, "");
+  text = text.replace(/\bPage copy was not reviewed\.?/gi, "");
+  text = text.replace(/\bRecommendations are inferred from limited information\.?/gi, "");
+  text = text.replace(/\bThis audit is based on limited information[^.]*\./gi, "");
+
+
+  // R8 final delivery polish.
+  text = text.replace(/\brequired required\b/gi, "required");
+  text = text.replace(/\bif available if available\b/gi, "if available");
+  text = text.replace(/\bif accurate if accurate\b/gi, "if accurate");
+  text = text.replace(/\bif verified if verified\b/gi, "if verified");
+  text = text.replace(/\bproof proof\b/gi, "proof");
+  text = text.replace(/\bmeasurable proof proof\b/gi, "measurable proof");
+
+  text = text.replace(/\bmore demos without increasing ad spend\b/gi, "more demo intent before increasing ad spend");
+  text = text.replace(/\bwithout increasing ad spend\b/gi, "before increasing ad spend");
+  text = text.replace(/\bwithout more ad spend\b/gi, "before increasing ad spend");
+  text = text.replace(/\bturn more visitors into qualified leads\b/gi, "increase qualified lead intent");
+  text = text.replace(/\bstop losing leads\b/gi, "reduce avoidable lead loss");
+  text = text.replace(/\bstop optimizing and start converting\b/gi, "prioritize conversion-focused changes");
+  text = text.replace(/\bfixed in 30 days\b/gi, "improved through implementation and testing");
+
+  text = text.replace(/\boffer a low-commitment optin like a real next step\b/gi, "use a CTA that matches the real next step");
+  text = text.replace(/\blike a real next step\b/gi, "that matches the real next step");
+  text = text.replace(/\breal next step\b/gi, "actual next step");
+
+  text = text.replace(/\bRequest Your\b/g, "Request");
+  text = text.replace(/\bBook Your\b/g, "Book");
+  text = text.replace(/\bGet Your\b/g, "Get");
+  text = text.replace(/\bClaim Your\b/g, "Request");
+
+  text = text.replace(/\bCTA button text\b/gi, "CTA copy");
+  text = text.replace(/\bsubheadline\b/gi, "subheadline");
+
+
+  // R9 final POV cleanup: remove first-person sales claims and leftover placeholder language.
+  text = text.replace(/\bacross verified information\b/gi, "with verified customer proof, if available");
+  text = text.replace(/\bverified information\b/gi, "verified proof if available");
+  text = text.replace(/\bverified information\./gi, "verified proof if available.");
+
+  text = text.replace(/\bwe have worked with similar B2B teams\s+with verified customer proof, if available\b/gi, "Add relevant customer proof from similar B2B teams if available");
+  text = text.replace(/\bwe have worked with similar B2B teams\b/gi, "Add relevant customer proof from similar B2B teams if available");
+  text = text.replace(/\bwe have worked with similar companies\b/gi, "Add relevant customer proof from similar companies if available");
+  text = text.replace(/\bwe have helped similar companies\b/gi, "Add relevant customer proof from similar customers if available");
+
+  text = text.replace(/\bhere'?s a case study from a similar company\s+verified proof if available\b/gi, "Add a real case study from a similar customer if available");
+  text = text.replace(/\bhere'?s a case study from a similar company\b/gi, "Add a real case study from a similar customer if available");
+  text = text.replace(/\bwe can also tailor this to your vertical\b/gi, "Explain how the service adapts to the buyer's industry or use case");
+  text = text.replace(/\bwe tailor this to your vertical\b/gi, "Explain how the service adapts to the buyer's industry or use case");
+
+  text = text.replace(/\btrusted by hundreds of companies\b/gi, "supported by verified customer proof if available");
+  text = text.replace(/\btrusted by hundreds\b/gi, "supported by verified customer proof if available");
+  text = text.replace(/\bhundreds of companies\b/gi, "verified customer proof if available");
+
+  text = text.replace(/\bimprove lead-to-deal conversion by a measurable result you can support with proof\b/gi, "improve lead-to-deal conversion with measurable proof if available");
+  text = text.replace(/\bby a measurable result you can support with proof\b/gi, "with measurable proof if available");
+  text = text.replace(/\bby measurable proof\b/gi, "with measurable proof if available");
+
+  text = text.replace(/\bOur process\b/gi, "The page should explain the process");
+  text = text.replace(/\bour process\b/gi, "the process");
+  text = text.replace(/\bWe analyze\b/gi, "The page should show how the offer analyzes");
+  text = text.replace(/\bwe analyze\b/gi, "the page should show how the offer analyzes");
+  text = text.replace(/\bWe help\b/gi, "The offer helps");
+  text = text.replace(/\bwe help\b/gi, "the offer helps");
+  text = text.replace(/\bWe work\b/gi, "The page should clarify who it works");
+  text = text.replace(/\bwe work\b/gi, "the page should clarify who it works");
+
+
+  // R10 final neutral consultant voice cleanup.
+  text = text.replace(/\bWe have experience with SaaS, fintech, and professional services\./gi, "Add relevant industry-specific proof if available.");
+  text = text.replace(/\bwe have experience with SaaS, fintech, and professional services\./gi, "add relevant industry-specific proof if available.");
+  text = text.replace(/\bwe'?ll show relevant case studies\b/gi, "show relevant case studies if available");
+  text = text.replace(/\bwe will show relevant case studies\b/gi, "show relevant case studies if available");
+  text = text.replace(/\bContact our team\b/gi, "Use the appropriate contact path");
+  text = text.replace(/\bcontact our team\b/gi, "use the appropriate contact path");
+  text = text.replace(/\bhands-on implementation support\b/gi, "implementation support if offered");
+  text = text.replace(/\bfull conversion audit, prioritized fix list, and hands-on implementation support\b/gi, "conversion audit, prioritized fix list, and implementation support if offered");
+  text = text.replace(/\bThe scope is customized to your needs\b/gi, "Clarify the scope before checkout or booking.");
+  text = text.replace(/\bthe scope is customized to your needs\b/gi, "clarify the scope before checkout or booking.");
+  text = text.replace(/\btracking changes\b/gi, "tracking setup");
+  text = text.replace(/\byour actual next step\b/gi, "the actual next step");
+
   // Clean spacing and awkward punctuation after replacements.
   text = text.replace(/\s{2,}/g, " ");
   text = text.replace(/\s+\./g, ".");
@@ -393,34 +783,208 @@ function sanitizeAuditReportV2(report: AuditReportV2, input: AuditInput): AuditR
 }
 
 
+
+function standardEvidenceNote(tier: AuditInput["tier"]) {
+  if (tier === "pro") {
+    return "Based on the URL, offer details, audience, problem, and page context provided by the customer.";
+  }
+
+  return "Based on the URL, offer details, audience, and problem provided by the customer.";
+}
+
+function standardImportantNote(tier: AuditInput["tier"]) {
+  if (tier === "pro") {
+    return "This Pro audit is a strategy review based on the information provided. It does not guarantee specific results. Validate recommendations with page analytics, customer feedback, and A/B testing.";
+  }
+
+  return "This Basic audit is a quick diagnostic based on the information provided. Recommendations should be validated with page analytics, customer feedback, and A/B testing.";
+}
+
+function shapeAuditReportForTier(report: AuditReportV2, tier: AuditInput["tier"]): AuditReportV2 {
+  if (tier === "pro") {
+    return {
+      ...report,
+      meta: {
+        ...report.meta,
+        tier: "pro",
+        evidenceNote: standardEvidenceNote("pro")
+      },
+      topLeaks: report.topLeaks.slice(0, 3),
+      rewrites: report.rewrites.slice(0, 5),
+      categoryAudit: {
+        ...report.categoryAudit,
+        checks: report.categoryAudit.checks.slice(0, 5)
+      },
+      priorityFixes: {
+        quickWins: report.priorityFixes.quickWins.slice(0, 3),
+        biggerFixes: report.priorityFixes.biggerFixes.slice(0, 3)
+      },
+      sevenDayPlan: report.sevenDayPlan.slice(0, 7),
+      buyerObjections: report.buyerObjections.slice(0, 3),
+      faqRecommendations: report.faqRecommendations.slice(0, 3),
+      adSocialHooks: report.adSocialHooks.slice(0, 4),
+      disclaimer: standardImportantNote("pro")
+    };
+  }
+
+  return {
+    ...report,
+    meta: {
+      ...report.meta,
+      tier: "basic",
+      evidenceNote: standardEvidenceNote("basic")
+    },
+    topLeaks: report.topLeaks.slice(0, 3),
+    rewrites: report.rewrites.slice(0, 3),
+    categoryAudit: {
+      ...report.categoryAudit,
+      checks: []
+    },
+    priorityFixes: {
+      quickWins: report.priorityFixes.quickWins.slice(0, 3),
+      biggerFixes: []
+    },
+    sevenDayPlan: report.sevenDayPlan.slice(0, 7),
+    buyerObjections: [],
+    faqRecommendations: [],
+    adSocialHooks: [],
+    disclaimer: standardImportantNote("basic")
+  };
+}
+
+
+
+
+function deliveryEvidenceNote(tier: AuditInput["tier"]) {
+  if (tier === "pro") {
+    return "Based on the URL, offer details, audience, conversion problem, and page context provided.";
+  }
+
+  return "Based on the URL, offer details, audience, and conversion problem provided.";
+}
+
+function deliveryImportantNote(tier: AuditInput["tier"]) {
+  if (tier === "pro") {
+    return "This Pro audit is a strategy review based on the information provided. It does not guarantee specific results. Validate recommendations with page analytics, customer feedback, and A/B testing.";
+  }
+
+  return "This Basic audit is a quick diagnostic based on the information provided. Recommendations should be validated with page analytics, customer feedback, and A/B testing.";
+}
+
+function finalizeAuditReportForDelivery(report: AuditReportV2, input: AuditInput): AuditReportV2 {
+  const tiered = shapeAuditReportForTier(report, input.tier);
+
+  return {
+    ...tiered,
+    meta: {
+      ...tiered.meta,
+      tier: input.tier,
+      evidenceNote: deliveryEvidenceNote(input.tier)
+    },
+    disclaimer: deliveryImportantNote(input.tier)
+  };
+}
+
 function formatReportV2AsText(report: AuditReportV2) {
+  const isPro = report.meta.tier === "pro";
   const lines: string[] = [];
 
-  lines.push("# Conversion Audit Report");
-  lines.push("");
+  const pageType = report.meta.pageType.replace(/_/g, " ");
+  const reportTitle = isPro ? "Pro Conversion Audit Report" : "Basic Conversion Audit Report";
+
+  const addBlank = () => lines.push("");
+  const addSection = (title: string) => {
+    addBlank();
+    lines.push(`## ${title}`);
+  };
+
+  lines.push(`# ${reportTitle}`);
+  addBlank();
   lines.push(`Overall Score: ${report.executiveSummary.overallScore}/100`);
-  lines.push(`Page Type: ${report.meta.pageType}`);
-  lines.push("");
-  lines.push("## Executive Summary");
+  lines.push(`Page Type: ${pageType}`);
+  lines.push(`Evidence Quality: ${report.meta.evidenceQuality}`);
+  addBlank();
+
+  addSection("Executive Summary");
   lines.push(report.executiveSummary.oneSentenceDiagnosis);
-  lines.push("");
+  addBlank();
   lines.push(`Biggest Opportunity: ${report.executiveSummary.biggestOpportunity}`);
   lines.push(`Primary Action: ${report.executiveSummary.primaryAction}`);
-  lines.push("");
-  lines.push("## Score Breakdown");
-  for (const item of report.scoreBreakdown) {
+
+  addSection("Score Breakdown");
+  for (const item of report.scoreBreakdown.slice(0, 6)) {
     lines.push(`- ${item.label}: ${item.score}/100 — ${item.reason}`);
   }
-  lines.push("");
-  lines.push("## Top Conversion Leaks");
-  for (const leak of report.topLeaks) {
+
+  addSection("Top Conversion Leaks");
+  for (const leak of report.topLeaks.slice(0, 3)) {
     lines.push(`- ${leak.title} (${leak.impact} impact): ${leak.whatToChange}`);
+    lines.push(`  Why it matters: ${leak.whyItHurts}`);
+    lines.push(`  Better example: ${leak.betterExample}`);
   }
-  lines.push("");
-  lines.push("## 7-Day Action Plan");
-  for (const day of report.sevenDayPlan) {
-    lines.push(`Day ${day.day}: ${day.title} — ${day.action}`);
+
+  addSection(isPro ? "Before / After Copy Rewrites" : "Basic Copy Fixes");
+  for (const item of report.rewrites.slice(0, isPro ? 5 : 3)) {
+    lines.push(`- ${item.type.replace(/_/g, " ")}:`);
+    lines.push(`  Before: ${item.before}`);
+    lines.push(`  After: ${item.after}`);
+    lines.push(`  Why this works: ${item.whyThisWorks}`);
   }
+
+  if (isPro && report.categoryAudit.checks.length > 0) {
+    addSection("Category-Specific Review");
+    lines.push(report.categoryAudit.summary);
+    for (const check of report.categoryAudit.checks.slice(0, 5)) {
+      lines.push(`- ${check.label} (${check.status}): ${check.recommendation}`);
+    }
+  }
+
+  addSection("Quick Wins");
+  for (const fix of report.priorityFixes.quickWins.slice(0, 3)) {
+    lines.push(`- ${fix.title}: ${fix.action}`);
+  }
+
+  if (isPro && report.priorityFixes.biggerFixes.length > 0) {
+    addSection("Bigger Fixes");
+    for (const fix of report.priorityFixes.biggerFixes.slice(0, 3)) {
+      lines.push(`- ${fix.title}: ${fix.action}`);
+    }
+  }
+
+  addSection(isPro ? "Detailed 7-Day Action Plan" : "Short 7-Day Action Plan");
+  for (const day of report.sevenDayPlan.slice(0, 7)) {
+    if (isPro) {
+      lines.push(`Day ${day.day}: ${day.title}`);
+      lines.push(`  Action: ${day.action}`);
+      lines.push(`  Success check: ${day.expectedOutcome}`);
+    } else {
+      lines.push(`Day ${day.day}: ${day.title} — ${day.action}`);
+    }
+  }
+
+  if (isPro && report.buyerObjections.length > 0) {
+    addSection("Buyer Objections to Address");
+    for (const item of report.buyerObjections.slice(0, 3)) {
+      lines.push(`- ${item.objection}: ${item.pageResponse}`);
+    }
+  }
+
+  if (isPro && report.faqRecommendations.length > 0) {
+    addSection("FAQ Recommendations");
+    for (const item of report.faqRecommendations.slice(0, 3)) {
+      lines.push(`- ${item.question}: ${item.answer}`);
+    }
+  }
+
+  if (isPro && report.adSocialHooks.length > 0) {
+    addSection("Ad / Social Hooks");
+    for (const hook of report.adSocialHooks.slice(0, 4)) {
+      lines.push(`- ${hook}`);
+    }
+  }
+
+  addSection("Important Note");
+  lines.push(deliveryImportantNote(report.meta.tier));
 
   return lines.join("\n");
 }
@@ -445,9 +1009,10 @@ function parseModelReport(rawText: string, input: AuditInput) {
     const reportV2 = parseAuditReportV2(rawText);
     if (isValidAuditReportV2(reportV2)) {
       const sanitizedReportV2 = sanitizeAuditReportV2(reportV2, input);
+      const deliveryReportV2 = finalizeAuditReportForDelivery(sanitizedReportV2, input);
       return {
-        report: formatReportV2AsText(sanitizedReportV2),
-        reportV2: sanitizedReportV2
+        report: formatReportV2AsText(deliveryReportV2),
+        reportV2: deliveryReportV2
       };
     }
   } catch (error) {
@@ -469,7 +1034,7 @@ async function generateWithAI(input: AuditInput) {
   const openaiKey = process.env.OPENAI_API_KEY;
 
   if (!deepseekKey && !openaiKey) {
-    const reportV2 = demoReportV2(input);
+    const reportV2 = finalizeAuditReportForDelivery(demoReportV2(input), input);
     return {
       report: formatReportV2AsText(reportV2) || demoReport(input),
       reportV2,
@@ -480,7 +1045,7 @@ async function generateWithAI(input: AuditInput) {
   const prompt = buildAuditPromptV2(input);
   const fallbackPrompt = buildAuditPrompt(input);
   const temperature = 0.35;
-  const maxTokens = input.tier === "pro" ? 9000 : 5500;
+  const maxTokens = input.tier === "pro" ? 9000 : 4200;
 
   // Prefer DeepSeek when configured.
   if (deepseekKey) {
@@ -546,7 +1111,7 @@ async function generateWithAI(input: AuditInput) {
             }
           ],
           temperature: 0.4,
-          max_tokens: input.tier === "pro" ? 4200 : 2800,
+          max_tokens: input.tier === "pro" ? 4200 : 2200,
           stream: false
         })
       });

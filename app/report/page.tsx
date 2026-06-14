@@ -50,12 +50,17 @@ function safeScore(score: number) {
 function V2Report({ report }: { report: AuditReportV2 }) {
   const overallScore = safeScore(report.executiveSummary.overallScore);
   const overallLevel = scoreLevel(overallScore);
+  const isPro = report.meta.tier === "pro";
+  const tierLabel = isPro ? "Pro Audit" : "Basic Audit";
+  const visibleRewrites = isPro ? report.rewrites.slice(0, 5) : report.rewrites.slice(0, 3);
+  const visibleQuickWins = report.priorityFixes.quickWins.slice(0, 3);
+  const visibleSevenDayPlan = report.sevenDayPlan.slice(0, 7);
 
   return (
     <div className="report-v2">
       <section className="report-hero">
         <div>
-          <span className="eyebrow">Executive summary</span>
+          <span className="eyebrow">{tierLabel} · Executive summary</span>
           <h1>Your page scored {overallScore}/100</h1>
           <p>{report.executiveSummary.oneSentenceDiagnosis}</p>
         </div>
@@ -143,7 +148,7 @@ function V2Report({ report }: { report: AuditReportV2 }) {
         </div>
 
         <div className="rewrite-grid">
-          {report.rewrites.map((item, index) => (
+          {visibleRewrites.map((item, index) => (
             <article className="rewrite-card" key={`${item.type}-${index}`}>
               <span className="rewrite-type">{item.type.replace(/_/g, " ")}</span>
               <div className="rewrite-columns">
@@ -162,34 +167,36 @@ function V2Report({ report }: { report: AuditReportV2 }) {
         </div>
       </section>
 
-      <section className="report-section">
-        <div className="section-heading compact">
-          <span className="eyebrow">Category-specific review</span>
-          <h2>{pageTypeLabels[report.categoryAudit.pageType] || "Page"} checks</h2>
-        </div>
+      {isPro && (
+        <section className="report-section">
+          <div className="section-heading compact">
+            <span className="eyebrow">Category-specific review</span>
+            <h2>{pageTypeLabels[report.categoryAudit.pageType] || "Page"} checks</h2>
+          </div>
 
-        <div className="category-checks">
-          {report.categoryAudit.checks.map((check, index) => (
-            <article className="check-card" key={`${check.label}-${index}`}>
-              <div>
-                <strong>{check.label}</strong>
-                <span className={`status ${check.status}`}>{statusLabels[check.status]}</span>
-              </div>
-              <p>{check.comment}</p>
-              <b>{check.recommendation}</b>
-            </article>
-          ))}
-        </div>
-      </section>
+          <div className="category-checks">
+            {report.categoryAudit.checks.map((check, index) => (
+              <article className="check-card" key={`${check.label}-${index}`}>
+                <div>
+                  <strong>{check.label}</strong>
+                  <span className={`status ${check.status}`}>{statusLabels[check.status]}</span>
+                </div>
+                <p>{check.comment}</p>
+                <b>{check.recommendation}</b>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
-      <section className="report-section two-column">
+      <section className={isPro ? "report-section two-column" : "report-section"}>
         <div>
           <div className="section-heading compact">
             <span className="eyebrow">Quick wins</span>
             <h2>Fix these first</h2>
           </div>
           <div className="fix-list">
-            {report.priorityFixes.quickWins.map((fix, index) => (
+            {visibleQuickWins.map((fix, index) => (
               <article className="fix-card" key={`${fix.title}-${index}`}>
                 <strong>{fix.title}</strong>
                 <p>{fix.reason}</p>
@@ -199,21 +206,23 @@ function V2Report({ report }: { report: AuditReportV2 }) {
           </div>
         </div>
 
-        <div>
-          <div className="section-heading compact">
-            <span className="eyebrow">Bigger fixes</span>
-            <h2>Plan these next</h2>
+        {isPro && (
+          <div>
+            <div className="section-heading compact">
+              <span className="eyebrow">Bigger fixes</span>
+              <h2>Plan these next</h2>
+            </div>
+            <div className="fix-list">
+              {report.priorityFixes.biggerFixes.map((fix, index) => (
+                <article className="fix-card" key={`${fix.title}-${index}`}>
+                  <strong>{fix.title}</strong>
+                  <p>{fix.reason}</p>
+                  <b>{fix.action}</b>
+                </article>
+              ))}
+            </div>
           </div>
-          <div className="fix-list">
-            {report.priorityFixes.biggerFixes.map((fix, index) => (
-              <article className="fix-card" key={`${fix.title}-${index}`}>
-                <strong>{fix.title}</strong>
-                <p>{fix.reason}</p>
-                <b>{fix.action}</b>
-              </article>
-            ))}
-          </div>
-        </div>
+        )}
       </section>
 
       <section className="report-section">
@@ -223,7 +232,7 @@ function V2Report({ report }: { report: AuditReportV2 }) {
         </div>
 
         <div className="timeline">
-          {report.sevenDayPlan.map((item) => (
+          {visibleSevenDayPlan.map((item) => (
             <article className="timeline-item" key={item.day}>
               <span>Day {item.day}</span>
               <div>
@@ -236,50 +245,54 @@ function V2Report({ report }: { report: AuditReportV2 }) {
         </div>
       </section>
 
-      <section className="report-section two-column">
-        <div>
-          <div className="section-heading compact">
-            <span className="eyebrow">Buyer objections</span>
-            <h2>Questions to answer before the CTA</h2>
+      {isPro && (
+        <section className="report-section two-column">
+          <div>
+            <div className="section-heading compact">
+              <span className="eyebrow">Buyer objections</span>
+              <h2>Questions to answer before the CTA</h2>
+            </div>
+            <div className="fix-list">
+              {report.buyerObjections.map((item, index) => (
+                <article className="fix-card" key={`${item.objection}-${index}`}>
+                  <strong>{item.objection}</strong>
+                  <p>{item.pageResponse}</p>
+                </article>
+              ))}
+            </div>
           </div>
-          <div className="fix-list">
-            {report.buyerObjections.map((item, index) => (
-              <article className="fix-card" key={`${item.objection}-${index}`}>
-                <strong>{item.objection}</strong>
-                <p>{item.pageResponse}</p>
-              </article>
+
+          <div>
+            <div className="section-heading compact">
+              <span className="eyebrow">FAQ recommendations</span>
+              <h2>FAQ copy to add</h2>
+            </div>
+            <div className="fix-list">
+              {report.faqRecommendations.map((item, index) => (
+                <article className="fix-card" key={`${item.question}-${index}`}>
+                  <strong>{item.question}</strong>
+                  <p>{item.answer}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {isPro && (
+        <section className="report-section">
+          <div className="section-heading compact">
+            <span className="eyebrow">Ad / social hooks</span>
+            <h2>Hooks you can test</h2>
+          </div>
+
+          <div className="hook-grid">
+            {report.adSocialHooks.map((hook, index) => (
+              <div className="hook-card" key={`${hook}-${index}`}>{hook}</div>
             ))}
           </div>
-        </div>
-
-        <div>
-          <div className="section-heading compact">
-            <span className="eyebrow">FAQ recommendations</span>
-            <h2>FAQ copy to add</h2>
-          </div>
-          <div className="fix-list">
-            {report.faqRecommendations.map((item, index) => (
-              <article className="fix-card" key={`${item.question}-${index}`}>
-                <strong>{item.question}</strong>
-                <p>{item.answer}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="report-section">
-        <div className="section-heading compact">
-          <span className="eyebrow">Ad / social hooks</span>
-          <h2>Hooks you can test</h2>
-        </div>
-
-        <div className="hook-grid">
-          {report.adSocialHooks.map((hook, index) => (
-            <div className="hook-card" key={`${hook}-${index}`}>{hook}</div>
-          ))}
-        </div>
-      </section>
+        </section>
+      )}
 
       <div className="notice">{report.disclaimer}</div>
     </div>

@@ -764,3 +764,498 @@ input:focus, textarea:focus, select:focus { border-color: rgba(142,230,200,.7); 
   background: rgba(15, 23, 42, 0.28);
 }
 
+
+/* Pricing card differentiation */
+.price-card {
+  color: #e5edf8;
+  gap: 7px;
+  min-height: 210px;
+}
+
+.price-card strong {
+  color: #ffffff;
+}
+
+.price-card .price {
+  color: #ffffff;
+}
+
+.price-card .muted {
+  color: #b8c5df;
+}
+
+.tier-head {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tier-badge {
+  border: 1px solid rgba(142, 230, 200, 0.35);
+  background: rgba(142, 230, 200, 0.1);
+  color: #8ee6c8;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.tier-positioning {
+  color: #8ee6c8;
+  font-size: 13px;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.tier-features {
+  width: 100%;
+  display: grid;
+  gap: 5px;
+  margin-top: 4px;
+  text-align: left;
+}
+
+.tier-features span {
+  color: #cbd5e1;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+
+/* Basic vs Pro comparison section */
+.price-card {
+  min-height: 155px;
+}
+
+.comparison-section {
+  margin-top: 36px;
+}
+
+.section-heading.compact {
+  max-width: 760px;
+  margin-bottom: 18px;
+}
+
+.compare-table {
+  border: 1px solid rgba(71, 85, 105, 0.62);
+  border-radius: 24px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.38);
+}
+
+.compare-row {
+  display: grid;
+  grid-template-columns: 0.85fr 1fr 1fr;
+}
+
+.compare-row > div {
+  padding: 15px 18px;
+  border-top: 1px solid rgba(71, 85, 105, 0.45);
+  border-left: 1px solid rgba(71, 85, 105, 0.45);
+  color: #b8c5df;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.compare-row > div:first-child {
+  border-left: 0;
+}
+
+.compare-row:first-child > div {
+  border-top: 0;
+}
+
+.compare-head > div {
+  background: rgba(142, 230, 200, 0.08);
+  color: #ffffff;
+  font-weight: 900;
+}
+
+.compare-label {
+  color: #8ee6c8 !important;
+  font-weight: 900;
+}
+
+@media (max-width: 760px) {
+  .compare-row {
+    grid-template-columns: 1fr;
+  }
+
+  .compare-row > div {
+    border-left: 0;
+  }
+
+  .compare-head {
+    display: none;
+  }
+
+  .compare-label {
+    background: rgba(142, 230, 200, 0.06);
+  }
+}
+
+
+/* Compact right-side audit form */
+.grid form {
+  padding-top: 28px;
+  padding-bottom: 28px;
+}
+
+.grid form .field {
+  margin-bottom: 13px;
+}
+
+.grid form label {
+  margin-bottom: 6px;
+}
+
+.grid form input,
+.grid form textarea {
+  padding-top: 13px;
+  padding-bottom: 13px;
+}
+
+.grid form textarea {
+  min-height: 92px;
+}
+
+.grid form .price-grid,
+.grid form .pricing-grid,
+.grid form .plans,
+.grid form .tier-grid {
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.grid form .price-card {
+  min-height: 132px;
+  padding: 18px 14px;
+}
+
+.grid form button[type="submit"] {
+  min-height: 54px;
+  margin-top: 10px;
+}
+
+.grid form .checkout-note,
+.grid form .secure-note,
+.grid form .muted-note {
+  margin-top: 14px;
+}
+
+
+/* Further compact right-side form height */
+.grid form {
+  padding-top: 22px !important;
+  padding-bottom: 22px !important;
+}
+
+.grid form .field {
+  margin-bottom: 10px !important;
+}
+
+.grid form label {
+  margin-bottom: 4px !important;
+  font-size: 14px;
+}
+
+.grid form input,
+.grid form textarea {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+.grid form input {
+  min-height: 46px;
+}
+
+.grid form textarea {
+  min-height: 76px !important;
+}
+
+.grid form .price-grid,
+.grid form .pricing-grid,
+.grid form .plans,
+.grid form .tier-grid {
+  gap: 12px !important;
+  margin-top: 6px !important;
+}
+
+.grid form .price-card {
+  min-height: 108px !important;
+  padding: 14px 12px !important;
+}
+
+.grid form .price-card .price {
+  margin: 2px 0 4px !important;
+  line-height: 1 !important;
+}
+
+.grid form .price-card .muted {
+  font-size: 14px;
+  line-height: 1.22;
+}
+
+.grid form button[type="submit"] {
+  min-height: 48px !important;
+  margin-top: 6px !important;
+}
+
+.grid form .checkout-note,
+.grid form .secure-note,
+.grid form .muted-note,
+.grid form > p:last-child {
+  margin-top: 10px !important;
+  font-size: 13px;
+}
+
+
+/* Final hero/form vertical balance */
+.hero .hero-actions,
+.hero .actions,
+.hero .cta-row,
+.hero .button-row,
+.hero .button-group {
+  margin-top: 24px !important;
+  margin-bottom: 24px !important;
+}
+
+.hero .use-cases,
+.hero .use-case-grid,
+.hero .feature-grid {
+  margin-top: 0 !important;
+}
+
+.grid form {
+  padding-top: 26px !important;
+  padding-bottom: 38px !important;
+}
+
+.grid form .field {
+  margin-bottom: 12px !important;
+}
+
+.grid form label {
+  margin-bottom: 5px !important;
+  font-size: 14px;
+}
+
+.grid form input,
+.grid form textarea {
+  padding-top: 11px !important;
+  padding-bottom: 11px !important;
+}
+
+.grid form input {
+  min-height: 48px !important;
+}
+
+.grid form textarea {
+  min-height: 88px !important;
+  overflow: hidden;
+}
+
+.grid form .price-grid,
+.grid form .pricing-grid,
+.grid form .plans,
+.grid form .tier-grid {
+  gap: 14px !important;
+  margin-top: 8px !important;
+}
+
+.grid form .price-card {
+  min-height: 120px !important;
+  padding: 16px 14px !important;
+}
+
+.grid form button[type="submit"] {
+  min-height: 52px !important;
+  margin-top: 10px !important;
+}
+
+.grid form .checkout-note,
+.grid form .secure-note,
+.grid form .muted-note,
+.grid form > p:last-child {
+  margin-top: 14px !important;
+  margin-bottom: 0 !important;
+  font-size: 13px;
+}
+
+
+/* Raise right form bottom edge to align with left column */
+.grid form {
+  padding-bottom: 24px !important;
+}
+
+.grid form .field {
+  margin-bottom: 10px !important;
+}
+
+.grid form textarea {
+  min-height: 72px !important;
+  overflow: hidden;
+}
+
+.grid form .price-card {
+  min-height: 112px !important;
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+
+.grid form button[type="submit"] {
+  min-height: 48px !important;
+  margin-top: 8px !important;
+}
+
+.grid form .checkout-note,
+.grid form .secure-note,
+.grid form .muted-note,
+.grid form > p:last-child {
+  margin-top: 10px !important;
+}
+
+
+/* Align right panel border and secure note without compressing form content */
+.grid form {
+  padding-top: 26px !important;
+  padding-bottom: 18px !important;
+}
+
+.grid form .field {
+  margin-bottom: 12px !important;
+}
+
+.grid form input {
+  min-height: 48px !important;
+  padding-top: 11px !important;
+  padding-bottom: 11px !important;
+}
+
+.grid form textarea {
+  min-height: 86px !important;
+  padding-top: 11px !important;
+  padding-bottom: 11px !important;
+  overflow: hidden;
+}
+
+.grid form .price-card {
+  min-height: 120px !important;
+  padding: 16px 14px !important;
+}
+
+.grid form button[type="submit"] {
+  min-height: 52px !important;
+  margin-top: 10px !important;
+}
+
+/* Move the secure PayPal note slightly lower, while keeping the outer border aligned */
+.grid form .checkout-note,
+.grid form .secure-note,
+.grid form .muted-note,
+.grid form > p:last-child {
+  margin-top: 22px !important;
+  margin-bottom: 0 !important;
+}
+
+
+/* Pull right form panel bottom edge upward */
+.grid form {
+  padding-bottom: 4px !important;
+}
+
+.grid form .checkout-note,
+.grid form .secure-note,
+.grid form .muted-note,
+.grid form > p:last-child {
+  margin-top: 18px !important;
+  margin-bottom: 0 !important;
+}
+
+
+/* Compact custom dropdown suggestions */
+.compact-suggest-field {
+  position: relative;
+}
+
+.compact-combo {
+  position: relative;
+}
+
+.compact-combo input {
+  width: 100%;
+  padding-right: 46px !important;
+}
+
+.compact-dropdown {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  z-index: 40;
+}
+
+.compact-dropdown summary {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  list-style: none;
+  color: #e5edf8;
+  font-size: 16px;
+  line-height: 1;
+  border-radius: 8px;
+}
+
+.compact-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.compact-dropdown[open] {
+  z-index: 120;
+}
+
+.compact-dropdown-menu {
+  position: absolute;
+  top: 34px;
+  right: -4px;
+  width: 330px;
+  max-height: 252px;
+  overflow-y: auto;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+.compact-dropdown-menu button {
+  width: 100%;
+  display: block;
+  border: 0;
+  background: transparent;
+  color: #111827;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 7px;
+  padding: 7px 9px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.12;
+}
+
+.compact-dropdown-menu button:hover {
+  background: #eef2f7;
+}
+
+@media (max-width: 760px) {
+  .compact-dropdown-menu {
+    width: min(320px, calc(100vw - 64px));
+  }
+}
+
