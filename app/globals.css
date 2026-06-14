@@ -59,3 +59,178 @@ input:focus, textarea:focus, select:focus { border-color: rgba(142,230,200,.7); 
   .cards, .price-grid { grid-template-columns: 1fr; }
   .nav { margin-bottom: 36px; }
 }
+
+
+/* AI Conversion Clinic launch conversion sections */
+.eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  border: 1px solid var(--line);
+  color: var(--primary);
+  border-radius: 999px;
+  padding: 7px 11px;
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  background: rgba(142,230,200,.06);
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 26px 0 0;
+}
+
+.mini-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 14px;
+  padding: 12px 16px;
+  background: var(--primary);
+  color: #07130f;
+  font-weight: 850;
+}
+
+.mini-cta.secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+.section {
+  margin-top: 72px;
+}
+
+.section-heading {
+  max-width: 760px;
+  margin-bottom: 24px;
+}
+
+.section-heading h2 {
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.05;
+  letter-spacing: -.04em;
+  margin: 0 0 14px;
+}
+
+.section-heading p {
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.sample-report {
+  border: 1px solid var(--line);
+  background: rgba(18,26,51,.72);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 24px 80px rgba(0,0,0,.18);
+}
+
+.score-card {
+  display: grid;
+  gap: 8px;
+  border: 1px solid rgba(142,230,200,.22);
+  background: rgba(142,230,200,.08);
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.score-card span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.score-card strong {
+  font-size: 36px;
+  color: var(--primary);
+  letter-spacing: -.04em;
+}
+
+.score-card p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.report-item {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.04);
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.report-item strong {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.report-item p {
+  color: var(--muted);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.plan-strip {
+  margin-top: 14px;
+  border-radius: 18px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, var(--primary), #9aa9ff);
+  color: #07130f;
+  font-weight: 850;
+  line-height: 1.55;
+}
+
+.use-case-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.use-case-card {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.04);
+  border-radius: 20px;
+  padding: 18px;
+}
+
+.use-case-card strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.use-case-card p {
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0;
+  font-size: 14px;
+}
+
+.disclaimer-section {
+  margin-top: 36px;
+}
+
+@media (max-width: 860px) {
+  .report-grid, .use-case-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .mini-cta {
+    width: 100%;
+  }
+}
+
