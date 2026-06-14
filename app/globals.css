@@ -234,3 +234,13 @@ input:focus, textarea:focus, select:focus { border-color: rgba(142,230,200,.7); 
   }
 }
 
+
+.brand-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  object-fit: cover;
+  display: inline-block;
+  flex-shrink: 0;
+}
+

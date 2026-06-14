@@ -52,7 +52,7 @@ export default function HomePage() {
     <main className="wrapper">
       <div className="container">
         <nav className="nav">
-          <div className="brand"><span className="logo" />AI Conversion Clinic</div>
+          <div className="brand"><img className="brand-logo" src="/logo.jpeg" alt="AI Conversion Clinic logo" />AI Conversion Clinic</div>
           <span className="badge">Conversion audit in minutes · PayPal checkout</span>
         </nav>
 
