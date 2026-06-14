@@ -18,16 +18,16 @@ const initialForm: AuditInput = {
 
 const useCases = [
   {
-    title: "Hero Diagnosis",
-    text: "Check whether visitors understand your value in the first 5 seconds."
+    title: "Free Diagnosis",
+    text: "Find the biggest blockers hurting your page conversion."
   },
   {
-    title: "Copy Rewrites",
-    text: "Get headline, value proposition, CTA, and objection-handling ideas."
+    title: "Copy-ready Fixes",
+    text: "Unlock rewritten copy, CTA ideas, trust fixes, and launch follow-up copy."
   },
   {
     title: "Action Plan",
-    text: "Receive a prioritized 7-day plan you can execute step by step."
+    text: "Get a practical 7-day implementation plan after unlocking the solution."
   }
 ];
 
@@ -96,7 +96,7 @@ export default function HomePage() {
       <div className="container">
         <nav className="nav">
           <div className="brand"><img className="brand-logo" src="/logo.jpeg" alt="AI Conversion Clinic logo" />AI Conversion Clinic</div>
-          <span className="badge">Conversion audit in minutes · PayPal checkout</span>
+          <span className="badge">Free diagnosis · Paid fix plan</span>
         </nav>
 
         <section className="grid">
@@ -106,20 +106,20 @@ export default function HomePage() {
             <p>AI Conversion Clinic diagnoses your landing page, identifies the biggest conversion blockers, and generates a practical fix plan you can ship this week.</p>
 
             <div className="hero-actions">
-              <a className="mini-cta" href="#audit-form">Start audit</a>
+              <a className="mini-cta" href="#audit-form">Run Free Diagnosis</a>
               <a className="mini-cta secondary" href="#sample-report">See Example Diagnosis</a>
             </div>
 
             <div className="cards">
-              <div className="card"><strong>Hero Diagnosis</strong><span>Check whether visitors understand your value in the first 5 seconds.</span></div>
-              <div className="card"><strong>Copy Rewrites</strong><span>Get headline, value proposition, CTA, and objection-handling ideas.</span></div>
-              <div className="card"><strong>Action Plan</strong><span>Receive a prioritized 7-day plan you can execute step by step.</span></div>
+              <div className="card"><strong>Free Diagnosis</strong><span>Find the biggest blockers hurting your page conversion.</span></div>
+              <div className="card"><strong>Copy-ready Fixes</strong><span>Unlock rewritten copy, CTA ideas, trust fixes, and launch follow-up copy.</span></div>
+              <div className="card"><strong>Action Plan</strong><span>Get a practical 7-day implementation plan after unlocking the solution.</span></div>
             </div>
 
             <div className="steps">
               <div className="step">Submit your page URL, product, audience, and conversion problem.</div>
-              <div className="step">Choose Basic or Pro and complete secure PayPal checkout.</div>
-              <div className="step">Get your AI-generated conversion audit after payment confirmation.</div>
+              <div className="step">Get a free diagnosis of your top conversion blockers.</div>
+              <div className="step">Unlock a paid conversion solution if the diagnosis feels accurate.</div>
             </div>
 </div>
 
@@ -282,7 +282,7 @@ export default function HomePage() {
             </div>
 
             <div className="field">
-              <label>Choose your report</label>
+              <label>Choose your solution plan</label>
               <div className="price-grid">
                 {(Object.keys(tiers) as Tier[]).map((tier) => (
                   <button
@@ -299,8 +299,8 @@ export default function HomePage() {
               </div>
             </div>
 
-            <button className="cta" type="submit">Continue to payment</button>
-            <p className="footer">Secure PayPal checkout · Report generated after payment confirmation</p>
+            <button className="cta" type="submit">Run Free Diagnosis</button>
+            <p className="footer">Free diagnosis first · Secure PayPal checkout for the full solution</p>
           </form>
         </section>
 
@@ -348,7 +348,7 @@ export default function HomePage() {
 
         <section className="section comparison-section" id="compare-plans">
           <div className="section-heading compact">
-            <span className="eyebrow">Basic vs Pro</span>
+            <span className="eyebrow">Solution Plans</span>
             <h2>Choose the depth you need</h2>
             <p>
               Basic gives you a quick diagnosis. Pro gives you a fuller action plan for pages with traffic,
@@ -356,7 +356,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="compare-table" role="table" aria-label="Basic and Pro audit comparison">
+          <div className="compare-table" role="table" aria-label="Conversion solution plan comparison">
             <div className="compare-row compare-head" role="row">
               <div role="columnheader">What you get</div>
               <div role="columnheader">Conversion Solution · $9</div>
