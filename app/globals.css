@@ -630,7 +630,8 @@ input:focus, textarea:focus, select:focus { border-color: rgba(142,230,200,.7); 
 .summary-card p {
   font-size: 15px;
 }
-\n
+
+
 .brand-logo-img {
   width: 36px;
   height: 36px;
@@ -655,5 +656,111 @@ input:focus, textarea:focus, select:focus { border-color: rgba(142,230,200,.7); 
   object-fit: cover;
   display: inline-block;
   flex: 0 0 36px;
+}
+
+
+/* Form guidance chips */
+.field-help {
+  margin: 6px 0 10px;
+  color: #9fb0d0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.choice-chip {
+  border: 1px solid rgba(142, 230, 200, 0.28);
+  background: rgba(142, 230, 200, 0.08);
+  color: #bff7e7;
+  border-radius: 999px;
+  padding: 8px 11px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.choice-chip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(142, 230, 200, 0.6);
+  background: rgba(142, 230, 200, 0.14);
+}
+
+.choice-chip:focus-visible {
+  outline: 2px solid #8ee6c8;
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .choice-chip {
+    width: 100%;
+    text-align: left;
+  }
+}
+
+
+/* Keep guided fields compact after switching from chips to datalist */
+.field-help {
+  margin: 4px 0 8px;
+  color: #9fb0d0;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.choice-row {
+  display: none;
+}
+
+
+/* Align left hero content with right form panel */
+.grid {
+  align-items: stretch;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.hero .hero-summary {
+  margin-top: auto;
+  border: 1px solid rgba(142, 230, 200, 0.22);
+  background: rgba(142, 230, 200, 0.07);
+  border-radius: 18px;
+  padding: 18px 20px;
+  display: grid;
+  gap: 8px;
+}
+
+.hero .hero-summary strong {
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.hero .hero-summary span {
+  color: #b8c5df;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+
+/* Refine spacing before report summary */
+.hero .steps {
+  margin-bottom: 16px;
+}
+
+
+/* Unify Report includes border with step cards */
+.hero .hero-summary {
+  border-color: rgba(71, 85, 105, 0.58);
+  background: rgba(15, 23, 42, 0.28);
 }
 
