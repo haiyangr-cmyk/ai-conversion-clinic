@@ -203,7 +203,7 @@ export default function CheckoutPage() {
     <main className="wrapper">
       <div className="container">
         <nav className="nav">
-          <div className="brand"><span className="logo" />AI Conversion Clinic</div>
+          <div className="brand"><img className="brand-logo-img" src="/logo.jpeg" alt="AI Conversion Clinic logo" width={36} height={36} />AI Conversion Clinic</div>
           <a className="badge" href="/">Edit details</a>
         </nav>
 
