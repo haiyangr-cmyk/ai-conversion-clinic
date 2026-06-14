@@ -1652,3 +1652,45 @@ button.copy-export-button {
   }
 }
 
+
+/* Bottom support note on report page */
+.report-bottom-help {
+  width: min(980px, calc(100% - 40px));
+  margin: 34px auto 0;
+  padding: 14px 18px;
+  border: 1px solid rgba(142, 230, 200, 0.22);
+  border-radius: 16px;
+  background: rgba(142, 230, 200, 0.06);
+  color: #b8c4da;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.report-bottom-help strong {
+  color: #e5edf8;
+  white-space: nowrap;
+}
+
+.report-bottom-help a {
+  color: #8ee6c8;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.report-bottom-help a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .report-bottom-help {
+    align-items: flex-start;
+    flex-direction: column;
+    text-align: left;
+  }
+}
+

@@ -244,13 +244,6 @@ function V2Report({ report }: { report: AuditReportV2 }) {
         <div>
           <span className="eyebrow">{tierLabel} · Executive summary</span>
           <h1>Your page scored {overallScore}/100</h1>
-
-        <div className="payment-safety-note">
-          <strong>Need help?</strong>
-          <span>
-            If a paid report cannot be generated or downloaded, <a href="/support">contact support</a> with your PayPal order ID.
-          </span>
-        </div>
           <p>{report.executiveSummary.oneSentenceDiagnosis}</p>
         </div>
 
@@ -582,6 +575,14 @@ export default function ReportPage() {
           )}
         </section>
       </div>
+    
+      <div className="report-bottom-help">
+        <strong>Need help?</strong>
+        <span>
+          If a paid report cannot be generated or downloaded, <a href="/support">contact support</a> with your PayPal order ID.
+        </span>
+      </div>
+
     </main>
   );
 }
