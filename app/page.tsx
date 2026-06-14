@@ -99,6 +99,34 @@ export default function HomePage() {
     setDiagnosisError("");
 
     try {
+      const useSampleFlow = process.env.NEXT_PUBLIC_ACC_USE_SAMPLE_FLOW === "true";
+
+      if (!useSampleFlow) {
+        const res = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...payload, generationMode: "diagnosis" })
+        });
+
+        const data = await res.json();
+
+        if (!data.ok || !data.report) {
+          throw new Error(data.error || "Diagnosis generation failed");
+        }
+
+        localStorage.setItem("audit-report", JSON.stringify({
+          report: data.report,
+          reportV2: data.reportV2 || null,
+          input: payload,
+          demo: data.demo || false,
+          mode: "diagnosis",
+          generatedAt: new Date().toISOString()
+        }));
+
+        router.push("/report");
+        return;
+      }
+
       const sampleReport = {
         meta: {
           tier: "basic",

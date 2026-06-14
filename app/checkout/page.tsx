@@ -172,7 +172,7 @@ export default function CheckoutPage() {
         paymentToken
       };
 
-      const useLocalSampleSolution = process.env.NODE_ENV === "development";
+      const useLocalSampleSolution = process.env.NEXT_PUBLIC_ACC_USE_SAMPLE_FLOW === "true";
 
       if (useLocalSampleSolution) {
         const sampleSolution = `# Conversion Solution
@@ -237,7 +237,7 @@ I updated AI Conversion Clinic around a clearer model: diagnosis is free, soluti
         const res = await fetch("/api/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({ ...payload, generationMode: "solution" })
         });
 
         const data = (await res.json()) as GenerateResponse;
