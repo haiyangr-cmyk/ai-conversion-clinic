@@ -213,6 +213,13 @@ export default function CheckoutPage() {
         <section className="grid">
           <div className="panel">
             <h1 style={{ marginTop: 0 }}>Confirm your order</h1>
+
+        <div className="payment-safety-note">
+          <strong>Need help?</strong>
+          <span>
+            If your payment succeeds but your report does not generate, <a href="/support">contact support</a> with your PayPal order ID.
+          </span>
+        </div>
             <p className="muted">
               You selected <strong>{tiers[input.tier].name}</strong> for <strong>{tiers[input.tier].price}</strong>.
             </p>

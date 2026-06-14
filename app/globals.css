@@ -1614,3 +1614,41 @@ button.copy-export-button {
   }
 }
 
+
+/* Payment and report support safety note */
+.payment-safety-note {
+  margin: 18px 0 24px;
+  padding: 14px 16px;
+  border: 1px solid rgba(142, 230, 200, 0.24);
+  border-radius: 16px;
+  background: rgba(142, 230, 200, 0.07);
+  color: #b8c4da;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.payment-safety-note strong {
+  color: #e5edf8;
+  white-space: nowrap;
+}
+
+.payment-safety-note a {
+  color: #8ee6c8;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.payment-safety-note a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .payment-safety-note {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
