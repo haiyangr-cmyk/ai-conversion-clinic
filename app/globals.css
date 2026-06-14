@@ -1694,3 +1694,78 @@ button.copy-export-button {
   }
 }
 
+
+/* Conversion goal cards */
+.conversion-goal-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.goal-card {
+  min-height: 122px;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.goal-card strong {
+  font-size: 16px;
+  line-height: 1.15;
+}
+
+.goal-card .muted {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+@media (max-width: 720px) {
+  .conversion-goal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .goal-card {
+    min-height: auto;
+  }
+}
+
+
+/* Final conversion goal card layout */
+.conversion-goal-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.goal-card {
+  min-height: 118px !important;
+  padding: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  text-align: left !important;
+}
+
+.goal-card strong {
+  display: block !important;
+  font-size: 16px !important;
+  line-height: 1.18 !important;
+  letter-spacing: -0.02em;
+}
+
+.goal-card .muted {
+  display: block !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+}
+
+@media (max-width: 720px) {
+  .conversion-goal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .goal-card {
+    min-height: auto !important;
+  }
+}
+

@@ -13,6 +13,7 @@ export type AuditInput = {
   paymentToken?: string;
   accessCode?: string;
   tier: Tier;
+  conversionGoal?: string;
 };
 
 export type GenerateResponse = {

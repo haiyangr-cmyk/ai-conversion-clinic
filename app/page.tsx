@@ -2,8 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { tiers } from "../lib/pricing";
-import type { AuditInput, Tier } from "../lib/types";
+import type { AuditInput } from "../lib/types";
 
 const initialForm: AuditInput = {
   url: "",
@@ -282,20 +281,43 @@ export default function HomePage() {
             </div>
 
             <div className="field">
-              <label>Choose your solution plan</label>
-              <div className="price-grid">
-                {(Object.keys(tiers) as Tier[]).map((tier) => (
-                  <button
-                    type="button"
-                    key={tier}
-                    className={`price-card ${form.tier === tier ? "active" : ""}`}
-                    onClick={() => update("tier", tier)}
-                  >
-                    <strong>{tiers[tier].name}</strong>
-                    <div className="price">{tiers[tier].price}</div>
-                    <span className="muted">{tiers[tier].description}</span>
-                  </button>
-                ))}
+              <label>Conversion goal <span className="required-mark">*</span></label>
+              <div className="price-grid conversion-goal-grid">
+                <button
+                  type="button"
+                  className={`price-card goal-card ${form.conversionGoal === "signups" ? "active" : ""}`}
+                  onClick={() => update("conversionGoal", "signups")}
+                >
+                  <strong>More signups</strong>
+                  <span className="muted">Improve signup, waitlist, or trial conversion.</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`price-card goal-card ${form.conversionGoal === "paid_users" ? "active" : ""}`}
+                  onClick={() => update("conversionGoal", "paid_users")}
+                >
+                  <strong>More paid users</strong>
+                  <span className="muted">Improve paid conversion from traffic or free users.</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`price-card goal-card ${form.conversionGoal === "demo_calls" ? "active" : ""}`}
+                  onClick={() => update("conversionGoal", "demo_calls")}
+                >
+                  <strong>More demo calls</strong>
+                  <span className="muted">Improve demo, booking, or consultation conversion.</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`price-card goal-card ${form.conversionGoal === "launch_conversion" ? "active" : ""}`}
+                  onClick={() => update("conversionGoal", "launch_conversion")}
+                >
+                  <strong>Launch conversion</strong>
+                  <span className="muted">Optimize Product Hunt, Reddit, or launch traffic.</span>
+                </button>
               </div>
             </div>
 
