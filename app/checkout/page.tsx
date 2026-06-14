@@ -172,25 +172,89 @@ export default function CheckoutPage() {
         paymentToken
       };
 
-      const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+      const useLocalSampleSolution = process.env.NODE_ENV === "development";
 
-      const data = (await res.json()) as GenerateResponse;
+      if (useLocalSampleSolution) {
+        const sampleSolution = `# Conversion Solution
 
-      if (!data.ok || !data.report) {
-        throw new Error(data.error || "Report generation failed");
+## Recommended Positioning
+
+For teams with traffic but low conversion, position the page around the visitor's desired outcome instead of the product category.
+
+## Hero Rewrite
+
+Headline:
+Find out why your landing page isn't converting.
+
+Subheadline:
+Get a free diagnosis of your biggest conversion blockers, then unlock a practical fix plan you can ship this week.
+
+Primary CTA:
+Run Free Diagnosis
+
+## CTA Fixes
+
+- Use "Run Free Diagnosis" before payment.
+- Use "Unlock Conversion Solution" after the diagnosis.
+- Avoid generic CTAs like "Get Started" when the user does not yet know the value.
+
+## Trust & Proof Fixes
+
+- Keep Support, Refund, and Privacy visible.
+- Show an example diagnosis before asking for payment.
+- Explain that the diagnosis is AI-generated and should be validated with analytics and testing.
+
+## Pricing / Offer Fixes
+
+- Make the first step free.
+- Make the paid step about unlocking exact fixes, not buying a longer report.
+- Keep the paid offer simple and low-friction.
+
+## 7-Day Action Plan
+
+Day 1: Rewrite the hero message around the visitor's pain.
+Day 2: Replace generic CTAs with diagnosis and solution CTAs.
+Day 3: Add a locked solution preview.
+Day 4: Add trust and support notes near payment.
+Day 5: Add an example diagnosis page.
+Day 6: Test one high-intent Reddit or Product Hunt traffic source.
+Day 7: Review unlock clicks and payment conversion.
+
+## Product Hunt / Reddit Follow-up Copy
+
+I updated AI Conversion Clinic around a clearer model: diagnosis is free, solutions are paid. Paste your landing page to see the top blockers, then unlock a practical fix plan if the diagnosis feels accurate.`;
+
+        localStorage.setItem("audit-report", JSON.stringify({
+          report: sampleSolution,
+          reportV2: null,
+          input: payload,
+          demo: true,
+          localSample: true,
+          mode: "solution",
+          generatedAt: new Date().toISOString()
+        }));
+      } else {
+        const res = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = (await res.json()) as GenerateResponse;
+
+        if (!data.ok || !data.report) {
+          throw new Error(data.error || "Solution generation failed");
+        }
+
+        localStorage.setItem("audit-report", JSON.stringify({
+          report: data.report,
+          reportV2: data.reportV2 || null,
+          input: payload,
+          demo: data.demo || false,
+          mode: "solution",
+          generatedAt: new Date().toISOString()
+        }));
       }
-
-      localStorage.setItem("audit-report", JSON.stringify({
-        report: data.report,
-      reportV2: data.reportV2 || null,
-        input: payload,
-        demo: data.demo || false,
-        generatedAt: new Date().toISOString()
-      }));
 
       router.push("/report");
     } catch (err) {
@@ -212,7 +276,7 @@ export default function CheckoutPage() {
 
         <section className="grid">
           <div className="panel">
-            <h1 style={{ marginTop: 0 }}>Confirm your order</h1>
+            <h1 style={{ marginTop: 0 }}>Unlock your Conversion Solution</h1>
             <p className="muted">
               You selected <strong>{tiers[input.tier].name}</strong> for <strong>{tiers[input.tier].price}</strong>.
             </p>
@@ -227,7 +291,7 @@ export default function CheckoutPage() {
             {!paymentComplete && (
               <>
                 <div className="notice" style={{ marginBottom: 18 }}>
-                  Complete payment securely with PayPal. Your report can only be generated after PayPal confirms the payment.
+                  Complete payment securely with PayPal. Your full conversion solution can only be generated after PayPal confirms the payment.
                 </div>
                 {paypalLoading && <p className="muted">Preparing secure PayPal checkout...</p>}
                 <div ref={paypalRef} />
@@ -246,16 +310,16 @@ export default function CheckoutPage() {
           </div>
 
           <form className="panel" onSubmit={generateReport}>
-            <h2 style={{ marginTop: 0 }}>Generate your solution</h2>
+            <h2 style={{ marginTop: 0 }}>Generate your full fix plan</h2>
 
             <div className="notice">
-              Once your PayPal payment is confirmed, click the button below to generate your conversion solution automatically.
+              Once your PayPal payment is confirmed, generate your full conversion fix plan automatically.
             </div>
 
             {error && <div className="error" style={{ marginTop: 18 }}>{error}</div>}
 
             <button className="cta" disabled={!paymentComplete || reportLoading} type="submit" style={{ marginTop: 18 }}>
-              {reportLoading ? "Generating report..." : paymentComplete ? "Generate my report" : "Complete PayPal payment first"}
+              {reportLoading ? "Generating solution..." : paymentComplete ? "Generate my report" : "Complete PayPal payment first"}
             </button>
 
                       {isLocalDevCheckout && (
@@ -267,7 +331,7 @@ export default function CheckoutPage() {
                 form?.requestSubmit();
               }}
             >
-              Generate test report without PayPal
+              Generate test solution without PayPal
             </button>
           )}
 
@@ -277,7 +341,7 @@ export default function CheckoutPage() {
         <div className="payment-safety-note checkout-action-help">
           <strong>Need help?</strong>
           <span>
-            If your payment succeeds but your report does not generate, <a href="/support">contact support</a> with your PayPal order ID.
+            If your payment succeeds but your solution does not generate, <a href="/support">contact support</a> with your PayPal order ID.
           </span>
         </div>
           </form>

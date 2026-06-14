@@ -481,11 +481,45 @@ function V2Report({ report }: { report: AuditReportV2 }) {
   );
 }
 
+
+function FormattedTextReport({ text }: { text: string }) {
+  const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
+
+  return (
+    <article className="formatted-report">
+      {lines.map((line, index) => {
+        if (line.startsWith("# ")) {
+          return <h2 key={index}>{line.replace(/^#\s+/, "")}</h2>;
+        }
+
+        if (line.startsWith("## ")) {
+          return <h3 key={index}>{line.replace(/^##\s+/, "")}</h3>;
+        }
+
+        if (line.startsWith("- ")) {
+          return <p className="formatted-bullet" key={index}>{line.replace(/^-\s+/, "")}</p>;
+        }
+
+        if (/^Day\s+\d+:/i.test(line)) {
+          return <p className="formatted-day" key={index}>{line}</p>;
+        }
+
+        if (/^[A-Za-z /]+:$/.test(line)) {
+          return <p className="formatted-label" key={index}>{line}</p>;
+        }
+
+        return <p key={index}>{line}</p>;
+      })}
+    </article>
+  );
+}
+
 export default function ReportPage() {
   const router = useRouter();
   const [report, setReport] = useState("");
   const [reportV2, setReportV2] = useState<AuditReportV2 | null>(null);
   const [demo, setDemo] = useState(false);
+  const [localSample, setLocalSample] = useState(false);
   const [copied, setCopied] = useState(false);
   const [reportMode, setReportMode] = useState<"diagnosis" | "solution">("solution");
 
@@ -500,6 +534,7 @@ export default function ReportPage() {
     setReport(parsed.report || "");
     setReportV2(parsed.reportV2 || null);
     setDemo(Boolean(parsed.demo));
+    setLocalSample(Boolean(parsed.localSample));
     setReportMode(parsed.mode === "diagnosis" ? "diagnosis" : "solution");
   }, [router]);
 
@@ -563,7 +598,7 @@ export default function ReportPage() {
         </nav>
 
         <section className="panel report-panel">
-          {demo && reportMode !== "diagnosis" && <div className="notice" style={{ marginBottom: 18 }}>No AI API key is configured yet, so this is a demo report. Add your production AI provider key in Vercel environment variables before selling this publicly.</div>}
+          {demo && !localSample && reportMode !== "diagnosis" && <div className="notice" style={{ marginBottom: 18 }}>No AI API key is configured yet, so this is a demo report. Add your production AI provider key in Vercel environment variables before selling this publicly.</div>}
 
           <div className="report-header">
             <div>
@@ -649,7 +684,7 @@ export default function ReportPage() {
           ) : reportV2 ? (
             <V2Report report={reportV2} />
           ) : (
-            <article className="report">{report}</article>
+            <FormattedTextReport text={report} />
           )}
         </section>
       </div>

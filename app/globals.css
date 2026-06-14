@@ -1899,3 +1899,60 @@ button.copy-export-button {
   }
 }
 
+
+/* Formatted paid solution text */
+.formatted-report {
+  display: grid;
+  gap: 18px;
+  max-width: 980px;
+}
+
+.formatted-report h2 {
+  margin: 6px 0 4px;
+  color: #ffffff;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+}
+
+.formatted-report h3 {
+  margin: 24px 0 4px;
+  color: #ffffff;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.formatted-report p {
+  margin: 0;
+  color: #c8d2e6;
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.formatted-report .formatted-label {
+  margin-top: 10px;
+  color: #ffffff;
+  font-weight: 900;
+}
+
+.formatted-report .formatted-bullet {
+  position: relative;
+  padding-left: 22px;
+}
+
+.formatted-report .formatted-bullet::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #8ee6c8;
+  font-weight: 900;
+}
+
+.formatted-report .formatted-day {
+  padding: 12px 14px;
+  border: 1px solid rgba(142, 230, 200, 0.16);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
