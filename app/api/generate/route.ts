@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import type { AuditInput } from "../../../lib/types";
-import { buildAuditPrompt } from "../../../lib/prompt";
+import { buildAuditPrompt, buildDiagnosisPrompt, buildSolutionPrompt } from "../../../lib/prompt";
 import { verifyPaymentToken } from "../../../lib/payment-token";
 import {
   buildAuditPromptV2,
@@ -1042,10 +1042,31 @@ async function generateWithAI(input: AuditInput) {
     };
   }
 
-  const prompt = buildAuditPromptV2(input);
-  const fallbackPrompt = buildAuditPrompt(input);
+  const generationMode = input.generationMode === "diagnosis" ? "diagnosis" : "solution";
+  const normalizedInput: AuditInput = {
+    ...input,
+    tier: generationMode === "diagnosis" ? "basic" : input.tier
+  };
+
+  const modeInstruction = generationMode === "diagnosis"
+    ? `
+MODE: FREE DIAGNOSIS ONLY.
+Return valid JSON matching the required schema, but only reveal diagnostic information.
+Focus on score, executive summary, top conversion blockers, severity, and solution preview.
+Do not reveal full hero rewrites, full CTA rewrites, pricing strategy, full FAQ, full hooks, or a complete 7-day implementation plan.
+Keep paid-solution sections minimal or preview-level only.`
+    : `
+MODE: PAID CONVERSION SOLUTION.
+Return valid JSON matching the required schema.
+Provide specific, copy-ready recommendations, rewrites, fixes, and an implementation plan.`;
+
+  const prompt = `${buildAuditPromptV2(normalizedInput)}\n\n${modeInstruction}`;
+  const fallbackPrompt = generationMode === "diagnosis"
+    ? buildDiagnosisPrompt(normalizedInput)
+    : buildSolutionPrompt(normalizedInput);
+
   const temperature = 0.35;
-  const maxTokens = input.tier === "pro" ? 9000 : 4200;
+  const maxTokens = generationMode === "diagnosis" ? 3200 : normalizedInput.tier === "pro" ? 9000 : 5200;
 
   // Prefer DeepSeek when configured.
   if (deepseekKey) {
@@ -1085,7 +1106,7 @@ async function generateWithAI(input: AuditInput) {
     const rawText = data.choices?.[0]?.message?.content || "";
     if (!rawText) throw new Error("DeepSeek API returned an empty report");
 
-    const parsed = parseModelReport(rawText, input);
+    const parsed = parseModelReport(rawText, normalizedInput);
 
     // If structured JSON fails, automatically generate an old-style text report as a safe fallback.
     // This prevents customers from seeing raw or incomplete JSON.
@@ -1155,7 +1176,7 @@ async function generateWithAI(input: AuditInput) {
   const rawText = data.output_text || data.output?.flatMap((item: any) => item.content || []).map((content: any) => content.text || "").join("\n") || "";
   if (!rawText) throw new Error("OpenAI API returned an empty report");
 
-  const parsed = parseModelReport(rawText, input);
+  const parsed = parseModelReport(rawText, normalizedInput);
   return { ...parsed, demo: false };
 }
 
@@ -1165,13 +1186,15 @@ export async function POST(request: NextRequest) {
     const error = validateInput(input);
     if (error) return Response.json({ ok: false, error }, { status: 400 });
 
+    const generationMode = input.generationMode === "diagnosis" ? "diagnosis" : "solution";
     const devSkipPayment = process.env.NODE_ENV === "development" && process.env.DEV_SKIP_PAYMENT === "true";
-    const paymentRequired = !devSkipPayment && Boolean(process.env.PAYPAL_CLIENT_SECRET && process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
+    const paymentRequired = generationMode === "solution" && !devSkipPayment && Boolean(process.env.PAYPAL_CLIENT_SECRET && process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
+
     if (paymentRequired) {
       if (!input.paymentToken) {
         return Response.json({
           ok: false,
-          error: "Payment verification is required before generating a report."
+          error: "Payment verification is required before generating a conversion solution."
         }, { status: 402 });
       }
 
@@ -1179,6 +1202,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("NEW_AUDIT_ORDER", {
+      generationMode,
       email: input.email,
       paypalEmail: input.paypalEmail,
       paypalTransactionId: input.paypalTransactionId,
@@ -1194,6 +1218,6 @@ export async function POST(request: NextRequest) {
     return Response.json({ ok: true, report, reportV2, demo });
   } catch (error) {
     console.error("GENERATE_REPORT_ERROR", error);
-    return Response.json({ ok: false, error: error instanceof Error ? error.message : "Report generation failed" }, { status: 500 });
+    return Response.json({ ok: false, error: error instanceof Error ? error.message : "Generation failed" }, { status: 500 });
   }
 }

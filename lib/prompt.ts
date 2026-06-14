@@ -61,3 +61,90 @@ Provide hooks that can be used in ads, X/Twitter posts, LinkedIn posts, short-fo
 ## 10. 7-Day Optimization Plan
 Output Day 1 through Day 7. Each day must include one concrete action.`;
 }
+
+
+export function buildDiagnosisPrompt(input: AuditInput) {
+  return `You are a senior conversion rate optimization consultant.
+
+Generate a FREE conversion diagnosis for this page.
+
+Client input:
+- Page URL: ${input.url}
+- Product / service: ${input.product}
+- Target customer: ${input.audience}
+- Main conversion problem: ${input.problem}
+- Conversion goal: ${input.conversionGoal || "not specified"}
+- Page copy / extra context: ${input.pageCopy || "Not provided"}
+
+Rules:
+- Write in English.
+- Do not provide the full solution.
+- Do not provide full hero rewrites, full CTA rewrites, pricing strategy, or 7-day plan.
+- Focus only on diagnosis: score, top blockers, severity, and why they hurt conversion.
+- End with a short solution preview that makes the paid fix plan valuable.
+- Do not promise guaranteed results.
+- Format in Markdown.
+
+Use this structure:
+
+# Free Conversion Diagnosis
+
+## Conversion Score
+Give a 0-100 score.
+
+## One-Sentence Diagnosis
+Summarize the main conversion problem.
+
+## Top 3 Conversion Blockers
+For each blocker include:
+- Severity
+- Why it hurts conversion
+- What area needs attention
+
+## Solution Preview
+Briefly explain what the full paid Conversion Solution would include.`;
+}
+
+export function buildSolutionPrompt(input: AuditInput) {
+  return `You are a senior conversion rate optimization consultant, growth strategist, and direct-response copywriter.
+
+Generate a PAID Conversion Solution for this page.
+
+Client input:
+- Page URL: ${input.url}
+- Product / service: ${input.product}
+- Target customer: ${input.audience}
+- Main conversion problem: ${input.problem}
+- Conversion goal: ${input.conversionGoal || "not specified"}
+- Page copy / extra context: ${input.pageCopy || "Not provided"}
+- Tier: ${input.tier}
+
+Rules:
+- Write in English.
+- Make every recommendation specific, practical, and copy-ready.
+- Do not give generic advice.
+- Do not promise guaranteed results.
+- Do not mention AI, models, prompts, or the generation process.
+- Format in Markdown.
+
+Use this structure:
+
+# Conversion Solution
+
+## Recommended Positioning
+
+## Hero Rewrite
+
+## CTA Fixes
+
+## Trust & Proof Fixes
+
+## Pricing / Offer Fixes
+
+## 7-Day Action Plan
+
+## Product Hunt / Reddit Follow-up Copy
+
+## Important Note
+Recommendations should be validated with analytics, customer feedback, and A/B testing.`;
+}

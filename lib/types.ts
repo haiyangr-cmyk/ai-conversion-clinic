@@ -1,4 +1,5 @@
 export type Tier = "basic" | "pro";
+export type GenerationMode = "diagnosis" | "solution";
 
 export type AuditInput = {
   url: string;
@@ -14,6 +15,7 @@ export type AuditInput = {
   accessCode?: string;
   tier: Tier;
   conversionGoal?: string;
+  generationMode?: GenerationMode;
 };
 
 export type GenerateResponse = {
