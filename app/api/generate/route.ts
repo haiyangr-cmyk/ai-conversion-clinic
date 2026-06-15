@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import type { AuditInput } from "../../../lib/types";
-import { buildAuditPrompt } from "../../../lib/prompt";
+import { buildAuditPrompt, buildDiagnosisPrompt, buildSolutionPrompt } from "../../../lib/prompt";
 import { verifyPaymentToken } from "../../../lib/payment-token";
 import {
   buildAuditPromptV2,
@@ -12,7 +12,7 @@ import {
 export const runtime = "nodejs";
 
 function validateInput(input: Partial<AuditInput>) {
-  const required: Array<keyof AuditInput> = ["url", "product", "audience", "problem", "email", "tier"];
+  const required: Array<keyof AuditInput> = ["url", "product", "audience", "problem", "tier"];
   for (const key of required) {
     if (!input[key]) return `Missing field: ${key}`;
   }
@@ -1029,6 +1029,91 @@ function parseModelReport(rawText: string, input: AuditInput) {
   };
 }
 
+
+function sanitizeSolutionMarkdown(text: string) {
+  let output = text;
+
+  const proof = "verified customer proof if available";
+  const metric = "a verified performance result if available";
+  const policy = "your actual support or refund policy if available";
+  const price = "[your actual price]";
+
+  // Remove invented brand/customer proof.
+  output = output.replace(/\b(HubSpot|Mailchimp|Zapier|AdEspresso|Hootsuite|Salesforce|Slack|Notion|Stripe|Shopify)\b/gi, "verified customer");
+  output = output.replace(/\btrusted by\s+\d+\+?[^.\n]*/gi, `trusted by ${proof}`);
+  output = output.replace(/\bused by\s+[^.\n]*\d+\+?[^.\n]*/gi, `used by ${proof}`);
+  output = output.replace(/\bclients include\b[^.\n]*/gi, `clients include ${proof}`);
+  output = output.replace(/\blogos? of recognizable brands[^.\n]*/gi, proof);
+  output = output.replace(/\bclient:\s*[^\n]+/gi, `Client: ${proof}`);
+  output = output.replace(/\bcase study\b[^.\n]*(\d|%|x|revenue|signup|conversion|client)[^.\n]*/gi, `case study using ${metric}`);
+  output = output.replace(/\bvideo case study\b/gi, "verified case study if available");
+
+  // Remove invented performance numbers and lift promises.
+  output = output.replace(/\b\d+(?:\.\d+)?%\s*(?:to|→|-|–|—)\s*\d+(?:\.\d+)?%/gi, metric);
+  output = output.replace(/\b\d+(?:\.\d+)?\s*(?:-|–|—)\s*\d+(?:\.\d+)?%\s*(better|lift|increase|improvement|conversion)?/gi, metric);
+  output = output.replace(/\b\d+(?:\.\d+)?x\b/gi, metric);
+  output = output.replace(/\b\d+%\s+(increase|lift|boost|growth|improvement|conversion|signup|signups|sales|revenue)[^.\n]*/gi, metric);
+  output = output.replace(/\b(double|triple|quadruple)\s+[^.\n]*(signups|sales|revenue|conversion|conversions|customers)[^.\n]*/gi, metric);
+  output = output.replace(/\bturn\s+\d+(?:\.\d+)?%\s+of\s+[^.\n]*/gi, "turn more qualified visitors into customers");
+  // Remove invented commercial models and performance-based payment claims.
+  output = output.replace(/\byou only pay when[^.\n]*/gi, `Use ${policy}.`);
+  output = output.replace(/\bwe only get paid when[^.\n]*/gi, `Use ${policy}.`);
+  output = output.replace(/\bpay only when[^.\n]*/gi, `Use ${policy}.`);
+  output = output.replace(/\bcharge only when[^.\n]*/gi, `Use ${policy}.`);
+  output = output.replace(/\bcharged? only if[^.\n]*/gi, `Use ${policy}.`);
+  output = output.replace(/\bonly when the new page (wins|outperforms)[^.\n]*/gi, `only with ${policy}.`);
+  output = output.replace(/\bno upfront (price|payment|fee|cost)[^.\n]*/gi, `Use ${policy}.`);
+  output = output.replace(/\bfree audit, then pay only[^.\n]*/gi, `Free diagnosis first, then use ${policy}.`);
+  output = output.replace(/\brisk[- ]reversed entry point\b/gi, "low-friction entry point");
+  output = output.replace(/\bspending at least\s+\[?your actual price\]?\s*k\/month[^.\n]*/gi, "with a clearly defined target customer if available");
+  output = output.replace(/\b\d+%\\+? of visitors\b/gi, "many visitors");
+  output = output.replace(/\bleak\s+\d+%\\+? of visitors\b/gi, "lose visitors before they convert");
+  output = output.replace(/\bmore closed deals\b/gi, "more qualified conversion actions");
+  output = output.replace(/\bfaster close rates\b/gi, "a clearer path to the next sales step");
+  output = output.replace(/\bhigher revenue from the same traffic\b/gi, "better use of the same traffic");
+  output = output.replace(/\bturns? ad traffic into booked calls and closed deals\b/gi, "helps more ad visitors take the next conversion step");
+  output = output.replace(/\bturn your ad clicks into pipeline[^.\n]*/gi, "help more ad visitors take the next conversion step");
+  output = output.replace(/\bYou your actual support or refund policy if available\b/gi, `Use ${policy}`);
+
+
+  // Remove unsupported guarantees, refund terms, and free offers.
+  output = output.replace(/\b(or it'?s free|or you do not pay|or you don't pay|you don’t pay|work for free until|first month free|pay only after|refund 100%|100% refund|100% satisfaction|money[- ]back guarantee|performance guarantee|results guaranteed in writing)\b[^.\n]*/gi, policy);
+  output = output.replace(/\b\d{1,3}[- ]?day performance guarantee\b/gi, policy);
+  output = output.replace(/\bif your conversion rate doesn[’']t improve[^.\n]*/gi, policy);
+  output = output.replace(/\bif you don[’']t see[^.\n]*(increase|lift|boost|growth|improvement|result)[^.\n]*/gi, policy);
+
+  // Remove unsupported pricing and invented package claims.
+  output = output.replace(/\$\d[\d,]*(?:\.\d{2})?/g, price);
+  output = output.replace(/\$X,XXX/g, price);
+  output = output.replace(/\bone[- ]time landing page overhaul\s*[–-]\s*\[?your actual price\]?[^.\n]*/gi, `One-time landing page improvement package — ${price}`);
+  output = output.replace(/\bmonthly retainer\b/gi, "ongoing support option if available");
+  output = output.replace(/\bno long[- ]term contracts?\b/gi, "clear contract terms if available");
+  output = output.replace(/\bcancel anytime\b/gi, "clear cancellation terms if available");
+
+  // Remove fake founder/history claims in launch copy.
+  output = output.replace(/\bI spent\s+\d+\s+years[^.\n]*/gi, "I have been reviewing common landing page conversion issues");
+  output = output.replace(/\bwe spent\s+\d+\s+(weeks|months|years)[^.\n]*/gi, "We reviewed common landing page conversion issues");
+  output = output.replace(/\bwe recently helped[^.\n]*/gi, `A useful example would show ${metric}`);
+  output = output.replace(/\bwe did a full rewrite for[^.\n]*/gi, `A useful example would show ${metric}`);
+  output = output.replace(/\bwent from\s+[^.\n]*(%|x|signup|conversion)[^.\n]*/gi, metric);
+
+  // Tone down hype.
+  output = output.replace(/\bclosing machine\b/gi, "clearer conversion path");
+  output = output.replace(/\bproven copywriting\b/gi, "conversion-focused copywriting");
+  output = output.replace(/\bbacked by real conversion data\b/gi, "validated with analytics if available");
+  output = output.replace(/\bNo AI hype, just results\./gi, "Clear diagnosis and practical fixes.");
+  // Tone down remaining unsupported proof/hype language.
+  output = output.replace(/\bsales machine\b/gi, "clearer conversion path");
+  output = output.replace(/\bproven system\b/gi, "structured conversion process");
+  output = output.replace(/\bproven principles\b/gi, "conversion best practices");
+  output = output.replace(/\bearly results from testers show positive direction[^.\n]*/gi, "early user feedback is welcome");
+  output = output.replace(/\bwe[’']re not promising overnight miracles, but early user feedback is welcome\./gi, "We are looking for honest feedback from teams improving paid landing pages.");
+
+
+  return output;
+}
+
+
 async function generateWithAI(input: AuditInput) {
   const deepseekKey = process.env.DEEPSEEK_API_KEY;
   const openaiKey = process.env.OPENAI_API_KEY;
@@ -1042,10 +1127,33 @@ async function generateWithAI(input: AuditInput) {
     };
   }
 
-  const prompt = buildAuditPromptV2(input);
-  const fallbackPrompt = buildAuditPrompt(input);
+  const generationMode = input.generationMode === "diagnosis" ? "diagnosis" : "solution";
+  const normalizedInput: AuditInput = {
+    ...input,
+    tier: generationMode === "diagnosis" ? "basic" : input.tier
+  };
+
+  const diagnosisInstruction = `
+MODE: FREE DIAGNOSIS ONLY.
+Return valid JSON matching the required schema, but only reveal diagnostic information.
+Focus on score, executive summary, top conversion blockers, severity, and solution preview.
+Do not reveal full hero rewrites, full CTA rewrites, pricing strategy, full FAQ, full hooks, or a complete 7-day implementation plan.
+Keep paid-solution sections minimal or preview-level only.`;
+
+  const prompt = generationMode === "diagnosis"
+    ? `${buildAuditPromptV2(normalizedInput)}\n\n${diagnosisInstruction}`
+    : buildSolutionPrompt(normalizedInput);
+
+  const fallbackPrompt = generationMode === "diagnosis"
+    ? buildDiagnosisPrompt(normalizedInput)
+    : buildSolutionPrompt(normalizedInput);
+
+  const systemMessage = generationMode === "diagnosis"
+    ? "You are a senior CRO consultant. Return valid JSON only. Do not include Markdown or code fences."
+    : "You are a senior CRO consultant and direct-response copywriter. Return clean Markdown only. Do not return JSON.";
+
   const temperature = 0.35;
-  const maxTokens = input.tier === "pro" ? 9000 : 4200;
+  const maxTokens = generationMode === "diagnosis" ? 3200 : normalizedInput.tier === "pro" ? 9000 : 6200;
 
   // Prefer DeepSeek when configured.
   if (deepseekKey) {
@@ -1063,7 +1171,7 @@ async function generateWithAI(input: AuditInput) {
         messages: [
           {
             role: "system",
-            content: "You are a senior CRO consultant. Return valid JSON only. Do not include Markdown or code fences."
+            content: systemMessage
           },
           {
             role: "user",
@@ -1085,7 +1193,15 @@ async function generateWithAI(input: AuditInput) {
     const rawText = data.choices?.[0]?.message?.content || "";
     if (!rawText) throw new Error("DeepSeek API returned an empty report");
 
-    const parsed = parseModelReport(rawText, input);
+    if (generationMode === "solution") {
+      return {
+        report: sanitizeSolutionMarkdown(rawText),
+        reportV2: null,
+        demo: false
+      };
+    }
+
+    const parsed = parseModelReport(rawText, normalizedInput);
 
     // If structured JSON fails, automatically generate an old-style text report as a safe fallback.
     // This prevents customers from seeing raw or incomplete JSON.
@@ -1155,7 +1271,15 @@ async function generateWithAI(input: AuditInput) {
   const rawText = data.output_text || data.output?.flatMap((item: any) => item.content || []).map((content: any) => content.text || "").join("\n") || "";
   if (!rawText) throw new Error("OpenAI API returned an empty report");
 
-  const parsed = parseModelReport(rawText, input);
+  if (generationMode === "solution") {
+    return {
+      report: sanitizeSolutionMarkdown(rawText),
+      reportV2: null,
+      demo: false
+    };
+  }
+
+  const parsed = parseModelReport(rawText, normalizedInput);
   return { ...parsed, demo: false };
 }
 
@@ -1165,13 +1289,15 @@ export async function POST(request: NextRequest) {
     const error = validateInput(input);
     if (error) return Response.json({ ok: false, error }, { status: 400 });
 
+    const generationMode = input.generationMode === "diagnosis" ? "diagnosis" : "solution";
     const devSkipPayment = process.env.NODE_ENV === "development" && process.env.DEV_SKIP_PAYMENT === "true";
-    const paymentRequired = !devSkipPayment && Boolean(process.env.PAYPAL_CLIENT_SECRET && process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
+    const paymentRequired = generationMode === "solution" && !devSkipPayment && Boolean(process.env.PAYPAL_CLIENT_SECRET && process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
+
     if (paymentRequired) {
       if (!input.paymentToken) {
         return Response.json({
           ok: false,
-          error: "Payment verification is required before generating a report."
+          error: "Payment verification is required before generating a conversion solution."
         }, { status: 402 });
       }
 
@@ -1179,6 +1305,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("NEW_AUDIT_ORDER", {
+      generationMode,
       email: input.email,
       paypalEmail: input.paypalEmail,
       paypalTransactionId: input.paypalTransactionId,
@@ -1194,6 +1321,6 @@ export async function POST(request: NextRequest) {
     return Response.json({ ok: true, report, reportV2, demo });
   } catch (error) {
     console.error("GENERATE_REPORT_ERROR", error);
-    return Response.json({ ok: false, error: error instanceof Error ? error.message : "Report generation failed" }, { status: 500 });
+    return Response.json({ ok: false, error: error instanceof Error ? error.message : "Generation failed" }, { status: 500 });
   }
 }

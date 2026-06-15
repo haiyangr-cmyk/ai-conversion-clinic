@@ -2,8 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { tiers } from "../lib/pricing";
-import type { AuditInput, Tier } from "../lib/types";
+import type { AuditInput } from "../lib/types";
 
 const initialForm: AuditInput = {
   url: "",
@@ -18,16 +17,16 @@ const initialForm: AuditInput = {
 
 const useCases = [
   {
-    title: "Hero Diagnosis",
-    text: "Check whether visitors understand your value in the first 5 seconds."
+    title: "Free Diagnosis",
+    text: "Find the biggest blockers hurting your page conversion."
   },
   {
-    title: "Copy Rewrites",
-    text: "Get headline, value proposition, CTA, and objection-handling ideas."
+    title: "Copy-ready Fixes",
+    text: "Unlock rewritten copy, CTA ideas, trust fixes, and launch follow-up copy."
   },
   {
     title: "Action Plan",
-    text: "Receive a prioritized 7-day plan you can execute step by step."
+    text: "Get a practical 7-day implementation plan after unlocking the solution."
   }
 ];
 
@@ -80,15 +79,185 @@ const problemSuggestions = [
 export default function HomePage() {
   const router = useRouter();
   const [form, setForm] = useState<AuditInput>(initialForm);
+  const [diagnosisLoading, setDiagnosisLoading] = useState(false);
+  const [diagnosisError, setDiagnosisError] = useState("");
 
   function update<K extends keyof AuditInput>(key: K, value: AuditInput[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
+
+    if (key === "conversionGoal") {
+      setDiagnosisError("");
+    }
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    localStorage.setItem("audit-input", JSON.stringify(form));
-    router.push("/checkout");
+
+    if (!form.conversionGoal) {
+      setDiagnosisError("Please choose a conversion goal before running the diagnosis.");
+      return;
+    }
+
+    const payload: AuditInput = {
+      ...form,
+      tier: "basic"
+    };
+
+    localStorage.setItem("audit-input", JSON.stringify(payload));
+    setDiagnosisLoading(true);
+    setDiagnosisError("");
+
+    try {
+      const useSampleFlow = process.env.NEXT_PUBLIC_ACC_USE_SAMPLE_FLOW === "true";
+
+      if (!useSampleFlow) {
+        const res = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...payload, generationMode: "diagnosis" })
+        });
+
+        const data = await res.json();
+
+        if (!data.ok || !data.report) {
+          throw new Error(data.error || "Diagnosis generation failed");
+        }
+
+        localStorage.setItem("audit-report", JSON.stringify({
+          report: data.report,
+          reportV2: data.reportV2 || null,
+          input: payload,
+          demo: data.demo || false,
+          mode: "diagnosis",
+          generatedAt: new Date().toISOString()
+        }));
+
+        router.push("/report");
+        return;
+      }
+
+      const sampleReport = {
+        meta: {
+          tier: "basic",
+          pageType: "landing_page",
+          evidenceQuality: "medium",
+          inputSummary: "Sample local diagnosis for testing the ACC 2.0 flow without calling the AI API."
+        },
+        executiveSummary: {
+          overallScore: 64,
+          oneSentenceDiagnosis: "The page explains the product, but it does not make the buyer outcome, trust proof, and next step clear enough in the first 5 seconds.",
+          biggestOpportunity: "Make the hero section more outcome-specific and show proof before asking visitors to act.",
+          primaryAction: "Rewrite the above-the-fold message around the visitor's desired outcome and add trust signals near the primary CTA."
+        },
+        scoreBreakdown: [
+          { label: "Offer clarity", score: 62, reason: "The offer is visible, but the visitor outcome is not specific enough." },
+          { label: "CTA strength", score: 58, reason: "The CTA does not clearly communicate what the visitor gets next." },
+          { label: "Trust signals", score: 52, reason: "The page needs stronger proof, examples, or reassurance near the decision point." },
+          { label: "Friction", score: 70, reason: "The flow is understandable, but the next step could feel lower-risk." }
+        ],
+        topLeaks: [
+          {
+            title: "Weak positioning above the fold",
+            impact: "high",
+            whyItHurts: "Visitors may understand the category but not why this offer matters to them right now.",
+            whatToChange: "Lead with the target customer's desired outcome, not only the product category.",
+            betterExample: "Turn more launch traffic into signups with a clear, conversion-focused page diagnosis."
+          },
+          {
+            title: "Generic CTA",
+            impact: "medium",
+            whyItHurts: "A generic CTA creates uncertainty about what happens after the click.",
+            whatToChange: "Use an action-oriented CTA that describes the next step.",
+            betterExample: "Run Free Diagnosis"
+          },
+          {
+            title: "Missing trust proof",
+            impact: "medium",
+            whyItHurts: "Users need evidence before trusting recommendations or paying for a fix plan.",
+            whatToChange: "Add a sample diagnosis, support policy, and clear explanation of what is included.",
+            betterExample: "See an example diagnosis before unlocking the full fix plan."
+          }
+        ],
+        rewrites: [
+          {
+            type: "hero_headline",
+            before: "AI-powered landing page audit",
+            after: "Find out why your landing page isn’t converting.",
+            whyThisWorks: "It names the pain directly and creates a reason to run the diagnosis."
+          },
+          {
+            type: "primary_cta",
+            before: "Get audit",
+            after: "Run Free Diagnosis",
+            whyThisWorks: "It lowers the first-step risk and aligns with the free diagnosis model."
+          }
+        ],
+        categoryAudit: {
+          summary: "This sample diagnosis focuses on the free diagnosis flow.",
+          checks: []
+        },
+        priorityFixes: {
+          quickWins: [
+            {
+              title: "Clarify the first-step value",
+              action: "Make the first CTA about diagnosis, not payment.",
+              expectedOutcome: "More visitors understand they can try the tool before paying."
+            },
+            {
+              title: "Show a locked solution preview",
+              action: "List the exact modules users can unlock after the diagnosis.",
+              expectedOutcome: "Users see what the paid fix plan contains."
+            }
+          ],
+          biggerFixes: []
+        },
+        buyerObjections: [],
+        faqIdeas: [],
+        hooks: [],
+        sevenDayPlan: [
+          { day: 1, title: "Rewrite hero message", action: "Use a pain-led headline and diagnosis-focused CTA.", expectedOutcome: "Visitors understand the offer faster." },
+          { day: 2, title: "Add solution preview", action: "Show what is locked behind the paid solution.", expectedOutcome: "Unlock intent becomes clearer." },
+          { day: 3, title: "Add trust support", action: "Keep Support, Refund, and Privacy visible.", expectedOutcome: "Payment risk feels lower." }
+        ],
+        disclaimer: "This sample diagnosis is for local testing only. Recommendations should be validated with analytics, customer feedback, and A/B testing."
+      };
+
+      const sampleText = `# Free Conversion Diagnosis
+
+Overall Score: 64/100
+
+The page explains the product, but it does not make the buyer outcome, trust proof, and next step clear enough in the first 5 seconds.
+
+## Top Conversion Blockers
+
+1. Weak positioning above the fold — High severity
+Visitors may understand the category but not why this offer matters to them right now.
+
+2. Generic CTA — Medium severity
+A generic CTA creates uncertainty about what happens after the click.
+
+3. Missing trust proof — Medium severity
+Users need evidence before trusting recommendations or paying for a fix plan.
+
+## Solution Preview
+
+We found practical fixes for positioning, hero copy, CTA, trust proof, offer framing, and launch follow-up copy.`;
+
+      localStorage.setItem("audit-report", JSON.stringify({
+        report: sampleText,
+        reportV2: sampleReport,
+        input: payload,
+        demo: true,
+        mode: "diagnosis",
+        generatedAt: new Date().toISOString()
+      }));
+
+      router.push("/report");
+    } catch (err) {
+      setDiagnosisError(err instanceof Error ? err.message : "Sample diagnosis failed. Please try again.");
+    } finally {
+      setDiagnosisLoading(false);
+    }
   }
 
   return (
@@ -96,30 +265,30 @@ export default function HomePage() {
       <div className="container">
         <nav className="nav">
           <div className="brand"><img className="brand-logo" src="/logo.jpeg" alt="AI Conversion Clinic logo" />AI Conversion Clinic</div>
-          <span className="badge">Conversion audit in minutes · PayPal checkout</span>
+          <span className="badge">Free diagnosis · Paid fix plan</span>
         </nav>
 
         <section className="grid">
           <div className="hero">
             <div className="eyebrow">AI-powered landing page audit</div>
-            <h1>Why are visitors not buying from your page?</h1>
-            <p>Submit your landing page, Shopify store, SaaS page, course sales page, service page, or sales page. Get an actionable conversion audit with headline rewrites, CTA ideas, buyer objections, FAQ recommendations, ad/social hooks, and a 7-day optimization plan.</p>
+            <h1>Find out why your landing page isn’t converting.</h1>
+            <p>AI Conversion Clinic diagnoses your landing page, identifies the biggest conversion blockers, and generates a practical fix plan you can ship this week.</p>
 
             <div className="hero-actions">
-              <a className="mini-cta" href="#audit-form">Start audit</a>
-              <a className="mini-cta secondary" href="#sample-report">View sample report</a>
+              <a className="mini-cta" href="#audit-form">Run Free Diagnosis</a>
+              <a className="mini-cta secondary" href="#sample-report">See Example Diagnosis</a>
             </div>
 
             <div className="cards">
-              <div className="card"><strong>Hero Diagnosis</strong><span>Check whether visitors understand your value in the first 5 seconds.</span></div>
-              <div className="card"><strong>Copy Rewrites</strong><span>Get headline, value proposition, CTA, and objection-handling ideas.</span></div>
-              <div className="card"><strong>Action Plan</strong><span>Receive a prioritized 7-day plan you can execute step by step.</span></div>
+              <div className="card"><strong>Free Diagnosis</strong><span>Find the biggest blockers hurting your page conversion.</span></div>
+              <div className="card"><strong>Copy-ready Fixes</strong><span>Unlock rewritten copy, CTA ideas, trust fixes, and launch follow-up copy.</span></div>
+              <div className="card"><strong>Action Plan</strong><span>Get a practical 7-day implementation plan after unlocking the solution.</span></div>
             </div>
 
             <div className="steps">
               <div className="step">Submit your page URL, product, audience, and conversion problem.</div>
-              <div className="step">Choose Basic or Pro and complete secure PayPal checkout.</div>
-              <div className="step">Get your AI-generated conversion audit after payment confirmation.</div>
+              <div className="step">Get a free diagnosis of your top conversion blockers.</div>
+              <div className="step">Unlock a paid conversion solution if the diagnosis feels accurate.</div>
             </div>
 </div>
 
@@ -282,31 +451,57 @@ export default function HomePage() {
             </div>
 
             <div className="field">
-              <label>Choose your report</label>
-              <div className="price-grid">
-                {(Object.keys(tiers) as Tier[]).map((tier) => (
-                  <button
-                    type="button"
-                    key={tier}
-                    className={`price-card ${form.tier === tier ? "active" : ""}`}
-                    onClick={() => update("tier", tier)}
-                  >
-                    <strong>{tiers[tier].name}</strong>
-                    <div className="price">{tiers[tier].price}</div>
-                    <span className="muted">{tiers[tier].description}</span>
-                  </button>
-                ))}
+              <label>Conversion goal <span className="required-mark">*</span></label>
+              <div className="price-grid conversion-goal-grid">
+                <button
+                  type="button"
+                  className={`price-card goal-card ${form.conversionGoal === "signups" ? "active" : ""}`}
+                  onClick={() => update("conversionGoal", "signups")}
+                >
+                  <strong>More signups</strong>
+                  <span className="muted">Improve signup, waitlist, or trial conversion.</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`price-card goal-card ${form.conversionGoal === "paid_users" ? "active" : ""}`}
+                  onClick={() => update("conversionGoal", "paid_users")}
+                >
+                  <strong>More paid users</strong>
+                  <span className="muted">Improve paid conversion from traffic or free users.</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`price-card goal-card ${form.conversionGoal === "demo_calls" ? "active" : ""}`}
+                  onClick={() => update("conversionGoal", "demo_calls")}
+                >
+                  <strong>More demo calls</strong>
+                  <span className="muted">Improve demo, booking, or consultation conversion.</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`price-card goal-card ${form.conversionGoal === "launch_conversion" ? "active" : ""}`}
+                  onClick={() => update("conversionGoal", "launch_conversion")}
+                >
+                  <strong>Launch conversion</strong>
+                  <span className="muted">Optimize Product Hunt, Reddit, or launch traffic.</span>
+                </button>
               </div>
             </div>
 
-            <button className="cta" type="submit">Continue to payment</button>
-            <p className="footer">Secure PayPal checkout · Report generated after payment confirmation</p>
+            <button className="cta" type="submit" disabled={diagnosisLoading}>
+              {diagnosisLoading ? "Generating diagnosis..." : "Run Free Diagnosis"}
+            </button>
+            {diagnosisError ? <p className="form-error">{diagnosisError}</p> : null}
+            <p className="footer">Free diagnosis first · Secure PayPal checkout for the full solution</p>
           </form>
         </section>
 
         <section id="sample-report" className="section">
           <div className="section-heading">
-            <span className="eyebrow">Sample report preview</span>
+            <span className="eyebrow">Example Diagnosis preview</span>
             <h2>What you get after checkout</h2>
             <p>
               The report is designed to give practical direction, not generic website feedback.
@@ -348,7 +543,7 @@ export default function HomePage() {
 
         <section className="section comparison-section" id="compare-plans">
           <div className="section-heading compact">
-            <span className="eyebrow">Basic vs Pro</span>
+            <span className="eyebrow">Solution Plans</span>
             <h2>Choose the depth you need</h2>
             <p>
               Basic gives you a quick diagnosis. Pro gives you a fuller action plan for pages with traffic,
@@ -356,11 +551,11 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="compare-table" role="table" aria-label="Basic and Pro audit comparison">
+          <div className="compare-table" role="table" aria-label="Conversion solution plan comparison">
             <div className="compare-row compare-head" role="row">
               <div role="columnheader">What you get</div>
-              <div role="columnheader">Basic Audit · $9</div>
-              <div role="columnheader">Pro Audit · $29</div>
+              <div role="columnheader">Conversion Solution · $9</div>
+              <div role="columnheader">Solution Pro · $29</div>
             </div>
 
             <div className="compare-row" role="row">
