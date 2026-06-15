@@ -595,7 +595,7 @@ export default function ReportPage() {
       <div className="container">
         <nav className="nav">
           <div className="brand"><img className="brand-logo" src="/logo.jpeg" alt="AI Conversion Clinic logo" />AI Conversion Clinic</div>
-          <a className="badge" href="/">{reportMode === "diagnosis" ? "Run another diagnosis" : "Generate a new report"}</a>
+          <a className="badge" href="/">Run another diagnosis</a>
         </nav>
 
         <section className="panel report-panel">
