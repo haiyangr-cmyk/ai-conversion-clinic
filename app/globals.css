@@ -1956,3 +1956,155 @@ button.copy-export-button {
   background: rgba(255, 255, 255, 0.035);
 }
 
+
+/* ACC 2.0 final UI consistency polish */
+.nav {
+  gap: 16px;
+}
+
+.nav .badge,
+.badge {
+  white-space: nowrap;
+}
+
+.grid > .panel {
+  align-self: start;
+}
+
+.report-header {
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.report-header > div:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.report-header button,
+.report-header .cta,
+.report-header .secondary-button {
+  min-height: 54px;
+  padding: 0 28px;
+  border-radius: 16px;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.report-header .copy-button {
+  min-width: 148px;
+}
+
+.dev-skip-button {
+  min-height: 52px;
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 16px;
+  font-weight: 800;
+  text-align: center;
+}
+
+[role="table"] {
+  width: 100%;
+  overflow: hidden;
+}
+
+[role="row"] {
+  min-width: 0;
+}
+
+[role="cell"],
+[role="columnheader"] {
+  min-width: 0;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 760px) {
+  .wrapper {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .nav {
+    align-items: center;
+  }
+
+  .nav .brand {
+    min-width: 0;
+  }
+
+  .nav .badge,
+  .badge {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .report-header {
+    display: block;
+  }
+
+  .report-header > div:last-child {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 18px;
+    justify-content: stretch;
+  }
+
+  .report-header button,
+  .report-header .cta,
+  .report-header .secondary-button,
+  .report-header .copy-button {
+    width: 100%;
+    min-width: 0;
+    min-height: 52px;
+    padding: 0 18px;
+  }
+
+  [role="table"] {
+    display: grid;
+    gap: 12px;
+    border: 0;
+    background: transparent;
+  }
+
+  [role="row"] {
+    display: grid;
+    grid-template-columns: 1fr;
+    border: 1px solid rgba(142, 230, 207, 0.16);
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  [role="cell"],
+  [role="columnheader"] {
+    display: block;
+    border: 0 !important;
+    padding: 12px 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  h1 {
+    letter-spacing: -0.05em;
+  }
+
+  .panel {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  .cta,
+  .secondary-button {
+    width: 100%;
+  }
+}
