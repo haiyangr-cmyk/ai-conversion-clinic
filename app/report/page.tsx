@@ -80,12 +80,16 @@ function conversionGoalLabel(goal?: string) {
   return goal ? labels[goal] || goal : "Not specified";
 }
 
+function solutionTitle(input: AuditInput | null) {
+  return input?.tier === "pro" ? "Pro Conversion Solution" : "Basic Conversion Solution";
+}
+
 function buildReportBaseName(
   reportMode: "diagnosis" | "solution",
   input: AuditInput | null,
   reportV2: AuditReportV2 | null
 ) {
-  const kind = reportMode === "diagnosis" ? "Free-Diagnosis" : "Conversion-Solution";
+  const kind = reportMode === "diagnosis" ? "Free-Diagnosis" : input?.tier === "pro" ? "Pro-Solution" : "Basic-Solution";
   const rawSource = input?.url || reportV2?.meta?.pageUrl || input?.product || "landing-page";
   const source = slugifyFilePart(rawSource);
   const date = new Date().toISOString().slice(0, 10);
@@ -233,7 +237,7 @@ function buildSolutionExportText(report: string, input: AuditInput | null) {
     : rawLines;
 
   return [
-    "# Conversion Solution",
+    `# ${solutionTitle(input)}`,
     "",
     `Page URL: ${input?.url || "Not provided"}`,
     `Product / service: ${input?.product || "Not provided"}`,
@@ -780,7 +784,7 @@ export default function ReportPage() {
           <div className="report-header">
             <div>
               <span className="eyebrow">{reportMode === "diagnosis" ? "Generated diagnosis" : "Generated solution"}</span>
-              <h1>{reportMode === "diagnosis" ? "Your Conversion Diagnosis" : "Conversion Solution"}</h1>
+              <h1>{reportMode === "diagnosis" ? "Your Conversion Diagnosis" : solutionTitle(input)}</h1>
             </div>
                         <button
               className="report-export-button primary-export-button"

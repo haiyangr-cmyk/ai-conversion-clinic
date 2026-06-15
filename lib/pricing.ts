@@ -2,15 +2,32 @@ import type { Tier } from "./types";
 
 export const tiers: Record<Tier, { name: string; price: string; description: string; features: string[] }> = {
   basic: {
-    name: "Conversion Solution",
+    name: "Basic Conversion Solution",
     price: "$9",
-    description: "Unlock copy-ready fixes for your biggest conversion blockers.",
-    features: ["Conversion score", "Hero section diagnosis", "Headline/CTA rewrites", "5 action items"]
+    description: "Core copy-ready fixes for the biggest blockers found in your free diagnosis.",
+    features: [
+      "Recommended positioning",
+      "Hero rewrite",
+      "CTA fixes",
+      "Trust and proof fixes",
+      "Pricing / offer fixes",
+      "7-day action plan",
+      "1 Product Hunt / Reddit follow-up copy"
+    ]
   },
   pro: {
-    name: "Solution Pro",
+    name: "Pro Conversion Solution",
     price: "$29",
-    description: "Best for deeper fixes, launch follow-up copy, and a fuller action plan.",
-    features: ["Full funnel diagnosis", "Buyer objections", "FAQ", "Ad hooks", "7-day optimization plan"]
+    description: "Expanded fix plan with variants, page structure, objections, testing, and launch copy.",
+    features: [
+      "Everything in Basic",
+      "3 hero headline variants",
+      "3 CTA variants",
+      "Section-by-section rewrite plan",
+      "Objection / FAQ fixes",
+      "A/B testing plan",
+      "Product Hunt + Reddit copy variants",
+      "14-day follow-up checklist"
+    ]
   }
 };

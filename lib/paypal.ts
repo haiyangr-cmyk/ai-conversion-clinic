@@ -58,14 +58,14 @@ export async function createPayPalOrder(tier: Tier) {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
-      "PayPal-Request-Id": `audit-${tier}-${Date.now()}-${Math.random().toString(16).slice(2)}`
+      "PayPal-Request-Id": `solution-${tier}-${Date.now()}-${Math.random().toString(16).slice(2)}`
     },
     body: JSON.stringify({
       intent: "CAPTURE",
       purchase_units: [
         {
-          reference_id: `ai-conversion-audit-${tier}`,
-          description: tier === "pro" ? "AI Conversion Audit - Pro" : "AI Conversion Audit - Basic",
+          reference_id: `ai-conversion-solution-${tier}`,
+          description: tier === "pro" ? "AI Conversion Clinic - Pro Solution" : "AI Conversion Clinic - Basic Solution",
           amount: {
             currency_code: currency,
             value: amount

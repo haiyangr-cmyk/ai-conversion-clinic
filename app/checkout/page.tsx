@@ -3,12 +3,161 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { tiers } from "../../lib/pricing";
-import type { AuditInput, GenerateResponse } from "../../lib/types";
+import type { AuditInput, GenerateResponse, Tier } from "../../lib/types";
 
 declare global {
   interface Window {
     paypal?: any;
   }
+}
+
+function buildLocalSampleSolution(tier: Tier) {
+  if (tier === "pro") {
+    return `# Pro Conversion Solution
+
+## Recommended Positioning
+
+Position the page around the visitor's desired conversion outcome, then connect that outcome to a clearer page flow, proof placement, and next-step CTA.
+
+## Hero Rewrite
+
+Headline:
+Find out why your landing page is not converting — then fix the highest-impact blockers.
+
+Subheadline:
+Run a free diagnosis first. If the diagnosis is accurate, unlock a full fix plan with copy, structure, proof, offer, and testing recommendations.
+
+Primary CTA:
+Run Free Diagnosis
+
+## Hero Variants
+
+1. Find the conversion blockers costing your landing page signups.
+2. Diagnose your landing page before spending more on traffic.
+3. Turn unclear page messaging into a practical conversion fix plan.
+
+## CTA Fixes
+
+Use one primary CTA before payment and one clear unlock CTA after diagnosis.
+
+## CTA Variants
+
+1. Run Free Diagnosis
+2. Diagnose My Landing Page
+3. Unlock My Conversion Solution
+
+## Section-by-Section Page Rewrite
+
+Hero: Lead with the conversion problem.
+Proof section: Show sample output and support terms before payment.
+Offer section: Explain what the user gets after unlocking.
+CTA section: Keep the next step specific and low-friction.
+
+## Trust & Proof Plan
+
+Add a sample diagnosis, support/refund links, privacy link, and a clear explanation that recommendations should be validated with analytics and testing.
+
+## Pricing / Offer Variants
+
+Keep the paid offer simple. Compare Basic and Pro by depth of solution, not by unsupported claims.
+
+## Objection Handling / FAQ
+
+Q: Is the diagnosis free?
+A: Yes. The diagnosis identifies blockers before payment.
+
+Q: What does Pro include?
+A: Pro includes deeper variants, section guidance, objection handling, testing guidance, and follow-up copy.
+
+## A/B Testing Plan
+
+Test one headline, one CTA, and one proof placement change before changing the whole page.
+
+## 7-Day Implementation Plan
+
+Day 1: Rewrite the hero around the main conversion problem.
+Day 2: Add diagnosis and solution CTA flow.
+Day 3: Add sample output and support links.
+Day 4: Improve proof placement.
+Day 5: Add FAQ / objection handling.
+Day 6: Test Product Hunt or Reddit traffic.
+Day 7: Review unlock clicks and checkout conversion.
+
+## 14-Day Follow-up Checklist
+
+Days 8-10: Review analytics and scroll depth.
+Days 11-12: Test CTA variation.
+Days 13-14: Decide whether to keep, revise, or roll back changes.
+
+## Product Hunt Launch Copy
+
+I rebuilt AI Conversion Clinic around a free diagnosis first, paid solution second model. The goal is to help founders see landing page blockers before paying for a full fix plan.
+
+## Reddit Post & Comment Variants
+
+Post idea:
+I changed my landing page audit product from paid-first to free diagnosis first. What would you need to see before paying for the full solution?
+
+Comment idea:
+Happy to share the free diagnosis flow if useful. I am trying to learn whether the diagnosis feels accurate before asking users to unlock the full fix plan.
+
+## Important Note
+
+Recommendations should be validated with analytics, customer feedback, and A/B testing.`;
+  }
+
+  return `# Basic Conversion Solution
+
+## Recommended Positioning
+
+For teams with traffic but low conversion, position the page around the visitor's desired outcome instead of the product category.
+
+## Hero Rewrite
+
+Headline:
+Find out why your landing page isn't converting.
+
+Subheadline:
+Get a free diagnosis of your biggest conversion blockers, then unlock a practical fix plan you can ship this week.
+
+Primary CTA:
+Run Free Diagnosis
+
+## CTA Fixes
+
+- Use "Run Free Diagnosis" before payment.
+- Use "Unlock Conversion Solution" after the diagnosis.
+- Avoid generic CTAs like "Get Started" when the user does not yet know the value.
+
+## Trust & Proof Fixes
+
+- Keep Support, Refund, and Privacy visible.
+- Show an example diagnosis before asking for payment.
+- Explain that recommendations should be validated with analytics and testing.
+
+## Pricing / Offer Fixes
+
+- Make the first step free.
+- Make the paid step about unlocking exact fixes, not buying a longer report.
+- Keep the paid offer simple and low-friction.
+
+## 7-Day Action Plan
+
+Day 1: Rewrite the hero message around the visitor's pain.
+Day 2: Replace generic CTAs with diagnosis and solution CTAs.
+Day 3: Add a locked solution preview.
+Day 4: Add trust and support notes near payment.
+Day 5: Add an example diagnosis page.
+Day 6: Test one high-intent Reddit or Product Hunt traffic source.
+Day 7: Review unlock clicks and payment conversion.
+
+## Product Hunt / Reddit Follow-up Copy
+
+I updated AI Conversion Clinic around a clearer model: diagnosis is free, solutions are paid. Paste your landing page to see the top blockers, then unlock a practical fix plan if the diagnosis feels accurate.
+
+## Important Note
+
+Recommendations should be validated with analytics, customer feedback, and A/B testing.`;
 }
 
 export default function CheckoutPage() {
@@ -42,6 +191,29 @@ export default function CheckoutPage() {
     if (!clientId) return "";
     return `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=${encodeURIComponent(currency)}&intent=capture&components=buttons&locale=en_US&disable-funding=paylater`;
   }, [clientId, currency]);
+
+  function selectTier(tier: Tier) {
+    setInput((prev) => {
+      if (!prev) return prev;
+
+      const next = { ...prev, tier };
+      localStorage.setItem("audit-input", JSON.stringify(next));
+      return next;
+    });
+
+    setPaypalOrderId("");
+    setPaymentToken("");
+    setPaymentComplete(false);
+    setError("");
+
+    if (paypalRef.current) {
+      paypalRef.current.innerHTML = "";
+    }
+
+    if (clientId) {
+      setPaypalLoading(true);
+    }
+  }
 
   useEffect(() => {
     if (!input || !paypalRef.current || paymentComplete) return;
@@ -175,54 +347,7 @@ export default function CheckoutPage() {
       const useLocalSampleSolution = process.env.NEXT_PUBLIC_ACC_USE_SAMPLE_FLOW === "true";
 
       if (useLocalSampleSolution) {
-        const sampleSolution = `# Conversion Solution
-
-## Recommended Positioning
-
-For teams with traffic but low conversion, position the page around the visitor's desired outcome instead of the product category.
-
-## Hero Rewrite
-
-Headline:
-Find out why your landing page isn't converting.
-
-Subheadline:
-Get a free diagnosis of your biggest conversion blockers, then unlock a practical fix plan you can ship this week.
-
-Primary CTA:
-Run Free Diagnosis
-
-## CTA Fixes
-
-- Use "Run Free Diagnosis" before payment.
-- Use "Unlock Conversion Solution" after the diagnosis.
-- Avoid generic CTAs like "Get Started" when the user does not yet know the value.
-
-## Trust & Proof Fixes
-
-- Keep Support, Refund, and Privacy visible.
-- Show an example diagnosis before asking for payment.
-- Explain that the diagnosis is AI-generated and should be validated with analytics and testing.
-
-## Pricing / Offer Fixes
-
-- Make the first step free.
-- Make the paid step about unlocking exact fixes, not buying a longer report.
-- Keep the paid offer simple and low-friction.
-
-## 7-Day Action Plan
-
-Day 1: Rewrite the hero message around the visitor's pain.
-Day 2: Replace generic CTAs with diagnosis and solution CTAs.
-Day 3: Add a locked solution preview.
-Day 4: Add trust and support notes near payment.
-Day 5: Add an example diagnosis page.
-Day 6: Test one high-intent Reddit or Product Hunt traffic source.
-Day 7: Review unlock clicks and payment conversion.
-
-## Product Hunt / Reddit Follow-up Copy
-
-I updated AI Conversion Clinic around a clearer model: diagnosis is free, solutions are paid. Paste your landing page to see the top blockers, then unlock a practical fix plan if the diagnosis feels accurate.`;
+        const sampleSolution = buildLocalSampleSolution(input.tier);
 
         localStorage.setItem("audit-report", JSON.stringify({
           report: sampleSolution,
@@ -277,8 +402,43 @@ I updated AI Conversion Clinic around a clearer model: diagnosis is free, soluti
         <section className="grid">
           <div className="panel">
             <h1 style={{ marginTop: 0 }}>Unlock your Conversion Solution</h1>
+            <p className="muted">Choose the depth of the paid solution you want to unlock.</p>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12, margin: "18px 0" }}>
+              {(["basic", "pro"] as Tier[]).map((tier) => {
+                const selected = input.tier === tier;
+
+                return (
+                  <button
+                    key={tier}
+                    type="button"
+                    onClick={() => selectTier(tier)}
+                    style={{
+                      textAlign: "left",
+                      borderRadius: 18,
+                      border: selected ? "2px solid #8ee6cf" : "1px solid rgba(142, 230, 207, 0.28)",
+                      background: selected ? "rgba(142, 230, 207, 0.10)" : "rgba(255,255,255,0.03)",
+                      color: "inherit",
+                      padding: 18,
+                      cursor: "pointer"
+                    }}
+                  >
+                    <span className="eyebrow">{selected ? "Selected" : "Option"}</span>
+                    <strong style={{ display: "block", marginTop: 8 }}>{tiers[tier].name}</strong>
+                    <span style={{ display: "block", fontSize: 28, fontWeight: 900, marginTop: 8 }}>{tiers[tier].price}</span>
+                    <p className="muted" style={{ marginBottom: 10 }}>{tiers[tier].description}</p>
+                    <ul style={{ margin: 0, paddingLeft: 18 }}>
+                      {tiers[tier].features.slice(0, 4).map((feature) => (
+                        <li key={feature}>{feature}</li>
+                      ))}
+                    </ul>
+                  </button>
+                );
+              })}
+            </div>
+
             <p className="muted">
-              You selected <strong>{tiers[input.tier].name}</strong> for <strong>{tiers[input.tier].price}</strong>.
+              Selected: <strong>{tiers[input.tier].name}</strong> for <strong>{tiers[input.tier].price}</strong>.
             </p>
 
             <div className="card" style={{ margin: "18px 0" }}>
@@ -300,7 +460,7 @@ I updated AI Conversion Clinic around a clearer model: diagnosis is free, soluti
 
             {paymentComplete && (
               <div className="notice">
-                Payment confirmed. Your PayPal order ID is <strong>{paypalOrderId}</strong>. You can now generate your conversion audit report.
+                Payment confirmed. Your PayPal order ID is <strong>{paypalOrderId}</strong>. You can now generate your conversion solution.
               </div>
             )}
 
@@ -319,12 +479,12 @@ I updated AI Conversion Clinic around a clearer model: diagnosis is free, soluti
             {error && <div className="error" style={{ marginTop: 18 }}>{error}</div>}
 
             <button className="cta" disabled={!paymentComplete || reportLoading} type="submit" style={{ marginTop: 18 }}>
-              {reportLoading ? "Generating solution..." : paymentComplete ? "Generate my report" : "Complete PayPal payment first"}
+              {reportLoading ? "Generating solution..." : paymentComplete ? `Generate ${tiers[input.tier].name}` : "Complete PayPal payment first"}
             </button>
 
                       {isLocalDevCheckout && (
             <button
-              className="secondary-button dev-skip-button"
+              className="cta secondary dev-skip-button"
               type="button"
               onClick={() => {
                 const form = document.querySelector("form");

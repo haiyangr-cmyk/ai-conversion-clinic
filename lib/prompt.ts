@@ -106,9 +106,74 @@ Briefly explain what the full paid Conversion Solution would include.`;
 }
 
 export function buildSolutionPrompt(input: AuditInput) {
+  const isPro = input.tier === "pro";
+  const tierName = isPro ? "Pro Conversion Solution" : "Basic Conversion Solution";
+
+  const tierInstruction = isPro
+    ? `This is the $29 Pro Conversion Solution.
+Make it substantially deeper than Basic.
+Include multiple variants, page-structure guidance, objection handling, A/B test guidance, launch follow-up copy variants, and a 14-day follow-up checklist.
+Do not include human review, dashboard features, account features, or manual consulting promises.`
+    : `This is the $9 Basic Conversion Solution.
+Keep it concise and focused on the highest-leverage fixes.
+Include one strong recommendation per section, not multiple large variant sets.
+Do not include Pro-only sections such as headline variants, CTA variants, section-by-section rewrite, FAQ bank, A/B testing plan, or 14-day follow-up checklist.`;
+
+  const structure = isPro
+    ? `# Pro Conversion Solution
+
+## Recommended Positioning
+
+## Hero Rewrite
+
+## Hero Variants
+
+## CTA Fixes
+
+## CTA Variants
+
+## Section-by-Section Page Rewrite
+
+## Trust & Proof Plan
+
+## Pricing / Offer Variants
+
+## Objection Handling / FAQ
+
+## A/B Testing Plan
+
+## 7-Day Implementation Plan
+
+## 14-Day Follow-up Checklist
+
+## Product Hunt Launch Copy
+
+## Reddit Post & Comment Variants
+
+## Important Note
+Recommendations should be validated with analytics, customer feedback, and A/B testing.`
+    : `# Basic Conversion Solution
+
+## Recommended Positioning
+
+## Hero Rewrite
+
+## CTA Fixes
+
+## Trust & Proof Fixes
+
+## Pricing / Offer Fixes
+
+## 7-Day Action Plan
+
+## Product Hunt / Reddit Follow-up Copy
+
+## Important Note
+Recommendations should be validated with analytics, customer feedback, and A/B testing.`;
+
   return `You are a senior conversion rate optimization consultant, growth strategist, and direct-response copywriter.
 
-Generate a PAID Conversion Solution for this page.
+Generate a PAID ${tierName} for this page.
 
 Client input:
 - Page URL: ${input.url}
@@ -117,7 +182,10 @@ Client input:
 - Main conversion problem: ${input.problem}
 - Conversion goal: ${input.conversionGoal || "not specified"}
 - Page copy / extra context: ${input.pageCopy || "Not provided"}
-- Tier: ${input.tier}
+- Tier: ${input.tier} (${tierName})
+
+Tier instructions:
+${tierInstruction}
 
 Rules:
 - Write in English.
@@ -126,6 +194,9 @@ Rules:
 - Do not promise guaranteed results.
 - Do not mention AI, models, prompts, or the generation process.
 - Format in Markdown.
+- Match the exact tier structure below.
+- Do not include Pro-only sections in the Basic solution.
+- Do not make Basic and Pro look like the same product.
 
 Hard safety rules:
 - Do not invent customer names, company logos, testimonials, case studies, traffic numbers, revenue numbers, conversion rates, ratings, follower counts, or performance results.
@@ -152,24 +223,8 @@ Hard safety rules:
 - Do not use statistics like "90% of visitors leak" unless supplied by the user.
 - Recommend wording changes, structure changes, proof placement, CTA clarity, and validation steps. Do not invent business policies.
 
-Use this structure:
+Use this exact structure:
 
-# Conversion Solution
-
-## Recommended Positioning
-
-## Hero Rewrite
-
-## CTA Fixes
-
-## Trust & Proof Fixes
-
-## Pricing / Offer Fixes
-
-## 7-Day Action Plan
-
-## Product Hunt / Reddit Follow-up Copy
-
-## Important Note
-Recommendations should be validated with analytics, customer feedback, and A/B testing.`;
+${structure}`;
 }
+
