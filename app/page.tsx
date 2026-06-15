@@ -84,10 +84,19 @@ export default function HomePage() {
 
   function update<K extends keyof AuditInput>(key: K, value: AuditInput[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
+
+    if (key === "conversionGoal") {
+      setDiagnosisError("");
+    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!form.conversionGoal) {
+      setDiagnosisError("Please choose a conversion goal before running the diagnosis.");
+      return;
+    }
 
     const payload: AuditInput = {
       ...form,
