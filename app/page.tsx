@@ -76,6 +76,21 @@ const problemSuggestions = [
   "Visitors leave without clicking the CTA"
 ].sort((a, b) => a.localeCompare(b));
 
+function getOrCreateVisitorId() {
+  if (typeof window === "undefined") return "server";
+
+  const key = "acc2-visitor-id";
+  const existing = localStorage.getItem(key);
+  if (existing) return existing;
+
+  const value = typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : `visitor-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+  localStorage.setItem(key, value);
+  return value;
+}
+
 export default function HomePage() {
   const router = useRouter();
   const [form, setForm] = useState<AuditInput>(initialForm);
@@ -100,7 +115,8 @@ export default function HomePage() {
 
     const payload: AuditInput = {
       ...form,
-      tier: "basic"
+      tier: "basic",
+      visitorId: getOrCreateVisitorId()
     };
 
     localStorage.setItem("audit-input", JSON.stringify(payload));
@@ -129,6 +145,9 @@ export default function HomePage() {
           input: payload,
           demo: data.demo || false,
           mode: "diagnosis",
+          cached: Boolean(data.cached),
+          diagnosisId: data.diagnosisId,
+          cacheExpiresAt: data.cacheExpiresAt,
           generatedAt: new Date().toISOString()
         }));
 
@@ -249,6 +268,9 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
         input: payload,
         demo: true,
         mode: "diagnosis",
+        cached: false,
+        diagnosisId: "dx_sample_local",
+        cacheExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
         generatedAt: new Date().toISOString()
       }));
 

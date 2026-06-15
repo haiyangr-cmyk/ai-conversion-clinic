@@ -786,6 +786,7 @@ export default function ReportPage() {
               <span className="eyebrow">{reportMode === "diagnosis" ? "Generated diagnosis" : "Generated solution"}</span>
               <h1>{reportMode === "diagnosis" ? "Your Conversion Diagnosis" : solutionTitle(input)}</h1>
             </div>
+
                         <button
               className="report-export-button primary-export-button"
               type="button"

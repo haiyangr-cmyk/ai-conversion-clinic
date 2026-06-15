@@ -1,5 +1,7 @@
+import { createHash } from "crypto";
 import { NextRequest } from "next/server";
 import type { AuditInput } from "../../../lib/types";
+import { Redis } from "@upstash/redis";
 import { buildAuditPrompt, buildDiagnosisPrompt, buildSolutionPrompt } from "../../../lib/prompt";
 import { verifyPaymentToken } from "../../../lib/payment-token";
 import {
@@ -1030,6 +1032,194 @@ function parseModelReport(rawText: string, input: AuditInput) {
 }
 
 
+
+const DIAGNOSIS_CACHE_TTL_SECONDS = 7 * 24 * 60 * 60;
+const DAILY_RATE_LIMIT_TTL_SECONDS = 24 * 60 * 60;
+
+type DiagnosisCachePayload = {
+  report: string;
+  reportV2: AuditReportV2 | null;
+  demo?: boolean;
+  diagnosisId: string;
+  cacheExpiresAt: string;
+  generatedAt: string;
+};
+
+let redisClient: Redis | null | undefined;
+
+function getRedisClient() {
+  if (redisClient !== undefined) return redisClient;
+
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (!url || !token) {
+    redisClient = null;
+    return redisClient;
+  }
+
+  redisClient = new Redis({ url, token });
+  return redisClient;
+}
+
+function hashText(value: string) {
+  return createHash("sha256").update(value).digest("hex");
+}
+
+function normalizeDiagnosisText(value?: string) {
+  return (value || "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+}
+
+function normalizeDiagnosisUrl(value?: string) {
+  const raw = (value || "").trim();
+
+  try {
+    const parsed = new URL(raw.startsWith("http") ? raw : `https://${raw}`);
+    parsed.hash = "";
+    parsed.search = "";
+    parsed.hostname = parsed.hostname.replace(/^www\./i, "").toLowerCase();
+    parsed.pathname = parsed.pathname.replace(/\/+$/, "") || "/";
+    return parsed.toString().replace(/\/$/, "");
+  } catch {
+    return normalizeDiagnosisText(raw);
+  }
+}
+
+function buildDiagnosisFingerprint(input: AuditInput) {
+  const canonical = {
+    url: normalizeDiagnosisUrl(input.url),
+    product: normalizeDiagnosisText(input.product),
+    audience: normalizeDiagnosisText(input.audience),
+    problem: normalizeDiagnosisText(input.problem),
+    conversionGoal: normalizeDiagnosisText(input.conversionGoal),
+    pageCopy: normalizeDiagnosisText(input.pageCopy)
+  };
+
+  return hashText(JSON.stringify(canonical));
+}
+
+function buildDiagnosisId(fingerprint: string) {
+  return `dx_${fingerprint.slice(0, 12)}`;
+}
+
+function buildDiagnosisCacheKey(fingerprint: string) {
+  return `acc2:diagnosis:v1:${fingerprint}`;
+}
+
+function getClientIp(request: Request) {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0].trim();
+
+  return request.headers.get("x-real-ip")
+    || request.headers.get("cf-connecting-ip")
+    || "unknown";
+}
+
+function todayKeyPart() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function safeLimitKeyPart(value: string) {
+  return hashText(value || "unknown").slice(0, 16);
+}
+
+async function getCachedDiagnosis(cacheKey: string) {
+  const redis = getRedisClient();
+  if (!redis) return null;
+
+  return redis.get<DiagnosisCachePayload>(cacheKey);
+}
+
+async function saveCachedDiagnosis(cacheKey: string, payload: DiagnosisCachePayload) {
+  const redis = getRedisClient();
+  if (!redis) return;
+
+  await redis.set(cacheKey, payload, { ex: DIAGNOSIS_CACHE_TTL_SECONDS });
+}
+
+async function incrementDailyCounter(key: string) {
+  const redis = getRedisClient();
+  if (!redis) return 0;
+
+  const count = await redis.incr(key);
+
+  if (count === 1) {
+    await redis.expire(key, DAILY_RATE_LIMIT_TTL_SECONDS);
+  }
+
+  return count;
+}
+
+async function enforceDiagnosisRateLimits(input: AuditInput, request: Request) {
+  const redis = getRedisClient();
+  if (!redis) return;
+
+  const day = todayKeyPart();
+
+  const visitorKey = `acc2:rl:visitor:${day}:${safeLimitKeyPart(input.visitorId || "anonymous")}`;
+  const ipKey = `acc2:rl:ip:${day}:${safeLimitKeyPart(getClientIp(request))}`;
+  const urlKey = `acc2:rl:url:${day}:${safeLimitKeyPart(normalizeDiagnosisUrl(input.url))}`;
+
+  const visitorCount = await incrementDailyCounter(visitorKey);
+  if (visitorCount > 3) {
+    throw new Error("You have reached the free diagnosis limit for today. Please try again tomorrow or unlock a paid solution from an existing diagnosis.");
+  }
+
+  const ipCount = await incrementDailyCounter(ipKey);
+  if (ipCount > 20) {
+    throw new Error("Too many free diagnoses have been requested from this network today. Please try again later.");
+  }
+
+  const urlCount = await incrementDailyCounter(urlKey);
+  if (urlCount > 5) {
+    throw new Error("This page has reached the daily limit for new diagnosis variations. Please reuse an existing diagnosis or try again tomorrow.");
+  }
+}
+
+async function runDiagnosisWithCache(input: AuditInput, request: Request) {
+  const fingerprint = buildDiagnosisFingerprint(input);
+  const diagnosisId = buildDiagnosisId(fingerprint);
+  const cacheKey = buildDiagnosisCacheKey(fingerprint);
+
+  const cached = await getCachedDiagnosis(cacheKey);
+
+  if (cached) {
+    return {
+      ...cached,
+      cached: true
+    };
+  }
+
+  await enforceDiagnosisRateLimits(input, request);
+
+  const result = await generateWithAI({
+    ...input,
+    generationMode: "diagnosis",
+    tier: "basic"
+  });
+
+  const cacheExpiresAt = new Date(Date.now() + DIAGNOSIS_CACHE_TTL_SECONDS * 1000).toISOString();
+
+  const payload: DiagnosisCachePayload = {
+    report: result.report,
+    reportV2: result.reportV2 || null,
+    demo: result.demo,
+    diagnosisId,
+    cacheExpiresAt,
+    generatedAt: new Date().toISOString()
+  };
+
+  await saveCachedDiagnosis(cacheKey, payload);
+
+  return {
+    ...payload,
+    cached: false
+  };
+}
+
 function sanitizeSolutionMarkdown(text: string) {
   let output = text;
 
@@ -1315,10 +1505,21 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString()
     });
 
-    const { report, reportV2, demo } = await generateWithAI(input);
-    await sendLeadWebhook(input, report);
+    const result = generationMode === "diagnosis"
+      ? await runDiagnosisWithCache(input, request)
+      : await generateWithAI(input);
 
-    return Response.json({ ok: true, report, reportV2, demo });
+    await sendLeadWebhook(input, result.report);
+
+    return Response.json({
+      ok: true,
+      report: result.report,
+      reportV2: result.reportV2,
+      demo: result.demo,
+      cached: "cached" in result ? result.cached : false,
+      diagnosisId: "diagnosisId" in result ? result.diagnosisId : undefined,
+      cacheExpiresAt: "cacheExpiresAt" in result ? result.cacheExpiresAt : undefined
+    });
   } catch (error) {
     console.error("GENERATE_REPORT_ERROR", error);
     return Response.json({ ok: false, error: error instanceof Error ? error.message : "Generation failed" }, { status: 500 });

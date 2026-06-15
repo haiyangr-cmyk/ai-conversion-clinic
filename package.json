@@ -12,6 +12,7 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@upstash/redis": "^1.38.0",
     "docx": "^9.7.1",
     "eslint": "latest",
     "eslint-config-next": "latest",

@@ -16,6 +16,7 @@ export type AuditInput = {
   tier: Tier;
   conversionGoal?: string;
   generationMode?: GenerationMode;
+  visitorId?: string;
 };
 
 export type GenerateResponse = {
@@ -24,4 +25,7 @@ export type GenerateResponse = {
   reportV2?: unknown;
   error?: string;
   demo?: boolean;
+  cached?: boolean;
+  diagnosisId?: string;
+  cacheExpiresAt?: string;
 };
