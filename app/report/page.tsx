@@ -11,6 +11,7 @@ import {
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import type { AuditInput } from "../../lib/types";
 import type { AuditReportV2, CheckStatus, ImpactLevel, PageType } from "../../lib/report-v2";
 
 const pageTypeLabels: Record<PageType, string> = {
@@ -58,10 +59,38 @@ function safeScore(score: number) {
 
 
 
-function buildReportBaseName(reportV2: AuditReportV2 | null) {
-  const tier = reportV2?.meta?.tier === "pro" ? "Pro" : "Basic";
+function slugifyFilePart(value: string) {
+  return value
+    .replace(/^https?:\/\//i, "")
+    .replace(/^www\./i, "")
+    .replace(/[^a-z0-9]+/gi, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48)
+    || "landing-page";
+}
+
+function conversionGoalLabel(goal?: string) {
+  const labels: Record<string, string> = {
+    signups: "Get more signups",
+    paid_users: "Get more paid users",
+    demo_calls: "Get more demo calls",
+    launch_conversion: "Improve Product Hunt / Reddit launch conversion"
+  };
+
+  return goal ? labels[goal] || goal : "Not specified";
+}
+
+function buildReportBaseName(
+  reportMode: "diagnosis" | "solution",
+  input: AuditInput | null,
+  reportV2: AuditReportV2 | null
+) {
+  const kind = reportMode === "diagnosis" ? "Free-Diagnosis" : "Conversion-Solution";
+  const rawSource = input?.url || reportV2?.meta?.pageUrl || input?.product || "landing-page";
+  const source = slugifyFilePart(rawSource);
   const date = new Date().toISOString().slice(0, 10);
-  return `AIConversionClinic-${tier}-Audit-${date}`;
+
+  return `AIConversionClinic-${kind}-${source}-${date}`;
 }
 
 function normalizeExportText(text: string) {
@@ -71,6 +100,152 @@ function normalizeExportText(text: string) {
     .replace(/[–—]/g, "-")
     .replace(/\u00a0/g, " ")
     .trim();
+}
+
+
+function stripInlineMarkdown(text: string) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/__(.*?)__/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/^>\s*/, "")
+    .trim();
+}
+
+function scrubUnsafeExportText(text: string) {
+  let output = text;
+
+  output = output.replace(/\b(HubSpot|Mailchimp|Zapier|AdEspresso|Hootsuite|Salesforce|Slack|Stripe|Shopify)\b/gi, "verified customer");
+  output = output.replace(/\b\d+(?:\.\d+)?\s*(?:-|–|—)\s*\d+(?:\.\d+)?%\s*(better|lift|increase|improvement|conversion)?/gi, "a verified performance result if available");
+  output = output.replace(/\b\d+(?:\.\d+)?%\s*(?:to|→|-|–|—)\s*\d+(?:\.\d+)?%/gi, "a verified performance result if available");
+  output = output.replace(/\b\d+(?:\.\d+)?x\b/gi, "a verified performance result if available");
+  output = output.replace(/\b\d+%\+?\s+of\s+visitors\b/gi, "many visitors");
+  output = output.replace(/\b(or it'?s free|or you do not pay|or you don't pay|you don’t pay|first month free|pay only after|pay only when|charge only when|refund 100%|100% refund|100% satisfaction|money[- ]back guarantee|performance guarantee|work for free until)\b[^.\n]*/gi, "your actual support or refund policy if available");
+  output = output.replace(/\btrusted by\s+\d+\+?[^.\n]*/gi, "trusted by verified customer proof if available");
+  output = output.replace(/\bused by\s+[^.\n]*\d+\+?[^.\n]*/gi, "used by verified customer proof if available");
+  output = output.replace(/\$X,XXX|\$\d[\d,]*(?:\.\d{2})?/g, "[your actual price]");
+  output = output.replace(/\bsales machine\b/gi, "clearer conversion path");
+  output = output.replace(/\bproven system\b/gi, "structured conversion process");
+  output = output.replace(/\bproven principles\b/gi, "conversion best practices");
+
+  return output;
+}
+
+function prepareExportLines(content: string) {
+  const lines: string[] = [];
+
+  for (const raw of normalizeExportText(content).split(/\r?\n/)) {
+    let line = raw.trim();
+
+    if (!line) {
+      lines.push("");
+      continue;
+    }
+
+    if (/^\|[\s:|\\-]+\|?$/.test(line)) {
+      continue;
+    }
+
+    if (line.startsWith("|") && line.includes("|")) {
+      const cells = line
+        .split("|")
+        .map((cell) => stripInlineMarkdown(cell.trim()))
+        .filter(Boolean);
+
+      if (cells.length > 0) {
+        lines.push(`- ${cells.join(" - ")}`);
+      }
+
+      continue;
+    }
+
+    line = stripInlineMarkdown(line);
+    lines.push(line);
+  }
+
+  return lines;
+}
+
+function buildDiagnosisExportText(reportV2: AuditReportV2 | null, input: AuditInput | null) {
+  const lines: string[] = [
+    "# Free Conversion Diagnosis",
+    "",
+    `Page URL: ${input?.url || reportV2?.meta?.pageUrl || "Not provided"}`,
+    `Product / service: ${input?.product || reportV2?.meta?.product || "Not provided"}`,
+    `Target customer: ${input?.audience || reportV2?.meta?.targetAudience || "Not provided"}`,
+    `Conversion goal: ${conversionGoalLabel(input?.conversionGoal)}`,
+    `Generated: ${new Date().toISOString().slice(0, 10)}`,
+    ""
+  ];
+
+  if (!reportV2) {
+    lines.push(
+      "## Diagnosis unavailable",
+      "No structured diagnosis data is available. Please run the diagnosis again."
+    );
+
+    return lines.join("\n");
+  }
+
+  lines.push(
+    "## Conversion Score",
+    `${safeScore(reportV2.executiveSummary.overallScore)} / 100`,
+    "",
+    "## One-Sentence Diagnosis",
+    reportV2.executiveSummary.oneSentenceDiagnosis,
+    "",
+    "## Top Conversion Blockers"
+  );
+
+  for (const [index, leak] of reportV2.topLeaks.slice(0, 3).entries()) {
+    lines.push(
+      `${index + 1}. ${leak.title} (${impactLabels[leak.impact] || leak.impact})`,
+      `Why it hurts: ${leak.whyItHurts}`,
+      `Area to fix: ${leak.whatToChange}`,
+      ""
+    );
+  }
+
+  lines.push(
+    "## Solution Preview",
+    "Unlock the full Conversion Solution to get:",
+    "- Recommended positioning",
+    "- Hero rewrite",
+    "- CTA fixes",
+    "- Trust & proof fixes",
+    "- Pricing / offer fixes",
+    "- 7-day action plan",
+    "- Product Hunt / Reddit follow-up copy",
+    "",
+    "## Important Note",
+    "This free diagnosis is a preliminary strategy review based on the information provided. It identifies likely conversion blockers, but does not include the full fix plan. Recommendations should be validated with page analytics, customer feedback, and A/B testing."
+  );
+
+  return lines.join("\n");
+}
+
+function buildSolutionExportText(report: string, input: AuditInput | null) {
+  const cleaned = scrubUnsafeExportText(report || "");
+  const rawLines = prepareExportLines(cleaned);
+  const contentLines = rawLines[0]?.startsWith("# ")
+    ? rawLines.slice(1)
+    : rawLines;
+
+  return [
+    "# Conversion Solution",
+    "",
+    `Page URL: ${input?.url || "Not provided"}`,
+    `Product / service: ${input?.product || "Not provided"}`,
+    `Target customer: ${input?.audience || "Not provided"}`,
+    `Conversion goal: ${conversionGoalLabel(input?.conversionGoal)}`,
+    `Generated: ${new Date().toISOString().slice(0, 10)}`,
+    "",
+    ...contentLines,
+    "",
+    "## Important Export Note",
+    "This solution is a strategy recommendation based on the information provided. Do not publish unsupported claims, fake guarantees, invented customer proof, or unverified performance numbers. Validate changes with analytics, customer feedback, and A/B testing."
+  ].join("\n");
 }
 
 function downloadBlobFile(filename: string, blob: Blob) {
@@ -87,7 +262,7 @@ function downloadBlobFile(filename: string, blob: Blob) {
 }
 
 function downloadPdfFile(filename: string, content: string) {
-  const text = normalizeExportText(content);
+  const lines = prepareExportLines(content);
   const doc = new jsPDF({ unit: "pt", format: "a4" });
 
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -121,7 +296,7 @@ function downloadPdfFile(filename: string, content: string) {
 
   doc.setProperties({
     title: filename.replace(/\.pdf$/i, ""),
-    subject: "AI Conversion Clinic Audit Report",
+    subject: "AI Conversion Clinic Export",
     creator: "AI Conversion Clinic"
   });
 
@@ -129,7 +304,7 @@ function downloadPdfFile(filename: string, content: string) {
   doc.setFontSize(10);
   doc.text("AI Conversion Clinic", margin, 32);
 
-  for (const line of text.split(/\r?\n/)) {
+  for (const line of lines) {
     const trimmed = line.trim();
 
     if (!trimmed) {
@@ -220,7 +395,7 @@ async function downloadDocxFile(filename: string, content: string) {
     sections: [
       {
         properties: {},
-        children: text.split(/\r?\n/).map(buildDocxParagraph)
+        children: prepareExportLines(text).map(buildDocxParagraph)
       }
     ]
   });
@@ -483,7 +658,7 @@ function V2Report({ report }: { report: AuditReportV2 }) {
 
 
 function FormattedTextReport({ text }: { text: string }) {
-  const rawLines = text.split("\n").map((line) => line.trim()).filter(Boolean);
+  const rawLines = prepareExportLines(text).map((line) => line.trim()).filter(Boolean);
   const lines = rawLines[0]?.startsWith("# ") ? rawLines.slice(1) : rawLines;
 
   return (
@@ -519,6 +694,7 @@ export default function ReportPage() {
   const router = useRouter();
   const [report, setReport] = useState("");
   const [reportV2, setReportV2] = useState<AuditReportV2 | null>(null);
+  const [input, setInput] = useState<AuditInput | null>(null);
   const [demo, setDemo] = useState(false);
   const [localSample, setLocalSample] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -534,32 +710,32 @@ export default function ReportPage() {
     const parsed = JSON.parse(raw);
     setReport(parsed.report || "");
     setReportV2(parsed.reportV2 || null);
+    setInput(parsed.input || null);
     setDemo(Boolean(parsed.demo));
     setLocalSample(Boolean(parsed.localSample));
     setReportMode(parsed.mode === "diagnosis" ? "diagnosis" : "solution");
   }, [router]);
 
   const exportText = useMemo(() => {
-    const reportText = typeof report === "string" ? report.trim() : "";
+    if (reportMode === "diagnosis") {
+      return buildDiagnosisExportText(reportV2, input);
+    }
 
-    if (reportText) return reportText;
-    if (reportV2) return JSON.stringify(reportV2, null, 2);
-
-    return "";
-  }, [report, reportV2]);
+    return buildSolutionExportText(report, input);
+  }, [reportMode, report, reportV2, input]);
 
   const copyText = exportText;
 
   function downloadPdfReport() {
     if (!exportText) return;
 
-    downloadPdfFile(`${buildReportBaseName(reportV2)}.pdf`, exportText);
+    downloadPdfFile(`${buildReportBaseName(reportMode, input, reportV2)}.pdf`, exportText);
   }
 
   async function downloadDocxReport() {
     if (!exportText) return;
 
-    await downloadDocxFile(`${buildReportBaseName(reportV2)}.docx`, exportText);
+    await downloadDocxFile(`${buildReportBaseName(reportMode, input, reportV2)}.docx`, exportText);
   }
 
   async function copyReport() {
