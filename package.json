@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/third-parties": "^16.2.9",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
