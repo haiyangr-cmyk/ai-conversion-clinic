@@ -2307,3 +2307,18 @@ button.copy-export-button {
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
 }
+
+/* Refine limit recovery action buttons */
+.limit-error-actions a {
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 12px;
+  border-color: rgba(254, 202, 202, 0.26);
+  background: rgba(15, 23, 42, 0.18);
+  color: #fecaca;
+}
+
+.limit-error-actions a:hover {
+  border-color: rgba(254, 202, 202, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+}
