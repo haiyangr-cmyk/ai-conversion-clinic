@@ -2322,3 +2322,34 @@ button.copy-export-button {
   border-color: rgba(254, 202, 202, 0.5);
   background: rgba(255, 255, 255, 0.08);
 }
+
+/* Final override: compact limit recovery buttons */
+form .limit-error-actions,
+.limit-error-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  margin-top: 10px !important;
+}
+
+form .limit-error-actions a,
+.limit-error-actions a {
+  min-height: 32px !important;
+  padding: 0 13px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(254, 202, 202, 0.28) !important;
+  background: rgba(15, 23, 42, 0.18) !important;
+  color: #fecaca !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+
+form .limit-error-actions a:hover,
+.limit-error-actions a:hover {
+  border-color: rgba(254, 202, 202, 0.55) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
