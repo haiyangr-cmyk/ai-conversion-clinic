@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import styles from "../blog.module.css";
+import RelatedResources from "../RelatedResources";
 
 export const metadata: Metadata = {
   title:
@@ -270,6 +271,8 @@ export default function LandingPageNotConvertingArticle() {
                   </Link>
                 </div>
               </div>
+
+              <RelatedResources />
 
               <h2>Final takeaway</h2>
 
