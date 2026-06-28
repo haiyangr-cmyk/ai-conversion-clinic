@@ -287,7 +287,11 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
       <div className="container">
         <nav className="nav">
           <div className="brand"><img className="brand-logo" src="/logo.jpeg" alt="AI Conversion Clinic logo" />AI Conversion Clinic</div>
-          <span className="badge">Free diagnosis · Paid fix plan</span>
+          <div className="nav-links">
+            <a href="/sample-report">Sample Report</a>
+            <a href="/tools">Tools</a>
+            <a className="badge" href="#audit-form">Free diagnosis · Paid fix plan</a>
+          </div>
         </nav>
 
         <section className="grid">
