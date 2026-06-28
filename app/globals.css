@@ -2181,3 +2181,52 @@ button.copy-export-button {
     font-size: 13px;
   }
 }
+
+/* Homepage trust bar */
+.trust-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+  max-width: 720px;
+}
+
+.trust-bar span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(226, 232, 240, 0.92);
+  border-radius: 999px;
+  padding: 8px 11px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.trust-bar span::before {
+  content: "✓";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 999px;
+  background: rgba(134, 239, 172, 0.16);
+  color: #86efac;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+@media (max-width: 720px) {
+  .trust-bar {
+    margin-top: 16px;
+  }
+
+  .trust-bar span {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+}

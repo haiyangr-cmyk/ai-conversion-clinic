@@ -306,6 +306,14 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
               <a className="mini-cta secondary" href="/sample-report">View Sample Report</a>
             </div>
 
+            <div className="trust-bar" aria-label="Trust signals">
+              <span>No account required</span>
+              <span>Free diagnosis first</span>
+              <span>Secure PayPal checkout</span>
+              <span>Sample report available</span>
+              <span>Refund policy available</span>
+            </div>
+
             <div className="cards">
               <div className="card"><strong>Free Diagnosis</strong><span>Find the biggest blockers hurting your page conversion.</span></div>
               <div className="card"><strong>Copy-ready Fixes</strong><span>Unlock rewritten copy, CTA ideas, trust fixes, and launch follow-up copy.</span></div>
