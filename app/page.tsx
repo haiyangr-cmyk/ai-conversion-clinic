@@ -290,6 +290,7 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
           <div className="nav-links">
             <a href="/sample-report">Sample Report</a>
             <a href="/tools">Tools</a>
+            <a href="/blog">Guides</a>
             <a className="badge" href="#audit-form">Free diagnosis · Paid fix plan</a>
           </div>
         </nav>
