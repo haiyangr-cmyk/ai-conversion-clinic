@@ -2132,3 +2132,52 @@ button.copy-export-button {
 .nav-links .badge {
   opacity: 1;
 }
+
+
+/* Homepage navigation links */
+.nav .nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.nav .nav-links > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+
+.nav .nav-links > a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.nav .nav-links > a.badge {
+  opacity: 1;
+  text-decoration: none;
+}
+
+@media (max-width: 720px) {
+  .nav {
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .nav .nav-links {
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .nav .nav-links > a {
+    font-size: 13px;
+  }
+}
