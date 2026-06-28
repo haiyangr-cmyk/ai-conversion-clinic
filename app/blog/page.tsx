@@ -10,6 +10,13 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    title: "Best CRO Tools for Small Businesses: What to Use Before Buying More Traffic",
+    description:
+      "Explore behavior analytics, forms, landing page builders, A/B testing, CRM, and AI copy tools for small business conversion optimization.",
+    href: "/blog/best-cro-tools-for-small-businesses",
+    tag: "CRO Tools",
+  },
+  {
     title: "Landing Page Conversion Checklist: 25 Things to Fix Before Buying More Traffic",
     description:
       "Use this checklist to improve landing page clarity, CTA strength, trust proof, offer structure, objections, forms, and measurement.",

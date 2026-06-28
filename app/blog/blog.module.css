@@ -424,3 +424,15 @@
     flex-direction: column;
   }
 }
+
+.numberedList {
+  margin: 18px 0 0;
+  padding-left: 22px;
+  color: #334155;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.numberedList li {
+  margin-bottom: 8px;
+}
