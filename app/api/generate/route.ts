@@ -1165,7 +1165,7 @@ async function enforceDiagnosisRateLimits(input: AuditInput, request: Request) {
 
   const visitorCount = await incrementDailyCounter(visitorKey);
   if (visitorCount > 3) {
-    throw new Error("You have reached the free diagnosis limit for today. Please try again tomorrow or unlock a paid solution from an existing diagnosis.");
+    throw new Error("You have reached today’s free diagnosis limit. Please try again tomorrow, view the sample report, or unlock the full fix plan from an existing diagnosis.");
   }
 
   const ipCount = await incrementDailyCounter(ipKey);

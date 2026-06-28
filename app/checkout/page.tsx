@@ -91,12 +91,12 @@ Days 13-14: Decide whether to keep, revise, or roll back changes.
 
 ## Product Hunt Launch Copy
 
-I rebuilt AI Conversion Clinic around a free diagnosis first, paid solution second model. The goal is to help founders see landing page blockers before paying for a full fix plan.
+I rebuilt AI Conversion Clinic around a free diagnosis first, full fix plan second model. The goal is to help founders see landing page blockers before paying for a full fix plan.
 
 ## Reddit Post & Comment Variants
 
 Post idea:
-I changed my landing page audit product from paid-first to free diagnosis first. What would you need to see before paying for the full solution?
+I changed my landing page audit product from paid-first to free diagnosis first. What would you need to see before paying for the full fix plan?
 
 Comment idea:
 Happy to share the free diagnosis flow if useful. I am trying to learn whether the diagnosis feels accurate before asking users to unlock the full fix plan.
@@ -402,7 +402,7 @@ export default function CheckoutPage() {
         <section className="grid">
           <div className="panel">
             <h1 style={{ marginTop: 0 }}>Unlock your Conversion Solution</h1>
-            <p className="muted">Choose the depth of the paid solution you want to unlock.</p>
+            <p className="muted">Choose the depth of the full fix plan you want to unlock.</p>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12, margin: "18px 0" }}>
               {(["basic", "pro"] as Tier[]).map((tier) => {

@@ -1040,7 +1040,7 @@ export default function ReportPage() {
       <div className="report-bottom-help">
         <strong>Need help?</strong>
         <span>
-          If your diagnosis or paid solution cannot be generated or downloaded, <a href="/support">contact support</a> with your PayPal order ID.
+          If your diagnosis or full fix plan cannot be generated or downloaded, <a href="/support">contact support</a> with your PayPal order ID.
         </span>
       </div>
 
