@@ -235,7 +235,7 @@ export default function HomePage() {
         hooks: [],
         sevenDayPlan: [
           { day: 1, title: "Rewrite hero message", action: "Use a pain-led headline and diagnosis-focused CTA.", expectedOutcome: "Visitors understand the offer faster." },
-          { day: 2, title: "Add solution preview", action: "Show what is locked behind the paid solution.", expectedOutcome: "Unlock intent becomes clearer." },
+          { day: 2, title: "Add solution preview", action: "Show what is locked behind the full fix plan.", expectedOutcome: "Unlock intent becomes clearer." },
           { day: 3, title: "Add trust support", action: "Keep Support, Refund, and Privacy visible.", expectedOutcome: "Payment risk feels lower." }
         ],
         disclaimer: "This sample diagnosis is for local testing only. Recommendations should be validated with analytics, customer feedback, and A/B testing."
@@ -323,7 +323,7 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
             <div className="steps">
               <div className="step">Submit your page URL, product, audience, and conversion problem.</div>
               <div className="step">Get a free diagnosis of your top conversion blockers.</div>
-              <div className="step">Unlock a paid conversion solution if the diagnosis feels accurate.</div>
+              <div className="step">Unlock the full fix plan if the diagnosis feels accurate.</div>
             </div>
 </div>
 
@@ -530,7 +530,7 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
               {diagnosisLoading ? "Generating diagnosis..." : "Run Free Diagnosis"}
             </button>
             {diagnosisError ? <p className="form-error">{diagnosisError}</p> : null}
-            <p className="footer">Free diagnosis first · Secure PayPal checkout for the full solution</p>
+            <p className="footer">Free diagnosis first · Secure PayPal checkout for the full fix plan</p>
           </form>
         </section>
 
