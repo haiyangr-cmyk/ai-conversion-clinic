@@ -10,6 +10,13 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    title: "Landing Page Conversion Checklist: 25 Things to Fix Before Buying More Traffic",
+    description:
+      "Use this checklist to improve landing page clarity, CTA strength, trust proof, offer structure, objections, forms, and measurement.",
+    href: "/blog/landing-page-conversion-checklist",
+    tag: "Checklist",
+  },
+  {
     title: "Why Your Landing Page Is Not Converting — And What to Fix First",
     description:
       "Learn the most common reasons landing pages get traffic but no signups, leads, demo bookings, or sales.",
