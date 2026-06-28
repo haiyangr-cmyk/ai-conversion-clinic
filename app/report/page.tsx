@@ -164,7 +164,7 @@ function prepareExportLines(content: string) {
       continue;
     }
 
-    line = stripInlineMarkdown(line);
+    line = stripInlineMarkdown(line).replace(/^#{1,6}\s+/, "");
     lines.push(line);
   }
 
@@ -227,6 +227,34 @@ function buildDiagnosisExportText(reportV2: AuditReportV2 | null, input: AuditIn
   );
 
   return lines.join("\n");
+}
+
+
+function buildDiagnosisFallbackExportText(report: string, input: AuditInput | null) {
+  const cleaned = scrubUnsafeExportText(report || "");
+  const rawLines = prepareExportLines(cleaned);
+  const contentLines = rawLines[0]?.startsWith("# ")
+    ? rawLines.slice(1)
+    : rawLines;
+
+  if (contentLines.length === 0) {
+    return buildDiagnosisExportText(null, input);
+  }
+
+  return [
+    "# Free Conversion Diagnosis",
+    "",
+    `Page URL: ${input?.url || "Not provided"}`,
+    `Product / service: ${input?.product || "Not provided"}`,
+    `Target customer: ${input?.audience || "Not provided"}`,
+    `Conversion goal: ${conversionGoalLabel(input?.conversionGoal)}`,
+    `Generated: ${new Date().toISOString().slice(0, 10)}`,
+    "",
+    ...contentLines,
+    "",
+    "## Important Note",
+    "This free diagnosis is a preliminary strategy review based on the information provided. It identifies likely conversion blockers, but does not include the full fix plan. Recommendations should be validated with page analytics, customer feedback, and A/B testing."
+  ].join("\n");
 }
 
 function buildSolutionExportText(report: string, input: AuditInput | null) {
@@ -668,12 +696,15 @@ function FormattedTextReport({ text }: { text: string }) {
   return (
     <article className="formatted-report">
       {lines.map((line, index) => {
-        if (line.startsWith("# ")) {
-          return <h2 key={index}>{line.replace(/^#\s+/, "")}</h2>;
-        }
+        if (/^#{1,6}\s+/.test(line)) {
+          const level = line.match(/^#{1,6}/)?.[0].length || 1;
+          const headingText = line.replace(/^#{1,6}\s+/, "");
 
-        if (line.startsWith("## ")) {
-          return <h3 key={index}>{line.replace(/^##\s+/, "")}</h3>;
+          if (level <= 2) {
+            return <h3 key={index}>{headingText}</h3>;
+          }
+
+          return <h4 key={index}>{headingText}</h4>;
         }
 
         if (line.startsWith("- ")) {
@@ -722,7 +753,9 @@ export default function ReportPage() {
 
   const exportText = useMemo(() => {
     if (reportMode === "diagnosis") {
-      return buildDiagnosisExportText(reportV2, input);
+      if (reportV2) return buildDiagnosisExportText(reportV2, input);
+      if (report.trim()) return buildDiagnosisFallbackExportText(report, input);
+      return buildDiagnosisExportText(null, input);
     }
 
     return buildSolutionExportText(report, input);
