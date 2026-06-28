@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import styles from "./sample-report.module.css";
 
 export const metadata: Metadata = {
   title: "Sample AI Landing Page Conversion Report | AI Conversion Clinic",
@@ -167,8 +168,7 @@ const recoveryPlan = [
   {
     day: "Day 2",
     title: "Change the primary CTA",
-    detail:
-      'Test "Book a 15-Minute Workflow Review" instead of "Book a Demo."',
+    detail: 'Test "Book a 15-Minute Workflow Review" instead of "Book a Demo."',
   },
   {
     day: "Day 3",
@@ -212,20 +212,10 @@ function SectionHeader({
   children?: ReactNode;
 }) {
   return (
-    <div className="mx-auto mb-10 max-w-3xl text-center">
-      {eyebrow ? (
-        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-          {eyebrow}
-        </p>
-      ) : null}
-      <h2 className="text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">
-        {title}
-      </h2>
-      {children ? (
-        <div className="mt-4 text-base leading-7 text-slate-600 md:text-lg">
-          {children}
-        </div>
-      ) : null}
+    <div className={styles.sectionHeader}>
+      {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
+      <h2 className={styles.h2}>{title}</h2>
+      {children ? <div className={styles.headerText}>{children}</div> : null}
     </div>
   );
 }
@@ -237,27 +227,18 @@ function Card({
   children: ReactNode;
   className?: string;
 }) {
-  return (
-    <div
-      className={`rounded-3xl border border-slate-200 bg-white p-6 shadow-sm ${className}`}
-    >
-      {children}
-    </div>
-  );
+  return <div className={`${styles.card} ${className}`}>{children}</div>;
 }
 
 function ScoreBar({ label, score }: { label: string; score: number }) {
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between gap-4 text-sm">
-        <span className="font-medium text-slate-700">{label}</span>
-        <span className="font-semibold text-slate-950">{score}/10</span>
+      <div className={styles.scoreRowTop}>
+        <span>{label}</span>
+        <span>{score}/10</span>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-        <div
-          className="h-full rounded-full bg-blue-600"
-          style={{ width: `${score * 10}%` }}
-        />
+      <div className={styles.bar}>
+        <div className={styles.barFill} style={{ width: `${score * 10}%` }} />
       </div>
     </div>
   );
@@ -265,67 +246,50 @@ function ScoreBar({ label, score }: { label: string; score: number }) {
 
 export default function SampleReportPage() {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-950">
-      <section className="relative overflow-hidden border-b border-slate-200 bg-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.12),transparent_32rem)]" />
-
-        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-20 md:grid-cols-[1.1fr_0.9fr] md:px-8 md:py-28">
-          <div className="flex flex-col justify-center">
-            <p className="mb-4 inline-flex w-fit rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700">
-              Sample Pro Fix Plan
-            </p>
-
-            <h1 className="max-w-4xl text-4xl font-bold tracking-tight text-slate-950 md:text-6xl">
+    <main className={styles.page}>
+      <section className={styles.hero}>
+        <div className={styles.heroInner}>
+          <div>
+            <p className={styles.badge}>Sample Pro Fix Plan</p>
+            <h1 className={styles.h1}>
               Sample AI Landing Page Conversion Report
             </h1>
-
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 md:text-xl">
+            <p className={styles.lead}>
               See what a full AI Conversion Clinic report looks like before you
               run your own audit. This sample shows how we diagnose conversion
               leaks, rewrite weak messaging, improve CTA clarity, uncover buyer
               objections, and turn a landing page into a 7-day fix plan.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/"
-                className="inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
-              >
+            <div className={styles.actions}>
+              <Link href="/" className={styles.primaryButton}>
                 Run Your Free Diagnosis
               </Link>
-              <Link
-                href="#report"
-                className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-50"
-              >
+              <Link href="#report" className={styles.secondaryButton}>
                 See What&apos;s Included
               </Link>
             </div>
           </div>
 
-          <Card className="self-center">
-            <div className="mb-6 flex items-center justify-between">
+          <Card>
+            <div className={styles.scoreTop}>
               <div>
-                <p className="text-sm font-medium text-slate-500">
-                  Conversion Health Score
-                </p>
-                <p className="mt-1 text-5xl font-bold tracking-tight text-slate-950">
-                  62
-                  <span className="text-2xl text-slate-400">/100</span>
+                <p className={styles.smallLabel}>Conversion Health Score</p>
+                <p className={styles.score}>
+                  62<span>/100</span>
                 </p>
               </div>
-              <div className="rounded-2xl bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700">
-                Needs Fixes
-              </div>
+              <div className={styles.status}>Needs Fixes</div>
             </div>
 
-            <p className="mb-6 text-sm leading-6 text-slate-600">
+            <p className={styles.muted}>
               The page explains the product, but it does not make the value
               obvious fast enough. The hero section is too broad, the CTA is
               generic, and the page does not provide enough trust proof before
               asking visitors to book a demo.
             </p>
 
-            <div className="space-y-4">
+            <div className={styles.scoreList}>
               {scoreItems.map((item) => (
                 <ScoreBar
                   key={item.label}
@@ -338,11 +302,8 @@ export default function SampleReportPage() {
         </div>
       </section>
 
-      <section id="report" className="mx-auto max-w-7xl px-6 py-16 md:px-8">
-        <SectionHeader
-          eyebrow="Sample Context"
-          title="The page being audited"
-        >
+      <section id="report" className={styles.section}>
+        <SectionHeader eyebrow="Sample Context" title="The page being audited">
           <p>
             This is a fictional example for a B2B SaaS landing page. Your own
             report is generated based on your offer, audience, conversion goal,
@@ -350,27 +311,24 @@ export default function SampleReportPage() {
           </p>
         </SectionHeader>
 
-        <Card className="mx-auto max-w-4xl">
-          <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <div className={styles.contextGrid}>
             {[
               ["Company", "FlowPilot AI"],
               ["Type", "B2B SaaS"],
               ["Target audience", "Small operations teams"],
               ["Primary conversion goal", "Book a demo"],
             ].map(([label, value]) => (
-              <div
-                key={label}
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
-              >
-                <p className="text-sm font-medium text-slate-500">{label}</p>
-                <p className="mt-1 font-semibold text-slate-950">{value}</p>
+              <div key={label} className={styles.miniCard}>
+                <p className={styles.smallLabel}>{label}</p>
+                <p className={styles.miniCardValue}>{value}</p>
               </div>
             ))}
           </div>
 
-          <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-            <p className="text-sm font-medium text-amber-700">Main issue</p>
-            <p className="mt-1 text-slate-800">
+          <div className={styles.warningCard}>
+            <p className={styles.smallLabel}>Main issue</p>
+            <p>
               The page gets traffic from LinkedIn and Google Ads, but very few
               visitors book a demo.
             </p>
@@ -378,8 +336,8 @@ export default function SampleReportPage() {
         </Card>
       </section>
 
-      <section className="bg-white px-6 py-16 md:px-8">
-        <div className="mx-auto max-w-7xl">
+      <section className={styles.whiteSection}>
+        <div className={styles.section}>
           <SectionHeader
             eyebrow="Executive Summary"
             title="The biggest problem is not the product. It is the conversion path."
@@ -391,8 +349,8 @@ export default function SampleReportPage() {
             </p>
           </SectionHeader>
 
-          <Card className="mx-auto max-w-4xl">
-            <p className="text-lg leading-8 text-slate-700">
+          <Card className={styles.summaryCard}>
+            <p className={styles.summaryText}>
               The page should make three things clear above the fold: who the
               product is for, what operational problem it solves, and what
               measurable result the visitor can expect. Right now, the page
@@ -404,60 +362,47 @@ export default function SampleReportPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-16 md:px-8">
-        <SectionHeader eyebrow="Top 3 Conversion Leaks" title="What is hurting conversion">
+      <section className={styles.section}>
+        <SectionHeader
+          eyebrow="Top 3 Conversion Leaks"
+          title="What is hurting conversion"
+        >
           <p>
             A good audit does not list every possible issue. It identifies the
             few problems most likely to block action.
           </p>
         </SectionHeader>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className={styles.threeGrid}>
           {conversionLeaks.map((leak, index) => (
             <Card key={leak.title}>
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-red-50 text-sm font-bold text-red-600">
-                {index + 1}
-              </div>
-              <h3 className="text-xl font-bold text-slate-950">
-                {leak.title}
-              </h3>
+              <div className={styles.number}>{index + 1}</div>
+              <h3 className={styles.h3}>{leak.title}</h3>
 
-              <div className="mt-5 space-y-4">
-                <div>
-                  <p className="text-sm font-semibold text-slate-500">
-                    Current
-                  </p>
-                  <p className="mt-1 text-slate-800">{leak.current}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-slate-500">
-                    Problem
-                  </p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">
-                    {leak.problem}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-slate-500">
-                    Why it hurts conversion
-                  </p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">
-                    {leak.impact}
-                  </p>
-                </div>
+              <div className={styles.block}>
+                <p className={styles.blockTitle}>Current</p>
+                <p className={styles.blockText}>{leak.current}</p>
+              </div>
+              <div className={styles.block}>
+                <p className={styles.blockTitle}>Problem</p>
+                <p className={styles.blockText}>{leak.problem}</p>
+              </div>
+              <div className={styles.block}>
+                <p className={styles.blockTitle}>Why it hurts conversion</p>
+                <p className={styles.blockText}>{leak.impact}</p>
               </div>
             </Card>
           ))}
         </div>
       </section>
 
-      <section className="bg-slate-950 px-6 py-16 text-white md:px-8">
-        <div className="mx-auto max-w-7xl">
+      <section className={styles.darkSection}>
+        <div className={styles.darkInner}>
           <SectionHeader
             eyebrow="Hero Diagnosis"
             title="A stronger hero makes the value obvious faster"
           >
-            <p className="text-slate-300">
+            <p>
               The current hero is too focused on the category: AI-powered
               workflows. The revised hero should focus on the painful business
               outcome: manual work, slow handoffs, missed follow-ups, and wasted
@@ -465,103 +410,72 @@ export default function SampleReportPage() {
             </p>
           </SectionHeader>
 
-          <div className="mx-auto mb-8 max-w-4xl rounded-3xl border border-white/10 bg-white/5 p-6">
-            <p className="text-sm font-medium text-slate-400">
-              Current headline
-            </p>
-            <p className="mt-2 text-2xl font-bold text-white">
-              AI-powered workflows for modern teams
-            </p>
+          <div className={styles.currentHeadline}>
+            <p>Current headline</p>
+            <strong>AI-powered workflows for modern teams</strong>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-3">
+          <div className={styles.darkCards}>
             {heroOptions.map((option) => (
               <div
                 key={option.label}
-                className={`rounded-3xl border p-6 ${
-                  option.recommended
-                    ? "border-blue-400 bg-blue-500/10"
-                    : "border-white/10 bg-white/5"
+                className={`${styles.darkCard} ${
+                  option.recommended ? styles.recommendedDarkCard : ""
                 }`}
               >
-                <div className="mb-4 flex items-center justify-between gap-4">
-                  <p className="text-sm font-semibold text-slate-300">
-                    {option.label}
-                  </p>
+                <div className={styles.darkCardTop}>
+                  <span>{option.label}</span>
                   {option.recommended ? (
-                    <span className="rounded-full bg-blue-500 px-3 py-1 text-xs font-semibold text-white">
+                    <span className={styles.recommendedBadge}>
                       Recommended
                     </span>
                   ) : null}
                 </div>
 
-                <h3 className="text-xl font-bold leading-7 text-white">
-                  {option.title}
-                </h3>
-                <p className="mt-4 text-sm leading-6 text-slate-300">
-                  {option.body}
-                </p>
-                <div className="mt-6 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-950">
-                  CTA: {option.cta}
-                </div>
+                <h3 className={styles.darkCardTitle}>{option.title}</h3>
+                <p className={styles.darkCardText}>{option.body}</p>
+                <div className={styles.ctaBox}>CTA: {option.cta}</div>
               </div>
             ))}
           </div>
 
-          <Card className="mx-auto mt-8 max-w-4xl border-blue-200 bg-blue-50">
-            <p className="font-semibold text-blue-900">
-              Recommended version: Option B
-            </p>
-            <p className="mt-2 leading-7 text-blue-950">
+          <div className={styles.recommendationNote}>
+            <strong>Recommended version: Option B</strong>
+            <p>
               It keeps the product promise specific, reduces perceived
               complexity, and makes the demo feel more useful than a generic
               sales call.
             </p>
-          </Card>
+          </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-16 md:px-8">
-        <div className="grid gap-8 lg:grid-cols-2">
+      <section className={styles.section}>
+        <div className={styles.twoGrid}>
           <Card>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-              CTA Fixes
-            </p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">
-              Replace the generic demo CTA
-            </h2>
+            <p className={styles.eyebrow}>CTA Fixes</p>
+            <h2 className={styles.h2}>Replace the generic demo CTA</h2>
 
-            <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4">
-              <p className="text-sm font-semibold text-red-700">Current CTA</p>
-              <p className="mt-1 text-lg font-bold text-red-950">
-                Book a Demo
-              </p>
+            <div className={styles.redBox}>
+              <p className={styles.smallLabel}>Current CTA</p>
+              <h3 className={styles.h3}>Book a Demo</h3>
             </div>
 
-            <div className="mt-6">
-              <p className="mb-3 text-sm font-semibold text-slate-600">
-                Better alternatives
-              </p>
-              <div className="space-y-3">
-                {ctaAlternatives.map((cta) => (
-                  <div
-                    key={cta}
-                    className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-800"
-                  >
-                    {cta}
-                  </div>
-                ))}
-              </div>
+            <div className={styles.listStack}>
+              {ctaAlternatives.map((cta) => (
+                <div key={cta} className={styles.listItem}>
+                  <span className={styles.check}>✓</span>
+                  <span>{cta}</span>
+                </div>
+              ))}
             </div>
 
-            <div className="mt-6 rounded-2xl bg-blue-50 p-4">
-              <p className="text-sm font-semibold text-blue-700">
-                Best CTA to test first
-              </p>
-              <p className="mt-1 font-bold text-blue-950">
+            <div className={styles.blueBox}>
+              <p className={styles.smallLabel}>Best CTA to test first</p>
+              <h3 className={styles.h3}>
                 Book a 15-Minute Workflow Review
-              </p>
-              <p className="mt-2 text-sm leading-6 text-blue-900">
+              </h3>
+              <p className={styles.blockText}>
                 It tells the visitor what they will get from the call. “Book a
                 Demo” sounds like a sales process. “Workflow Review” sounds like
                 a useful diagnostic.
@@ -570,28 +484,20 @@ export default function SampleReportPage() {
           </Card>
 
           <Card>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-              Trust Proof
-            </p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">
+            <p className={styles.eyebrow}>Trust Proof</p>
+            <h2 className={styles.h2}>
               Move proof closer to the first CTA
             </h2>
-
-            <p className="mt-4 leading-7 text-slate-600">
+            <p className={styles.muted}>
               Visitors need evidence before they take action. For this page,
               proof should appear near the hero, not only near the bottom.
             </p>
 
-            <div className="mt-6 space-y-3">
+            <div className={styles.listStack}>
               {trustRecommendations.map((item) => (
-                <div
-                  key={item}
-                  className="flex gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4"
-                >
-                  <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
-                    ✓
-                  </span>
-                  <p className="text-sm leading-6 text-slate-700">{item}</p>
+                <div key={item} className={styles.listItem}>
+                  <span className={styles.check}>✓</span>
+                  <span>{item}</span>
                 </div>
               ))}
             </div>
@@ -599,8 +505,8 @@ export default function SampleReportPage() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-16 md:px-8">
-        <div className="mx-auto max-w-7xl">
+      <section className={styles.whiteSection}>
+        <div className={styles.section}>
           <SectionHeader
             eyebrow="Objection Handling"
             title="Answer the questions that stop visitors from converting"
@@ -611,17 +517,12 @@ export default function SampleReportPage() {
             </p>
           </SectionHeader>
 
-          <div className="grid gap-8 lg:grid-cols-2">
+          <div className={styles.twoGrid}>
             <Card>
-              <h3 className="text-2xl font-bold text-slate-950">
-                Likely buyer objections
-              </h3>
-              <div className="mt-6 space-y-3">
+              <h3 className={styles.h3}>Likely buyer objections</h3>
+              <div className={styles.listStack}>
                 {buyerObjections.map((objection) => (
-                  <div
-                    key={objection}
-                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium text-slate-800"
-                  >
+                  <div key={objection} className={styles.listItem}>
                     {objection}
                   </div>
                 ))}
@@ -629,21 +530,12 @@ export default function SampleReportPage() {
             </Card>
 
             <Card>
-              <h3 className="text-2xl font-bold text-slate-950">
-                Suggested FAQ section
-              </h3>
-              <div className="mt-6 space-y-5">
+              <h3 className={styles.h3}>Suggested FAQ section</h3>
+              <div className={styles.listStack}>
                 {faqSuggestions.map((faq) => (
-                  <div
-                    key={faq.question}
-                    className="border-b border-slate-200 pb-5 last:border-b-0 last:pb-0"
-                  >
-                    <p className="font-semibold text-slate-950">
-                      {faq.question}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">
-                      {faq.answer}
-                    </p>
+                  <div key={faq.question} className={styles.miniCard}>
+                    <strong>{faq.question}</strong>
+                    <p className={styles.blockText}>{faq.answer}</p>
                   </div>
                 ))}
               </div>
@@ -652,7 +544,7 @@ export default function SampleReportPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-16 md:px-8">
+      <section className={styles.section}>
         <SectionHeader
           eyebrow="Recommended Tools"
           title="Tools that support this conversion fix"
@@ -664,25 +556,19 @@ export default function SampleReportPage() {
           </p>
         </SectionHeader>
 
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-5">
+        <div className={styles.toolGrid}>
           {recommendedTools.map((item) => (
-            <Card key={item.category} className="p-5">
-              <p className="text-sm font-semibold text-blue-600">
-                {item.category}
-              </p>
-              <h3 className="mt-2 text-lg font-bold text-slate-950">
-                {item.tools}
-              </h3>
-              <p className="mt-3 text-sm leading-6 text-slate-600">
-                {item.note}
-              </p>
+            <Card key={item.category} className={styles.toolCard}>
+              <p className={styles.toolCategory}>{item.category}</p>
+              <h3 className={styles.toolTitle}>{item.tools}</h3>
+              <p className={styles.blockText}>{item.note}</p>
             </Card>
           ))}
         </div>
       </section>
 
-      <section className="bg-white px-6 py-16 md:px-8">
-        <div className="mx-auto max-w-7xl">
+      <section className={styles.whiteSection}>
+        <div className={styles.section}>
           <SectionHeader
             eyebrow="7-Day Recovery Plan"
             title="A practical fix plan the user can implement this week"
@@ -693,21 +579,13 @@ export default function SampleReportPage() {
             </p>
           </SectionHeader>
 
-          <div className="mx-auto max-w-4xl space-y-4">
+          <div className={styles.planList}>
             {recoveryPlan.map((item) => (
-              <Card key={item.day} className="p-5">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-                  <div className="inline-flex w-fit shrink-0 rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700">
-                    {item.day}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-slate-950">
-                      {item.title}
-                    </h3>
-                    <p className="mt-1 leading-7 text-slate-600">
-                      {item.detail}
-                    </p>
-                  </div>
+              <Card key={item.day} className={styles.planCard}>
+                <div className={styles.dayBadge}>{item.day}</div>
+                <div>
+                  <h3 className={styles.h3}>{item.title}</h3>
+                  <p className={styles.blockText}>{item.detail}</p>
                 </div>
               </Card>
             ))}
@@ -715,31 +593,22 @@ export default function SampleReportPage() {
         </div>
       </section>
 
-      <section className="px-6 py-20 md:px-8">
-        <div className="mx-auto max-w-5xl rounded-[2rem] bg-slate-950 px-6 py-14 text-center text-white md:px-12">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-blue-300">
-            Run Your Own Audit
-          </p>
-          <h2 className="text-3xl font-bold tracking-tight md:text-5xl">
-            Want this kind of report for your own landing page?
-          </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-300">
+      <section className={styles.section}>
+        <div className={styles.finalCta}>
+          <p className={styles.eyebrow}>Run Your Own Audit</p>
+          <h2>Want this kind of report for your own landing page?</h2>
+          <p>
             Run a free AI conversion diagnosis first. If the diagnosis is
             useful, unlock the full fix plan with rewritten copy, CTA
             recommendations, buyer objections, FAQ suggestions, tool
             recommendations, and a 7-day action plan.
           </p>
 
-          <div className="mt-8">
-            <Link
-              href="/"
-              className="inline-flex items-center justify-center rounded-full bg-white px-7 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-slate-100"
-            >
-              Run Free Diagnosis
-            </Link>
-          </div>
+          <Link href="/" className={styles.darkButton}>
+            Run Free Diagnosis
+          </Link>
 
-          <p className="mt-5 text-sm text-slate-400">
+          <p>
             No guesswork. No generic checklist. Get a page-specific diagnosis
             based on your offer, audience, and conversion goal.
           </p>
