@@ -298,7 +298,7 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
 
             <div className="hero-actions">
               <a className="mini-cta" href="#audit-form">Run Free Diagnosis</a>
-              <a className="mini-cta secondary" href="#sample-report">See Example Diagnosis</a>
+              <a className="mini-cta secondary" href="/sample-report">View Sample Report</a>
             </div>
 
             <div className="cards">
@@ -559,6 +559,8 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
 
             <div className="plan-strip">
               7-Day Plan: rewrite hero · move proof near CTA · clarify shipping/returns · add FAQ · test headline variations
+              <br />
+              <a href="/sample-report">View the full sample report →</a>
             </div>
           </div>
         </section>
@@ -570,6 +572,8 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
             <p>
               Basic gives you a quick diagnosis. Pro gives you a fuller action plan for pages with traffic,
               paid campaigns, or a real offer you want to improve.
+              <br />
+              <a href="/sample-report">Want to see what’s inside? View a sample report.</a>
             </p>
           </div>
 
