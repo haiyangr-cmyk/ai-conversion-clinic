@@ -81,7 +81,7 @@ function conversionGoalLabel(goal?: string) {
 }
 
 function solutionTitle(input: AuditInput | null) {
-  return input?.tier === "pro" ? "Pro Conversion Solution" : "Basic Conversion Solution";
+  return input?.tier === "pro" ? "Pro Fix Plan" : "Quick Fix Report";
 }
 
 function buildReportBaseName(
@@ -89,7 +89,7 @@ function buildReportBaseName(
   input: AuditInput | null,
   reportV2: AuditReportV2 | null
 ) {
-  const kind = reportMode === "diagnosis" ? "Free-Diagnosis" : input?.tier === "pro" ? "Pro-Solution" : "Basic-Solution";
+  const kind = reportMode === "diagnosis" ? "Free-Diagnosis" : input?.tier === "pro" ? "Pro-Fix-Plan" : "Quick-Fix-Report";
   const rawSource = input?.url || reportV2?.meta?.pageUrl || input?.product || "landing-page";
   const source = slugifyFilePart(rawSource);
   const date = new Date().toISOString().slice(0, 10);
@@ -213,7 +213,7 @@ function buildDiagnosisExportText(reportV2: AuditReportV2 | null, input: AuditIn
 
   lines.push(
     "## Solution Preview",
-    "Unlock the full Conversion Solution to get:",
+    "Unlock the full fix plan to get:",
     "- Recommended positioning",
     "- Hero rewrite",
     "- CTA fixes",
@@ -436,14 +436,116 @@ async function downloadDocxFile(filename: string, content: string) {
   downloadBlobFile(filename, blob);
 }
 
+
+function recommendedToolsForPageType(pageType: PageType) {
+  if (pageType === "shopify_ecommerce") {
+    return [
+      {
+        category: "Behavior analytics",
+        tools: "Microsoft Clarity, Hotjar",
+        why: "Use heatmaps and recordings to see where shoppers hesitate, scroll, or abandon."
+      },
+      {
+        category: "Reviews and proof",
+        tools: "Loox, Judge.me, Yotpo",
+        why: "Add stronger customer proof near product decisions and CTA sections."
+      },
+      {
+        category: "Email recovery",
+        tools: "Klaviyo, Mailchimp",
+        why: "Recover abandoned carts and follow up with visitors who do not buy immediately."
+      }
+    ];
+  }
+
+  if (pageType === "saas" || pageType === "software_app") {
+    return [
+      {
+        category: "Product analytics",
+        tools: "PostHog, Mixpanel",
+        why: "Track signup, activation, demo, and trial-to-paid behavior."
+      },
+      {
+        category: "Session recordings",
+        tools: "Microsoft Clarity, Hotjar",
+        why: "See where visitors hesitate before signing up or booking a demo."
+      },
+      {
+        category: "CRM and follow-up",
+        tools: "HubSpot, Pipedrive",
+        why: "Track demo requests, lead quality, and sales follow-up speed."
+      }
+    ];
+  }
+
+  if (pageType === "service_lead_gen" || pageType === "agency_consulting") {
+    return [
+      {
+        category: "Lead capture",
+        tools: "Tally, Typeform, Fillout",
+        why: "Make forms easier to complete and reduce lead submission friction."
+      },
+      {
+        category: "CRM",
+        tools: "HubSpot, Pipedrive",
+        why: "Track inbound leads, follow-up speed, and booked consultation outcomes."
+      },
+      {
+        category: "Behavior analytics",
+        tools: "Microsoft Clarity, Hotjar",
+        why: "Identify where visitors drop off before submitting the form."
+      }
+    ];
+  }
+
+  if (pageType === "course_coaching") {
+    return [
+      {
+        category: "Checkout and landing pages",
+        tools: "ConvertKit, Kajabi, Teachable",
+        why: "Improve offer presentation, email capture, and purchase flow."
+      },
+      {
+        category: "Forms and quizzes",
+        tools: "Tally, Typeform, Fillout",
+        why: "Use lower-friction qualification steps before asking for a purchase or call."
+      },
+      {
+        category: "Behavior analytics",
+        tools: "Microsoft Clarity, Hotjar",
+        why: "Find hesitation points around pricing, proof, and CTA sections."
+      }
+    ];
+  }
+
+  return [
+    {
+      category: "Behavior analytics",
+      tools: "Microsoft Clarity, Hotjar",
+      why: "See where visitors scroll, hesitate, and abandon the page."
+    },
+    {
+      category: "Forms",
+      tools: "Tally, Typeform, Fillout",
+      why: "Reduce form friction and make the next step easier to complete."
+    },
+    {
+      category: "A/B testing",
+      tools: "VWO, Convert",
+      why: "Test revised hero, CTA, and proof sections instead of relying on opinion."
+    }
+  ];
+}
+
 function V2Report({ report }: { report: AuditReportV2 }) {
   const overallScore = safeScore(report.executiveSummary.overallScore);
   const overallLevel = scoreLevel(overallScore);
   const isPro = report.meta.tier === "pro";
-  const tierLabel = isPro ? "Solution Pro" : "Conversion Solution";
+  const tierLabel = isPro ? "Pro Fix Plan" : "Quick Fix Report";
   const visibleRewrites = isPro ? report.rewrites.slice(0, 5) : report.rewrites.slice(0, 3);
   const visibleQuickWins = report.priorityFixes.quickWins.slice(0, 3);
   const visibleSevenDayPlan = report.sevenDayPlan.slice(0, 7);
+  const recommendedTools = recommendedToolsForPageType(report.meta.pageType);
 
   return (
     <div className="report-v2">
@@ -683,6 +785,27 @@ function V2Report({ report }: { report: AuditReportV2 }) {
         </section>
       )}
 
+      <section className="report-section">
+        <div className="section-heading compact">
+          <span className="eyebrow">Recommended tools</span>
+          <h2>Tools that support this conversion fix</h2>
+          <p>
+            These are not random software suggestions. They are tools that can help you verify,
+            implement, or track the fixes recommended in this report.
+          </p>
+        </div>
+
+        <div className="fix-list">
+          {recommendedTools.map((item) => (
+            <article className="fix-card" key={item.category}>
+              <strong>{item.category}</strong>
+              <p>{item.tools}</p>
+              <b>{item.why}</b>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <div className="notice">{report.disclaimer}</div>
     </div>
   );
@@ -816,7 +939,7 @@ export default function ReportPage() {
 
           <div className="report-header">
             <div>
-              <span className="eyebrow">{reportMode === "diagnosis" ? "Generated diagnosis" : "Generated solution"}</span>
+              <span className="eyebrow">{reportMode === "diagnosis" ? "Generated diagnosis" : "Generated fix plan"}</span>
               <h1>{reportMode === "diagnosis" ? "Your Conversion Diagnosis" : solutionTitle(input)}</h1>
             </div>
 
@@ -837,7 +960,7 @@ export default function ReportPage() {
             >
               Download DOCX
             </button>
-<button className="cta copy-button" onClick={copyReport}>{copied ? "Copied" : reportMode === "diagnosis" ? "Copy diagnosis" : "Copy solution"}</button>
+<button className="cta copy-button" onClick={copyReport}>{copied ? "Copied" : reportMode === "diagnosis" ? "Copy diagnosis" : "Copy fix plan"}</button>
           </div>
 
           {reportMode === "diagnosis" && reportV2 ? (
@@ -864,17 +987,20 @@ export default function ReportPage() {
               </div>
 
               <div className="diagnosis-section solution-preview-box">
-                <p className="eyebrow">Solution Preview</p>
+                <p className="eyebrow">Fix Plan Preview</p>
                 <h2>We found practical fixes for this page.</h2>
                 <p>
-                  Unlock the full Conversion Solution to get copy-ready fixes for positioning,
-                  hero copy, CTA, trust proof, offer framing, implementation plan, and launch follow-up copy.
+                  Unlock the full fix plan to get copy-ready recommendations for positioning,
+                  hero copy, CTA, trust proof, offer framing, implementation steps, and follow-up copy.
+                </p>
+                <p>
+                  <a href="/sample-report">View a sample report before unlocking →</a>
                 </p>
               </div>
 
               <section className="locked-solution-card">
                 <div>
-                  <p className="eyebrow">Locked Conversion Solution</p>
+                  <p className="eyebrow">Locked Fix Plan</p>
                   <h2>Unlock your full fix plan</h2>
                   <p>
                     Get the exact recommendations and copy-ready assets needed to improve this page.
@@ -892,7 +1018,7 @@ export default function ReportPage() {
                 </ul>
 
                 <button className="cta" type="button" onClick={unlockConversionSolution}>
-                  Unlock Conversion Solution
+                  Unlock Full Fix Plan
                 </button>
               </section>
             </section>
