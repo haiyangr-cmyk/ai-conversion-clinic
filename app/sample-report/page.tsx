@@ -262,7 +262,7 @@ export default function SampleReportPage() {
             </p>
 
             <div className={styles.actions}>
-              <Link href="/" className={styles.primaryButton}>
+              <Link href="/#audit-form" className={styles.primaryButton}>
                 Run Your Free Diagnosis
               </Link>
               <Link href="#report" className={styles.secondaryButton}>
@@ -604,7 +604,7 @@ export default function SampleReportPage() {
             recommendations, and a 7-day action plan.
           </p>
 
-          <Link href="/" className={styles.darkButton}>
+          <Link href="/#audit-form" className={styles.darkButton}>
             Run Free Diagnosis
           </Link>
 
