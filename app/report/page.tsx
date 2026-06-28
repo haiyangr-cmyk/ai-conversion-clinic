@@ -1002,6 +1002,13 @@ export default function ReportPage() {
                 <div>
                   <p className="eyebrow">Locked Fix Plan</p>
                   <h2>Unlock your full fix plan</h2>
+
+                  <ul className="report-trust-bar" aria-label="Payment trust signals">
+                    <li>Secure PayPal checkout</li>
+                    <li>Instant report access after payment</li>
+                    <li>Sample report available</li>
+                    <li>Refund policy available</li>
+                  </ul>
                   <p>
                     Get the exact recommendations and copy-ready assets needed to improve this page.
                   </p>

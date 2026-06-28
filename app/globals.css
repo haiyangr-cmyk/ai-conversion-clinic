@@ -2230,3 +2230,52 @@ button.copy-export-button {
     padding: 8px 10px;
   }
 }
+
+/* Report payment trust bar */
+.report-trust-bar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0 22px;
+  padding: 0;
+  list-style: none;
+}
+
+.report-trust-bar li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(226, 232, 240, 0.94);
+  border-radius: 14px;
+  padding: 10px 12px 10px 38px;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.report-trust-bar li::before {
+  content: "✓";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(134, 239, 172, 0.16);
+  color: #86efac;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+@media (max-width: 720px) {
+  .report-trust-bar {
+    grid-template-columns: 1fr;
+  }
+}
