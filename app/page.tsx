@@ -529,7 +529,17 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
             <button className="cta" type="submit" disabled={diagnosisLoading}>
               {diagnosisLoading ? "Generating diagnosis..." : "Run Free Diagnosis"}
             </button>
-            {diagnosisError ? <p className="form-error">{diagnosisError}</p> : null}
+            {diagnosisError ? (
+              <>
+                <p className="form-error">{diagnosisError}</p>
+                {diagnosisError.includes("free diagnosis limit") ? (
+                  <div className="limit-error-actions" aria-label="Limit recovery actions">
+                    <a href="/sample-report">View Sample Report</a>
+                    <a href="/blog">Read Conversion Guides</a>
+                  </div>
+                ) : null}
+              </>
+            ) : null}
             <p className="footer">Free diagnosis first · Secure PayPal checkout for the full fix plan</p>
           </form>
         </section>
