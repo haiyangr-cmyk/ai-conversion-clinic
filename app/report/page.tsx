@@ -1028,6 +1028,37 @@ export default function ReportPage() {
                     <li>Sample report available</li>
                     <li>Refund policy available</li>
                   </ul>
+
+                  <div className="payment-flow-card" aria-label="What happens after payment">
+                    <div className="payment-flow-header">
+                      <span>What happens after payment</span>
+                      <strong>PayPal confirms first, then your full fix plan is generated.</strong>
+                    </div>
+
+                    <ol className="payment-flow-steps">
+                      <li>
+                        <strong>Pay securely with PayPal</strong>
+                        <span>You complete checkout through PayPal. We do not store card or bank details.</span>
+                      </li>
+                      <li>
+                        <strong>Return to checkout automatically</strong>
+                        <span>After PayPal confirms the payment, the checkout page unlocks report generation.</span>
+                      </li>
+                      <li>
+                        <strong>Generate your full fix plan</strong>
+                        <span>Your paid plan includes copy-ready recommendations, structure fixes, proof improvements, and implementation steps.</span>
+                      </li>
+                      <li>
+                        <strong>Download or copy the report</strong>
+                        <span>You can export the result or copy it into your working document.</span>
+                      </li>
+                      <li>
+                        <strong>Support if anything fails</strong>
+                        <span>If payment succeeds but generation fails, contact support with your PayPal order ID.</span>
+                      </li>
+                    </ol>
+                  </div>
+
                   <p>
                     Get the exact recommendations and copy-ready assets needed to improve this page.
                   </p>

@@ -2353,3 +2353,79 @@ form .limit-error-actions a:hover,
   background: rgba(255, 255, 255, 0.08) !important;
   color: #ffffff !important;
 }
+
+/* Report unlock payment flow */
+.payment-flow-card {
+  margin: 18px 0 20px;
+  padding: 18px;
+  border: 1px solid #bfdbfe;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+}
+
+.payment-flow-header {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.payment-flow-header span {
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.payment-flow-header strong {
+  color: #0f172a;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.payment-flow-steps {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: payment-flow;
+}
+
+.payment-flow-steps li {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  padding: 12px 12px 12px 44px;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.payment-flow-steps li::before {
+  counter-increment: payment-flow;
+  content: counter(payment-flow);
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.payment-flow-steps strong {
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.payment-flow-steps span {
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.55;
+}
