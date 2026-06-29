@@ -467,6 +467,34 @@ export default function CheckoutPage() {
                 <div className="notice" style={{ marginBottom: 18 }}>
                   Complete payment securely with PayPal. Your full conversion solution can only be generated after PayPal confirms the payment.
                 </div>
+                {!paymentComplete ? (
+                  <div className="checkout-before-pay-card" aria-label="Before you pay">
+                    <div className="checkout-before-pay-header">
+                      <span>Before you pay</span>
+                      <strong>Only unlock the full fix plan if the free diagnosis feels accurate.</strong>
+                    </div>
+
+                    <ul className="checkout-before-pay-list">
+                      <li>
+                        <strong>Review the diagnosis first</strong>
+                        <span>Your payment unlocks a deeper, copy-ready fix plan based on the diagnosis you just received.</span>
+                      </li>
+                      <li>
+                        <strong>Pay securely with PayPal</strong>
+                        <span>Payment is handled by PayPal. We do not store your card or bank details.</span>
+                      </li>
+                      <li>
+                        <strong>Generate after confirmation</strong>
+                        <span>After PayPal confirms payment, return here and generate your full fix plan automatically.</span>
+                      </li>
+                      <li>
+                        <strong>Support is available</strong>
+                        <span>If payment succeeds but generation fails, contact support with your PayPal order ID. See the <a href="/refund">refund policy</a>.</span>
+                      </li>
+                    </ul>
+                  </div>
+                ) : null}
+
                 {paypalLoading && <p className="muted">Preparing secure PayPal checkout...</p>}
                 <div ref={paypalRef} />
               </>
