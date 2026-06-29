@@ -77,6 +77,30 @@ const toolCategories = [
   },
 ];
 
+const toolLinks: Record<string, string> = {
+  "Microsoft Clarity": "https://clarity.microsoft.com/",
+  Hotjar: "https://www.hotjar.com/",
+  Mouseflow: "https://mouseflow.com/",
+  Tally: "https://tally.so/",
+  Typeform: "https://www.typeform.com/",
+  Fillout: "https://www.fillout.com/",
+  Jotform: "https://www.jotform.com/",
+  Unbounce: "https://unbounce.com/",
+  Leadpages: "https://www.leadpages.com/",
+  Webflow: "https://webflow.com/",
+  Framer: "https://www.framer.com/",
+  VWO: "https://vwo.com/",
+  Convert: "https://www.convert.com/",
+  Optimizely: "https://www.optimizely.com/",
+  HubSpot: "https://www.hubspot.com/",
+  Pipedrive: "https://www.pipedrive.com/",
+  Close: "https://www.close.com/",
+  ChatGPT: "https://chatgpt.com/",
+  Jasper: "https://www.jasper.ai/",
+  "Copy.ai": "https://www.copy.ai/",
+  Anyword: "https://www.anyword.com/",
+};
+
 const workflows = [
   {
     title: "Traffic but no conversions",
@@ -172,7 +196,14 @@ export default function ToolsPage() {
 
               <div className={styles.toolList}>
                 {category.tools.map((tool) => (
-                  <span key={tool}>{tool}</span>
+                  <a
+                    key={tool}
+                    href={toolLinks[tool]}
+                    target="_blank"
+                    rel="sponsored nofollow noopener noreferrer"
+                  >
+                    {tool}
+                  </a>
                 ))}
               </div>
 

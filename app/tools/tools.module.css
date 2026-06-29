@@ -399,3 +399,20 @@
   letter-spacing: 0.08em;
   line-height: 1.4;
 }
+
+/* Tool external links */
+.toolList a {
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 7px 10px;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: 0.16s ease;
+}
+
+.toolList a:hover {
+  background: #dbeafe;
+  transform: translateY(-1px);
+}
