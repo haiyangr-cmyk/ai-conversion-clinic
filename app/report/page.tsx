@@ -11,6 +11,7 @@ import {
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "../lib/analytics";
 import type { AuditInput } from "../../lib/types";
 import type { AuditReportV2, CheckStatus, ImpactLevel, PageType } from "../../lib/report-v2";
 
@@ -921,6 +922,7 @@ export default function ReportPage() {
       }
     }
 
+    trackEvent("checkout_click", { source_path: "/report", report_mode: reportMode });
     router.push("/checkout");
   }
 

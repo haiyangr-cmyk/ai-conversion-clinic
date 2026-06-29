@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "../lib/analytics";
 import { tiers } from "../../lib/pricing";
 import type { AuditInput, GenerateResponse, Tier } from "../../lib/types";
 
@@ -250,6 +251,11 @@ export default function CheckoutPage() {
             throw new Error(data.error || "Could not create PayPal order");
           }
 
+          trackEvent("paypal_order_created", {
+            tier: input.tier,
+            currency
+          });
+
           return data.id;
         },
 
@@ -276,6 +282,10 @@ export default function CheckoutPage() {
             setPaypalOrderId(result.orderId);
             setPaymentToken(result.paymentToken);
             setPaymentComplete(true);
+            trackEvent("paypal_payment_completed", {
+              tier: input.tier,
+              currency
+            });
           } catch (err) {
             setError(err instanceof Error ? err.message : "Payment capture failed. Please contact support.");
           } finally {
@@ -380,6 +390,10 @@ export default function CheckoutPage() {
           generatedAt: new Date().toISOString()
         }));
       }
+
+      trackEvent("paid_fix_plan_generated", {
+        tier: input.tier
+      });
 
       router.push("/report");
     } catch (err) {
