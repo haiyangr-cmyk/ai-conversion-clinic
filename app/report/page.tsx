@@ -872,7 +872,24 @@ export default function ReportPage() {
     setInput(parsed.input || null);
     setDemo(Boolean(parsed.demo));
     setLocalSample(Boolean(parsed.localSample));
-    setReportMode(parsed.mode === "diagnosis" ? "diagnosis" : "solution");
+    const nextReportMode = parsed.mode === "diagnosis" ? "diagnosis" : "solution";
+    setReportMode(nextReportMode);
+
+    if (nextReportMode === "diagnosis") {
+      const diagnosisTrackingSource = parsed as {
+        diagnosisId?: string;
+        generatedAt?: string;
+      };
+      const diagnosisTrackingKey = `diagnosis-success-${diagnosisTrackingSource.diagnosisId || diagnosisTrackingSource.generatedAt || "latest"}`;
+
+      if (sessionStorage.getItem(diagnosisTrackingKey) !== "true") {
+        sessionStorage.setItem(diagnosisTrackingKey, "true");
+        trackEvent("diagnosis_success", {
+          source_path: "/report",
+          report_mode: nextReportMode
+        });
+      }
+    }
   }, [router]);
 
   const exportText = useMemo(() => {

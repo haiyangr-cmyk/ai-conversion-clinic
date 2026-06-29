@@ -2,7 +2,6 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { trackEvent } from "./lib/analytics";
 import type { AuditInput } from "../lib/types";
 
 const initialForm: AuditInput = {
@@ -152,7 +151,6 @@ export default function HomePage() {
           generatedAt: new Date().toISOString()
         }));
 
-        trackEvent("diagnosis_success", { source_path: "/" });
         router.push("/report");
         return;
       }
@@ -276,7 +274,6 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
         generatedAt: new Date().toISOString()
       }));
 
-      trackEvent("diagnosis_success", { source_path: "/" });
       router.push("/report");
     } catch (err) {
       setDiagnosisError(err instanceof Error ? err.message : "Sample diagnosis failed. Please try again.");
