@@ -318,3 +318,84 @@
     width: 100%;
   }
 }
+.disclosureSection {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 24px 0;
+}
+
+.disclosureBox {
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  border-radius: 22px;
+  padding: 18px 20px;
+  color: #1e3a8a;
+}
+
+.disclosureBox strong {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 900;
+}
+
+.disclosureBox p {
+  margin: 0;
+  line-height: 1.65;
+}
+
+.problemBox {
+  margin-top: 20px;
+  border-radius: 18px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  padding: 16px;
+}
+
+.problemBox strong {
+  display: block;
+  color: #9a3412;
+  margin-bottom: 6px;
+}
+
+.problemBox p {
+  margin: 0;
+  color: #7c2d12;
+  line-height: 1.6;
+}
+
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.cardActions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 13px;
+  border-radius: 999px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.cardActions a:hover {
+  background: #dbeafe;
+}
+
+.workflowCard > span {
+  display: inline-flex;
+  margin-bottom: 14px;
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+}

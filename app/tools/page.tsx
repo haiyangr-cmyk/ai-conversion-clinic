@@ -5,93 +5,108 @@ import styles from "./tools.module.css";
 export const metadata: Metadata = {
   title: "CRO Tools for Landing Page Optimization | AI Conversion Clinic",
   description:
-    "Explore tools for landing page optimization, behavior analytics, form conversion, A/B testing, CRM follow-up, and AI copy improvement.",
+    "Explore CRO tools for behavior analytics, lead capture, landing pages, A/B testing, CRM follow-up, and AI copy improvement.",
 };
 
 const toolCategories = [
   {
     title: "Behavior Analytics",
-    description:
-      "See where visitors scroll, hesitate, rage click, or abandon your landing page.",
+    bestFor: "Finding where visitors hesitate, scroll, rage click, or abandon",
+    problem:
+      "You have traffic, but you do not know why visitors are not converting.",
     tools: ["Microsoft Clarity", "Hotjar", "Mouseflow"],
-    bestFor: "Diagnosing invisible conversion friction",
+    why:
+      "Behavior analytics helps you see real user behavior before guessing what to redesign.",
     useWhen:
-      "You have traffic, but you do not know where users are getting stuck.",
+      "Use this first when your landing page gets visits but not enough signups, leads, demo bookings, or sales.",
   },
   {
     title: "Forms & Lead Capture",
-    description:
-      "Reduce form friction and make the next step easier for visitors to complete.",
+    bestFor: "Reducing friction in demo, lead, signup, or application flows",
+    problem:
+      "Visitors click the CTA but do not finish the form or booking step.",
     tools: ["Tally", "Typeform", "Fillout", "Jotform"],
-    bestFor: "Improving lead generation and demo request flows",
+    why:
+      "Better forms can reduce abandonment and make the next step feel easier.",
     useWhen:
-      "Visitors click your CTA but do not finish the form or booking step.",
+      "Use this when form completion, demo request, or lead submission rate is weak.",
   },
   {
     title: "Landing Page Builders",
-    description:
-      "Build, publish, and test landing pages without rebuilding your whole site.",
+    bestFor: "Launching page variants without rebuilding the full website",
+    problem:
+      "You need to test a new offer, campaign, audience, or page angle quickly.",
     tools: ["Unbounce", "Leadpages", "Webflow", "Framer"],
-    bestFor: "Testing new offers, ad pages, and campaign landing pages",
+    why:
+      "Landing page builders make it easier to ship focused pages for one audience and one conversion goal.",
     useWhen:
-      "You need to ship landing page variations quickly.",
+      "Use this when paid traffic, SEO pages, launch pages, or campaign pages need dedicated landing pages.",
   },
   {
     title: "A/B Testing",
-    description:
-      "Test headlines, CTAs, proof sections, forms, and page layouts with real traffic.",
+    bestFor: "Testing revised headlines, CTAs, forms, and proof sections",
+    problem:
+      "You have a hypothesis but need to validate whether the change improves conversion.",
     tools: ["VWO", "Convert", "Optimizely"],
-    bestFor: "Validating conversion fixes with data",
+    why:
+      "A/B testing helps compare page variants with real visitor behavior instead of opinion.",
     useWhen:
-      "You have enough traffic and want to compare page variants.",
+      "Use this when you have enough traffic and one clear conversion hypothesis to test.",
   },
   {
     title: "CRM & Follow-up",
-    description:
-      "Track leads, demo requests, follow-up speed, and sales pipeline conversion.",
+    bestFor: "Improving lead-to-call, demo-to-customer, and sales follow-up",
+    problem:
+      "Leads are coming in, but not enough become calls, trials, or customers.",
     tools: ["HubSpot", "Pipedrive", "Close"],
-    bestFor: "Improving demo booking and lead-to-customer conversion",
+    why:
+      "CRM tools help track lead quality, follow-up speed, pipeline stage, and conversion after the form submit.",
     useWhen:
-      "You are getting leads but not converting enough of them into calls or customers.",
+      "Use this when the landing page gets leads but revenue or booked-call conversion is weak.",
   },
   {
     title: "AI Copywriting",
-    description:
-      "Generate headline, CTA, FAQ, objection-handling, and value proposition variations.",
+    bestFor: "Generating headline, CTA, FAQ, and objection-handling variants",
+    problem:
+      "Your copy is too vague, generic, or disconnected from the buyer’s problem.",
     tools: ["ChatGPT", "Jasper", "Copy.ai", "Anyword"],
-    bestFor: "Creating copy variants to test",
+    why:
+      "AI copy tools help generate message variations quickly, but the final copy still needs to be validated.",
     useWhen:
-      "Your message is unclear, too generic, or not specific enough to the buyer.",
+      "Use this when you need faster copy iteration for headlines, CTAs, proof, FAQs, and offer framing.",
   },
 ];
 
 const workflows = [
   {
     title: "Traffic but no conversions",
+    stack: "Behavior analytics → Hero rewrite → CTA test",
     steps: [
       "Run a free AI Conversion Clinic diagnosis",
-      "Install Microsoft Clarity or Hotjar",
-      "Review scroll depth and rage clicks",
+      "Install a behavior analytics tool",
+      "Watch where visitors hesitate or abandon",
       "Rewrite the hero and CTA",
-      "Test one revised page variant",
+      "Test one revised version",
     ],
   },
   {
-    title: "Low demo bookings",
+    title: "CTA clicks but no submissions",
+    stack: "Form tool → Trust copy → CRM tracking",
     steps: [
-      "Clarify the demo promise",
-      "Replace “Book a Demo” with a more specific CTA",
       "Shorten the form",
-      "Connect form submissions to HubSpot or Pipedrive",
-      "Measure follow-up speed and booked-call rate",
+      "Clarify what happens after submission",
+      "Add reassurance near the form",
+      "Track submissions in a CRM",
+      "Measure booked-call or qualified-lead rate",
     ],
   },
   {
     title: "Paid ads not converting",
+    stack: "Landing page builder → Proof section → A/B test",
     steps: [
-      "Match the landing page headline to ad intent",
-      "Add proof above the first CTA",
-      "Use a campaign-specific landing page builder",
+      "Match the landing page headline to the ad promise",
+      "Use one page for one audience and one offer",
+      "Move proof above or near the first CTA",
       "Track user behavior",
       "A/B test headline and CTA combinations",
     ],
@@ -106,13 +121,12 @@ export default function ToolsPage() {
           <p className={styles.badge}>CRO Tool Stack</p>
           <h1>Tools to diagnose and fix landing page conversion problems.</h1>
           <p>
-            Use these tools to understand visitor behavior, reduce friction,
-            improve your CTA, capture more leads, and test better landing page
-            variations.
+            Start with the conversion problem, then choose tools that help you
+            verify, implement, or measure the fix.
           </p>
 
           <div className={styles.actions}>
-            <Link href="/" className={styles.primaryButton}>
+            <Link href="/#audit-form" className={styles.primaryButton}>
               Run Free Diagnosis
             </Link>
             <Link href="/sample-report" className={styles.secondaryButton}>
@@ -122,14 +136,24 @@ export default function ToolsPage() {
         </div>
       </section>
 
+      <section className={styles.disclosureSection}>
+        <div className={styles.disclosureBox}>
+          <strong>Affiliate-ready note</strong>
+          <p>
+            This page is structured for future tool partnerships. Current tool
+            mentions are informational and should be selected based on your
+            conversion problem, traffic level, budget, and workflow.
+          </p>
+        </div>
+      </section>
+
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <p className={styles.eyebrow}>Recommended Categories</p>
-          <h2>Start with the conversion problem, then choose the tool.</h2>
+          <h2>Choose tools based on the conversion leak.</h2>
           <p>
-            The best CRO stack is not the one with the most software. It is the
-            one that helps you find the leak, fix the message, and measure the
-            result.
+            A tool is only useful when it helps you diagnose, fix, or measure a
+            specific conversion blocker.
           </p>
         </div>
 
@@ -141,7 +165,10 @@ export default function ToolsPage() {
                 <span>{category.bestFor}</span>
               </div>
 
-              <p className={styles.description}>{category.description}</p>
+              <div className={styles.problemBox}>
+                <strong>Problem it solves</strong>
+                <p>{category.problem}</p>
+              </div>
 
               <div className={styles.toolList}>
                 {category.tools.map((tool) => (
@@ -150,8 +177,20 @@ export default function ToolsPage() {
               </div>
 
               <div className={styles.useWhen}>
-                <strong>Use when:</strong>
+                <strong>Why it helps</strong>
+                <p>{category.why}</p>
+              </div>
+
+              <div className={styles.useWhen}>
+                <strong>Use when</strong>
                 <p>{category.useWhen}</p>
+              </div>
+
+              <div className={styles.cardActions}>
+                <Link href="/#audit-form">Diagnose first</Link>
+                <Link href="/blog/best-cro-tools-for-small-businesses">
+                  Read guide
+                </Link>
               </div>
             </article>
           ))}
@@ -161,16 +200,17 @@ export default function ToolsPage() {
       <section className={styles.darkSection}>
         <div className={styles.sectionHeader}>
           <p className={styles.eyebrow}>Workflows</p>
-          <h2>Recommended tool workflows by conversion problem.</h2>
+          <h2>Recommended CRO workflows by conversion problem.</h2>
           <p>
-            Start with diagnosis, then use tools only where they help verify or
-            implement the fix.
+            The best stack depends on whether the issue is message clarity,
+            trust, form friction, follow-up, or testing.
           </p>
         </div>
 
         <div className={styles.workflowGrid}>
           {workflows.map((workflow) => (
             <article className={styles.workflowCard} key={workflow.title}>
+              <span>{workflow.stack}</span>
               <h3>{workflow.title}</h3>
               <ol>
                 {workflow.steps.map((step) => (
@@ -188,10 +228,10 @@ export default function ToolsPage() {
           <h2>Run a free landing page diagnosis before buying more tools.</h2>
           <p>
             AI Conversion Clinic identifies the biggest conversion blockers on
-            your page and gives you a practical fix plan.
+            your page and gives you a practical fix path.
           </p>
 
-          <Link href="/" className={styles.primaryButton}>
+          <Link href="/#audit-form" className={styles.primaryButton}>
             Run Free Diagnosis
           </Link>
         </div>
