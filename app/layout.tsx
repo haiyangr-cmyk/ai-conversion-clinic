@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import "./globals.css";
+import AnalyticsEvents from "./AnalyticsEvents";
 
 const GA_MEASUREMENT_ID = "G-B9CKBMGMZN";
 
@@ -24,6 +25,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.paypalobjects.com" />
       </head>
       <body>
+        <AnalyticsEvents />
         {children}
         <footer className="site-footer">
           <div className="site-footer-inner">
