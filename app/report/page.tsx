@@ -1084,6 +1084,69 @@ export default function ReportPage() {
           ) : (
             <FormattedTextReport text={report} />
           )}
+
+          {reportMode === "diagnosis" && !reportV2 ? (
+            <section className="locked-solution-card fallback-unlock-card">
+              <div>
+                <p className="eyebrow">Locked Fix Plan</p>
+                <h2>Unlock your full fix plan</h2>
+
+                <ul className="report-trust-bar" aria-label="Payment trust signals">
+                  <li>Secure PayPal checkout</li>
+                  <li>Instant report access after payment</li>
+                  <li>Sample report available</li>
+                  <li>Refund policy available</li>
+                </ul>
+
+                <div className="payment-flow-card" aria-label="What happens after payment">
+                  <div className="payment-flow-header">
+                    <span>What happens after payment</span>
+                    <strong>PayPal confirms first, then your full fix plan is generated.</strong>
+                  </div>
+
+                  <ol className="payment-flow-steps">
+                    <li>
+                      <strong>Pay securely with PayPal</strong>
+                      <span>You complete checkout through PayPal. We do not store card or bank details.</span>
+                    </li>
+                    <li>
+                      <strong>Return to checkout automatically</strong>
+                      <span>After PayPal confirms the payment, the checkout page unlocks report generation.</span>
+                    </li>
+                    <li>
+                      <strong>Generate your full fix plan</strong>
+                      <span>Your paid plan includes copy-ready recommendations, structure fixes, proof improvements, and implementation steps.</span>
+                    </li>
+                    <li>
+                      <strong>Download or copy the report</strong>
+                      <span>You can export the result or copy it into your working document.</span>
+                    </li>
+                    <li>
+                      <strong>Support if anything fails</strong>
+                      <span>If payment succeeds but generation fails, contact support with your PayPal order ID.</span>
+                    </li>
+                  </ol>
+                </div>
+
+                <p>
+                  Get the exact recommendations and copy-ready assets needed to improve this page.
+                </p>
+              </div>
+
+              <ul>
+                <li>Recommended positioning</li>
+                <li>Hero rewrite</li>
+                <li>CTA fixes</li>
+                <li>Trust & proof fixes</li>
+                <li>Implementation checklist</li>
+                <li>Follow-up copy ideas</li>
+              </ul>
+
+              <button className="cta" type="button" onClick={unlockConversionSolution}>
+                Unlock full fix plan
+              </button>
+            </section>
+          ) : null}
         </section>
       </div>
     

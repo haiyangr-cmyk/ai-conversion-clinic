@@ -2429,3 +2429,8 @@ form .limit-error-actions a:hover,
   font-size: 13px;
   line-height: 1.55;
 }
+
+
+.fallback-unlock-card {
+  margin-top: 34px;
+}
