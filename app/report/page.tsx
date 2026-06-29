@@ -939,7 +939,11 @@ export default function ReportPage() {
       }
     }
 
-    trackEvent("checkout_click", { source_path: "/report", report_mode: reportMode });
+    trackEvent("checkout_click", {
+      source_path: "/report",
+      report_mode: reportMode,
+      unlock_source: reportV2 ? "structured_report_unlock" : "fallback_report_unlock"
+    });
     router.push("/checkout");
   }
 
