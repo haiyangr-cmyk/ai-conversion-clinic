@@ -2497,3 +2497,65 @@ form .limit-error-actions a:hover,
   color: #2563eb;
   font-weight: 900;
 }
+
+
+/* Shared support note styling for report and checkout */
+.report-bottom-help,
+.payment-safety-note.checkout-action-help {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 16px 18px;
+  border: 1px solid rgba(134, 239, 172, 0.28);
+  border-radius: 18px;
+  background: rgba(15, 42, 48, 0.72);
+  color: #cbd5e1;
+  line-height: 1.6;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+}
+
+.report-bottom-help {
+  max-width: 1180px;
+  margin: 28px auto 0;
+}
+
+.payment-safety-note.checkout-action-help {
+  margin-top: 18px;
+}
+
+.report-bottom-help strong,
+.payment-safety-note.checkout-action-help strong {
+  color: #ffffff;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.report-bottom-help span,
+.payment-safety-note.checkout-action-help span {
+  color: #cbd5e1;
+}
+
+.report-bottom-help a,
+.payment-safety-note.checkout-action-help a {
+  color: #86efac;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.report-bottom-help a:hover,
+.payment-safety-note.checkout-action-help a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 720px) {
+  .report-bottom-help,
+  .payment-safety-note.checkout-action-help {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .report-bottom-help strong,
+  .payment-safety-note.checkout-action-help strong {
+    white-space: normal;
+  }
+}
