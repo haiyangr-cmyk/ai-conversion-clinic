@@ -2580,3 +2580,11 @@ form .limit-error-actions a:hover,
   font-size: 15px !important;
   line-height: 1.6 !important;
 }
+
+
+.checkout-tier-guidance {
+  margin: 10px 0 18px;
+  color: #cbd5e1;
+  font-size: 14px;
+  line-height: 1.6;
+}
