@@ -437,7 +437,7 @@ export default function CheckoutPage() {
                       cursor: "pointer"
                     }}
                   >
-                    <span className="eyebrow">{selected ? "Selected" : "Option"}</span>
+                    <span className="eyebrow">{tier === "pro" ? "Recommended" : "Quick"}</span>
                     <strong style={{ display: "block", marginTop: 8 }}>{tiers[tier].name}</strong>
                     <span style={{ display: "block", fontSize: 28, fontWeight: 900, marginTop: 8 }}>{tiers[tier].price}</span>
                     <p className="muted" style={{ marginBottom: 10 }}>{tiers[tier].description}</p>
