@@ -14,7 +14,7 @@ declare global {
 
 function buildLocalSampleSolution(tier: Tier) {
   if (tier === "pro") {
-    return `# Pro Conversion Solution
+    return `# Pro Fix Plan
 
 ## Recommended Positioning
 
@@ -107,7 +107,7 @@ Happy to share the free diagnosis flow if useful. I am trying to learn whether t
 Recommendations should be validated with analytics, customer feedback, and A/B testing.`;
   }
 
-  return `# Basic Conversion Solution
+  return `# Quick Fix Report
 
 ## Recommended Positioning
 
@@ -415,7 +415,7 @@ export default function CheckoutPage() {
 
         <section className="grid">
           <div className="panel">
-            <h1 style={{ marginTop: 0 }}>Unlock your Conversion Solution</h1>
+            <h1 style={{ marginTop: 0 }}>Unlock your full fix plan</h1>
             <p className="muted">Choose the depth of the full fix plan you want to unlock.</p>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12, margin: "18px 0" }}>
@@ -465,7 +465,7 @@ export default function CheckoutPage() {
             {!paymentComplete && (
               <>
                 <div className="notice" style={{ marginBottom: 18 }}>
-                  Complete payment securely with PayPal. Your full conversion solution can only be generated after PayPal confirms the payment.
+                  Complete payment securely with PayPal. Your full fix plan can only be generated after PayPal confirms the payment.
                 </div>
                 {!paymentComplete ? (
                   <div className="checkout-before-pay-card" aria-label="Before you pay">
@@ -521,7 +521,7 @@ export default function CheckoutPage() {
             {error && <div className="error" style={{ marginTop: 18 }}>{error}</div>}
 
             <button className="cta" disabled={!paymentComplete || reportLoading} type="submit" style={{ marginTop: 18 }}>
-              {reportLoading ? "Generating solution..." : paymentComplete ? `Generate ${tiers[input.tier].name}` : "Complete PayPal payment first"}
+              {reportLoading ? "Generating fix plan..." : paymentComplete ? `Generate ${tiers[input.tier].name}` : "Complete PayPal payment first"}
             </button>
 
                       {isLocalDevCheckout && (
@@ -533,7 +533,7 @@ export default function CheckoutPage() {
                 form?.requestSubmit();
               }}
             >
-              Generate test solution without PayPal
+              Generate test fix plan without PayPal
             </button>
           )}
 
@@ -543,7 +543,7 @@ export default function CheckoutPage() {
         <div className="payment-safety-note checkout-action-help">
           <strong>Need help?</strong>
           <span>
-            If your payment succeeds but your solution does not generate, <a href="/support">contact support</a> with your PayPal order ID.
+            If your payment succeeds but your fix plan does not generate, <a href="/support">contact support</a> with your PayPal order ID.
           </span>
         </div>
           </form>
