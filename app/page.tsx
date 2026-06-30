@@ -603,7 +603,7 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
           <div className="compare-table" role="table" aria-label="Conversion solution plan comparison">
             <div className="compare-row compare-head" role="row">
               <div role="columnheader">What you get</div>
-              <div role="columnheader">Conversion Solution · $9</div>
+              <div role="columnheader">Quick Fix Report · $9</div>
               <div role="columnheader">Solution Pro · $29</div>
             </div>
 

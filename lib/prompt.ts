@@ -102,25 +102,25 @@ For each blocker include:
 - What area needs attention
 
 ## Solution Preview
-Briefly explain what the full paid Conversion Solution would include.`;
+Briefly explain what the full paid fix plan would include.`;
 }
 
 export function buildSolutionPrompt(input: AuditInput) {
   const isPro = input.tier === "pro";
-  const tierName = isPro ? "Pro Conversion Solution" : "Basic Conversion Solution";
+  const tierName = isPro ? "Pro Fix Plan" : "Quick Fix Report";
 
   const tierInstruction = isPro
-    ? `This is the $29 Pro Conversion Solution.
+    ? `This is the $29 Pro Fix Plan.
 Make it substantially deeper than Basic.
 Include multiple variants, page-structure guidance, objection handling, A/B test guidance, launch follow-up copy variants, and a 14-day follow-up checklist.
 Do not include human review, dashboard features, account features, or manual consulting promises.`
-    : `This is the $9 Basic Conversion Solution.
+    : `This is the $9 Quick Fix Report.
 Keep it concise and focused on the highest-leverage fixes.
 Include one strong recommendation per section, not multiple large variant sets.
 Do not include Pro-only sections such as headline variants, CTA variants, section-by-section rewrite, FAQ bank, A/B testing plan, or 14-day follow-up checklist.`;
 
   const structure = isPro
-    ? `# Pro Conversion Solution
+    ? `# Pro Fix Plan
 
 ## Recommended Positioning
 
@@ -152,7 +152,7 @@ Do not include Pro-only sections such as headline variants, CTA variants, sectio
 
 ## Important Note
 Recommendations should be validated with analytics, customer feedback, and A/B testing.`
-    : `# Basic Conversion Solution
+    : `# Quick Fix Report
 
 ## Recommended Positioning
 

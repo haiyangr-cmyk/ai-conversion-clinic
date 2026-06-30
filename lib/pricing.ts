@@ -2,7 +2,7 @@ import type { Tier } from "./types";
 
 export const tiers: Record<Tier, { name: string; price: string; description: string; features: string[] }> = {
   basic: {
-    name: "Basic Conversion Solution",
+    name: "Quick Fix Report",
     price: "$9",
     description: "Core copy-ready fixes for the biggest blockers found in your free diagnosis.",
     features: [
@@ -16,11 +16,11 @@ export const tiers: Record<Tier, { name: string; price: string; description: str
     ]
   },
   pro: {
-    name: "Pro Conversion Solution",
+    name: "Pro Fix Plan",
     price: "$29",
     description: "Expanded fix plan with variants, page structure, objections, testing, and launch copy.",
     features: [
-      "Everything in Basic",
+      "Everything in Quick Fix Report",
       "3 hero headline variants",
       "3 CTA variants",
       "Section-by-section rewrite plan",
