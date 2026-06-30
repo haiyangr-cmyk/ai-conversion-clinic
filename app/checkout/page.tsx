@@ -455,6 +455,10 @@ export default function CheckoutPage() {
               Selected: <strong>{tiers[input.tier].name}</strong> for <strong>{tiers[input.tier].price}</strong>.
             </p>
 
+              <p className="checkout-tier-guidance">
+                Start with Quick Fix Report. Choose Pro Fix Plan if you want more copy variants and section-by-section rewrites.
+              </p>
+
             <div className="card" style={{ margin: "18px 0" }}>
               <strong>{input.product}</strong>
               <span>{input.url}</span><br />
