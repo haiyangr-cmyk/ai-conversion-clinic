@@ -2559,3 +2559,24 @@ form .limit-error-actions a:hover,
     white-space: normal;
   }
 }
+
+/* Final polish: keep checkout support note aligned with report support note */
+.payment-safety-note.checkout-action-help {
+  text-align: left !important;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+  max-width: 100% !important;
+}
+
+.payment-safety-note.checkout-action-help strong {
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+
+.payment-safety-note.checkout-action-help span {
+  display: inline !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
