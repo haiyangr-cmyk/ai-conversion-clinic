@@ -45,7 +45,7 @@ Use one primary CTA before payment and one clear unlock CTA after diagnosis.
 
 1. Run Free Diagnosis
 2. Diagnose My Landing Page
-3. Unlock My Conversion Solution
+3. Unlock My Fix Plan
 
 ## Section-by-Section Page Rewrite
 
@@ -127,7 +127,7 @@ Run Free Diagnosis
 ## CTA Fixes
 
 - Use "Run Free Diagnosis" before payment.
-- Use "Unlock Conversion Solution" after the diagnosis.
+- Use "Unlock Fix Plan" after the diagnosis.
 - Avoid generic CTAs like "Get Started" when the user does not yet know the value.
 
 ## Trust & Proof Fixes
@@ -502,7 +502,7 @@ export default function CheckoutPage() {
 
             {paymentComplete && (
               <div className="notice">
-                Payment confirmed. Your PayPal order ID is <strong>{paypalOrderId}</strong>. You can now generate your conversion solution.
+                Payment confirmed. Your PayPal order ID is <strong>{paypalOrderId}</strong>. You can now generate your fix plan.
               </div>
             )}
 
@@ -515,7 +515,7 @@ export default function CheckoutPage() {
             <h2 style={{ marginTop: 0 }}>Generate your full fix plan</h2>
 
             <div className="notice">
-              Once your PayPal payment is confirmed, generate your full conversion fix plan automatically.
+              Once your PayPal payment is confirmed, generate your full fix plan automatically.
             </div>
 
             {error && <div className="error" style={{ marginTop: 18 }}>{error}</div>}
