@@ -78,7 +78,7 @@ Client input:
 
 Rules:
 - Write in English.
-- Do not provide the full solution.
+- Do not provide the full paid fix plan.
 - Do not provide full hero rewrites, full CTA rewrites, pricing strategy, or 7-day plan.
 - Focus only on diagnosis: score, top blockers, severity, and why they hurt conversion.
 - End with a short solution preview that makes the paid fix plan valuable.
