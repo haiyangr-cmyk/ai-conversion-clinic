@@ -6,6 +6,8 @@ import AnalyticsEvents from "./AnalyticsEvents";
 const GA_MEASUREMENT_ID = "G-B9CKBMGMZN";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://aiconversionclinic.com"),
+  alternates: { canonical: "/" },
   title: "AI Conversion Clinic | Landing Page Conversion Audit",
   description:
     "Get an actionable AI conversion audit for your landing page, Shopify store, SaaS page, or sales page in minutes.",

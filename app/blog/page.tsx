@@ -3,6 +3,7 @@ import Link from "next/link";
 import styles from "./blog.module.css";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/blog" },
   title: "Conversion Guides | AI Conversion Clinic",
   description:
     "Practical landing page conversion guides for SaaS founders, marketers, agencies, and online businesses.",

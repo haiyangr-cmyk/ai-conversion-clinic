@@ -1,4 +1,5 @@
 export const metadata = {
+  alternates: { canonical: "/refund" },
   title: "Refund Policy | AI Conversion Clinic",
   description: "Refund policy for AI Conversion Clinic."
 };

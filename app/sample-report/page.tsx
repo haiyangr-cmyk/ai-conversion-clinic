@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import styles from "./sample-report.module.css";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/sample-report" },
   title: "Sample AI Landing Page Conversion Report | AI Conversion Clinic",
   description:
     "See a sample AI-powered landing page audit with conversion score, messaging diagnosis, CTA fixes, buyer objections, rewritten copy, and a 7-day action plan.",

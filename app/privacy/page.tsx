@@ -1,4 +1,5 @@
 export const metadata = {
+  alternates: { canonical: "/privacy" },
   title: "Privacy Policy | AI Conversion Clinic",
   description: "Privacy policy for AI Conversion Clinic."
 };

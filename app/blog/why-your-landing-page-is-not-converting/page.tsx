@@ -4,6 +4,7 @@ import styles from "../blog.module.css";
 import RelatedResources from "../RelatedResources";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/blog/why-your-landing-page-is-not-converting" },
   title:
     "Why Your Landing Page Is Not Converting — And What to Fix First | AI Conversion Clinic",
   description:

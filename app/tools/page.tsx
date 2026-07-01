@@ -3,6 +3,7 @@ import Link from "next/link";
 import styles from "./tools.module.css";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/tools" },
   title: "CRO Tools for Landing Page Optimization | AI Conversion Clinic",
   description:
     "Explore CRO tools for behavior analytics, lead capture, landing pages, A/B testing, CRM follow-up, and AI copy improvement.",

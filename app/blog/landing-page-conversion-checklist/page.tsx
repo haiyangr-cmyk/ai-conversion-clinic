@@ -4,6 +4,7 @@ import styles from "../blog.module.css";
 import RelatedResources from "../RelatedResources";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/blog/landing-page-conversion-checklist" },
   title:
     "Landing Page Conversion Checklist: 25 Things to Fix Before Buying More Traffic | AI Conversion Clinic",
   description:

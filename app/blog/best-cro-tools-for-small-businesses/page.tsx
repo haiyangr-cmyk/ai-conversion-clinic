@@ -4,6 +4,7 @@ import styles from "../blog.module.css";
 import RelatedResources from "../RelatedResources";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/blog/best-cro-tools-for-small-businesses" },
   title:
     "Best CRO Tools for Small Businesses: What to Use Before Buying More Traffic | AI Conversion Clinic",
   description:

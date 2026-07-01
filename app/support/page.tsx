@@ -1,4 +1,5 @@
 export const metadata = {
+  alternates: { canonical: "/support" },
   title: "Support | AI Conversion Clinic",
   description: "Support information for AI Conversion Clinic customers."
 };
