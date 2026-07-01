@@ -26,7 +26,7 @@ const useCases = [
   },
   {
     title: "Action Plan",
-    text: "Get a practical 7-day implementation plan after unlocking the solution."
+    text: "Get a practical 7-day implementation plan after unlocking the full fix plan."
   }
 ];
 
@@ -317,7 +317,7 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
             <div className="cards">
               <div className="card"><strong>Free Diagnosis</strong><span>Find the biggest blockers hurting your page conversion.</span></div>
               <div className="card"><strong>Copy-ready Fixes</strong><span>Unlock rewritten copy, CTA ideas, trust fixes, and launch follow-up copy.</span></div>
-              <div className="card"><strong>Action Plan</strong><span>Get a practical 7-day implementation plan after unlocking the solution.</span></div>
+              <div className="card"><strong>Action Plan</strong><span>Get a practical 7-day implementation plan after unlocking the full fix plan.</span></div>
             </div>
 
             <div className="steps">
@@ -590,21 +590,20 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
 
         <section className="section comparison-section" id="compare-plans">
           <div className="section-heading compact">
-            <span className="eyebrow">Solution Plans</span>
+            <span className="eyebrow">Fix Plan Options</span>
             <h2>Choose the depth you need</h2>
             <p>
-              Basic gives you a quick diagnosis. Pro gives you a fuller action plan for pages with traffic,
-              paid campaigns, or a real offer you want to improve.
+              Quick Fix Report gives you a focused diagnosis and practical fixes. Pro Fix Plan gives you a fuller action plan for pages with traffic, paid campaigns, or a real offer you want to improve.
               <br />
               <a href="/sample-report">Want to see what’s inside? View a sample report.</a>
             </p>
           </div>
 
-          <div className="compare-table" role="table" aria-label="Conversion solution plan comparison">
+          <div className="compare-table" role="table" aria-label="Fix plan comparison">
             <div className="compare-row compare-head" role="row">
               <div role="columnheader">What you get</div>
               <div role="columnheader">Quick Fix Report · $9</div>
-              <div role="columnheader">Solution Pro · $29</div>
+              <div role="columnheader">Pro Fix Plan · $29</div>
             </div>
 
             <div className="compare-row" role="row">
