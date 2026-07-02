@@ -262,6 +262,7 @@ function buildDiagnosisFallbackExportText(report: string, input: AuditInput | nu
 function normalizeExportMarkdownSpacing(content: string) {
   let text = content
     .replace(/\r\n/g, "\n")
+    .replace(/\\n/g, "\n")
     .replace(/\uFFFE/g, "\n")
     .replace(/^\s*#+\s*$/gm, "")
     .replace(/\|\s*\|/g, "|\n|")
@@ -289,6 +290,20 @@ function normalizeExportMarkdownSpacing(content: string) {
   ];
 
   for (const title of sectionTitles) {
+    const escaped = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    text = text.replace(new RegExp(`([^\\n])(?=${escaped})`, "g"), "$1\n\n");
+    text = text.replace(new RegExp(`(${escaped})(?=\\S)`, "g"), "$1\n");
+  }
+
+
+  const quickSectionTitles = [
+    "Page Copy Recommendations",
+    "Free vs Quick Fix Comparison",
+    "Trust & Proof Guidance",
+    "7-Day Action Plan"
+  ];
+
+  for (const title of quickSectionTitles) {
     const escaped = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     text = text.replace(new RegExp(`([^\\n])(?=${escaped})`, "g"), "$1\n\n");
     text = text.replace(new RegExp(`(${escaped})(?=\\S)`, "g"), "$1\n");
@@ -348,6 +363,19 @@ function normalizeExportMarkdownSpacing(content: string) {
     text = text.replace(new RegExp(`(${escaped})([^\\n])`, "g"), "$1\n$2");
   }
 
+
+  const quickLabelBreakAfter = [
+    "Paid CTA",
+    "CTA support copy",
+    "Payment reassurance copy",
+    "What happens after payment"
+  ];
+
+  for (const label of quickLabelBreakAfter) {
+    const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    text = text.replace(new RegExp(`(${escaped})(?=\\S)`, "g"), "$1\n");
+  }
+
   text = text
     .replace(/(7-Day Implementation Plan)(?=Day\s+\d+:)/g, "$1\n")
     .replace(/(14-Day Follow-up Checklist)\s*-\s*/g, "$1\n- ")
@@ -367,6 +395,12 @@ function normalizeExportMarkdownSpacing(content: string) {
     .replace(/^\s*"\s*$/gm, "")
     .replace(/"\s*\n(After payment confirmation)/g, "\n$1")
     .replace(/(full fix plan\.)"/g, "$1")
+    .replace(/(Fix\s+\d+:[^\n]+?)-\s+(Problem:|Recommended fix:|Implementation:|Validation metric:)/g, "$1\n- $2")
+    .replace(/([.!?"])-\s+(Recommended fix:|Implementation:|Validation metric:)/g, "$1\n- $2")
+    .replace(/(Trust & Proof Guidance)-\s+/g, "$1\n- ")
+    .replace(/(7-Day Action Plan)(?=Day\s+\d+:)/g, "$1\n")
+    .replace(/(Page Copy Recommendations)(?=(Paid CTA|CTA support copy|Payment reassurance copy|What happens after payment))/g, "$1\n")
+    .replace(/(Free vs Quick Fix Comparison)(?=Feature\s+\|)/g, "$1\n")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 

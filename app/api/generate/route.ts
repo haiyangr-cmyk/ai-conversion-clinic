@@ -1027,6 +1027,109 @@ function stableProReportValue(value: unknown, fallback: string) {
   return cleaned || fallback;
 }
 
+
+function buildStableQuickFixReport(input: AuditInput) {
+  const pageUrl = input.url || "Not provided";
+  const product = input.product || "Not provided";
+  const audience = input.audience || "Not provided";
+  const goal =
+    input.conversionGoal === "paid_users"
+      ? "Get more paid users"
+      : String(input.conversionGoal || "Not provided");
+
+  return [
+    "# Quick Fix Report",
+    "",
+    "## Overview",
+    "The page communicates the core offer, but the paid upgrade path needs clearer value contrast. The $9 Quick Fix Report should feel like a specific next step after the free diagnosis, not a generic paid summary.",
+    "",
+    `Page reviewed: ${pageUrl}`,
+    `Product or service: ${product}`,
+    `Target audience: ${audience}`,
+    `Primary conversion goal: ${goal}`,
+    "",
+    "## Conversion Score Breakdown",
+    "| Area | Score | Evidence from page context | Specific fix |",
+    "|---|---:|---|---|",
+    "| Offer clarity | 7/10 | The offer is understandable, but visitors need a clearer reason to unlock the $9 report. | Show exactly what the Quick Fix Report includes before checkout. |",
+    "| Paid value contrast | 5/10 | The free diagnosis can feel complete without a visible paid-report preview. | Add a compact comparison between the free diagnosis and the $9 Quick Fix Report. |",
+    "| CTA clarity | 6/10 | The paid CTA should make the outcome and price explicit. | Use action-oriented CTA copy that includes the report name and $9 price. |",
+    "| Trust reassurance | 5/10 | Payment reassurance should appear next to the checkout action. | Add secure PayPal checkout, one-time payment, and refund/support policy copy near the button. |",
+    "| Delivery clarity | 6/10 | Visitors should know what happens after payment confirmation. | Explain that the user can generate, view, copy, or export the report after payment confirmation. |",
+    "",
+    "## Top 3 Quick Fixes",
+    "",
+    "### Fix 1: Make the $9 deliverable concrete",
+    "- Problem: The page asks users to pay after a free diagnosis, but the paid output is not previewed clearly enough.",
+    "- Recommended fix: Add a short preview block that shows the structure of the Quick Fix Report before checkout.",
+    "- Implementation: Show three bullets: top blocker summary, top 3 fixes ranked by priority, and copy-ready wording changes.",
+    "- Validation metric: Click-through rate from the report page to checkout.",
+    "",
+    "### Fix 2: Rewrite the Quick Fix CTA",
+    "- Problem: A generic paid CTA creates friction because users do not know exactly what they are buying.",
+    "- Recommended fix: Use CTA copy that names the report and price in one line.",
+    "- Implementation: Replace the unlock CTA with \"Unlock My Quick Fix Report - $9\".",
+    "- Validation metric: Checkout starts from users who view the CTA.",
+    "",
+    "### Fix 3: Add payment reassurance at the decision point",
+    "- Problem: New visitors need process clarity before paying for a digital report.",
+    "- Recommended fix: Add payment and delivery reassurance directly above or below the PayPal button.",
+    "- Implementation: Use this copy: \"Secure PayPal checkout. One-time payment of $9. After payment confirmation, you can generate, view, copy, or export your Quick Fix Report.\"",
+    "- Validation metric: Checkout completion rate among visitors who reach the payment page.",
+    "",
+    "## Page Copy Recommendations",
+    "",
+    "### Paid CTA",
+    "Unlock My Quick Fix Report - $9",
+    "",
+    "### CTA support copy",
+    "Get a concise paid report with your top conversion blockers, priority fixes, and copy-ready wording changes for the submitted page.",
+    "",
+    "### Payment reassurance copy",
+    "Secure PayPal checkout. One-time payment of $9. No recurring charge. Refund and support policy available.",
+    "",
+    "### What happens after payment",
+    "After payment confirmation, the user can generate, view, copy, or export the Quick Fix Report.",
+    "",
+    "## Free vs Quick Fix Comparison",
+    "| Feature | Free Diagnosis | Quick Fix Report ($9) |",
+    "|---|---|---|",
+    "| Conversion blocker summary | Yes | Yes |",
+    "| Prioritized fix list | Limited | Yes |",
+    "| Copy-ready wording suggestions | No | Yes |",
+    "| Checkout and CTA guidance | Limited | Yes |",
+    "| Export or copy report | Yes | Yes |",
+    "",
+    "## Trust & Proof Guidance",
+    "- Do not invent testimonials, customer names, revenue results, or performance numbers.",
+    "- Use verified customer proof only after permission is obtained.",
+    "- If verified proof is not available, use a clear explanation of what the report includes instead of a testimonial.",
+    "- Keep payment reassurance factual: secure PayPal checkout, one-time payment, refund/support policy, and post-payment report access.",
+    "",
+    "## 7-Day Action Plan",
+    "Day 1: Add the Free vs Quick Fix comparison table near the unlock CTA.",
+    "Day 2: Replace the paid CTA with \"Unlock My Quick Fix Report - $9\".",
+    "Day 3: Add the payment reassurance copy near the PayPal button.",
+    "Day 4: Add a short preview of the Quick Fix Report structure before checkout.",
+    "Day 5: Test the full flow from free diagnosis to checkout to report generation.",
+    "Day 6: Review analytics for report-page clicks, checkout views, and payment completion.",
+    "Day 7: Use analytics and support questions to decide the next copy iteration.",
+    "",
+    "## 14-Day Follow-up Checklist",
+    "- Review click-through rate from report page to checkout.",
+    "- Review checkout completion rate.",
+    "- Compare Quick Fix Report and Pro Fix Plan selection.",
+    "- Check whether users interact with the paid-report preview.",
+    "- Review support questions about payment or report access.",
+    "- Confirm refund/support policy links work.",
+    "- Test the flow on mobile and desktop.",
+    "- Verify that report generation, viewing, copying, and exporting work after payment confirmation.",
+    "",
+    "## Important Note",
+    "These recommendations are strategy hypotheses based on the submitted page context. Validate changes with analytics, customer feedback, and A/B testing. No specific performance improvement is claimed."
+  ].join("\n");
+}
+
 function buildStableProFixPlanReport(input: AuditInput) {
   const pageUrl = stableProReportValue(input.url, "the submitted page");
   const product = stableProReportValue(input.product, "the submitted product or service");
@@ -2487,8 +2590,12 @@ export async function POST(request: NextRequest) {
     if (generationMode === "solution") {
       result.report = finalizePaidReportBeforeQualityGate(result.report);
       // Stable deterministic Pro report override.
+      // Stable deterministic paid report override
       if (input.tier === "pro") {
         result.report = buildStableProFixPlanReport(input);
+        result.reportV2 = null;
+      } else {
+        result.report = buildStableQuickFixReport(input);
         result.reportV2 = null;
       }
       result.report = forcePaidReportLastPass(result.report);
