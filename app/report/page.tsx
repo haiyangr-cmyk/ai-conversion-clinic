@@ -258,10 +258,124 @@ function buildDiagnosisFallbackExportText(report: string, input: AuditInput | nu
   ].join("\n");
 }
 
+
+function normalizeExportMarkdownSpacing(content: string) {
+  let text = content
+    .replace(/\r\n/g, "\n")
+    .replace(/\uFFFE/g, "\n")
+    .replace(/^\s*#+\s*$/gm, "")
+    .replace(/\|\s*\|/g, "|\n|")
+    .replace(/([^\n])(?=#{1,6}\s+)/g, "$1\n\n")
+    .replace(/(#{1,6}\s+[^|\n]{1,90})\|/g, "$1\n|")
+    .replace(/:\s*(?=\|)/g, ":\n")
+    .replace(/\. the \$29 Pro Fix Plan/g, ". The $29 Pro Fix Plan")
+    .replace(/""\s*(?=After payment confirmation)/g, "\"\n\"")
+    .replace(/"(\s*\n\s*)After payment confirmation/g, "\"\nAfter payment confirmation");
+
+  const sectionTitles = [
+    "Executive Diagnosis",
+    "Conversion Score Breakdown",
+    "Top 3 Paid Conversion Leaks",
+    "Priority Fix Roadmap",
+    "Hero & Above-the-Fold Rewrite",
+    "CTA & Checkout Unlock Fixes",
+    "Trust & Payment Reassurance",
+    "Objection Handling FAQ",
+    "A/B Testing Plan",
+    "7-Day Implementation Plan",
+    "14-Day Follow-up Checklist",
+    "Important Note",
+    "Important Export Note"
+  ];
+
+  for (const title of sectionTitles) {
+    const escaped = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    text = text.replace(new RegExp(`([^\\n])(?=${escaped})`, "g"), "$1\n\n");
+    text = text.replace(new RegExp(`(${escaped})(?=\\S)`, "g"), "$1\n");
+  }
+
+  const blockStarts = [
+    "The page communicates",
+    "The strongest opportunity",
+    "Page reviewed:",
+    "Product or service:",
+    "Target audience:",
+    "Primary conversion goal:",
+    "Recommended headline:",
+    "Recommended subheadline:",
+    "Primary CTA:",
+    "CTA microcopy:",
+    "Alternate headline variants:",
+    "Primary unlock CTA:",
+    "Secondary reassurance line:",
+    "Button text:",
+    "What the user sees after clicking:",
+    "What happens after payment:",
+    "Add these elements near",
+    "Sample preview format:",
+    "Issue:",
+    "Suggested rewrite:",
+    "Reason:",
+    "All recommendations in this Pro Fix Plan",
+    "This solution is a strategy recommendation"
+  ];
+
+  for (const phrase of blockStarts) {
+    const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    text = text.replace(new RegExp(`([^\\n])(?=${escaped})`, "g"), "$1\n");
+  }
+
+  const labelBreakAfter = [
+    "Recommended headline:",
+    "Recommended subheadline:",
+    "Primary CTA:",
+    "CTA microcopy:",
+    "Alternate headline variants:",
+    "Primary unlock CTA:",
+    "Secondary reassurance line:",
+    "Button text:",
+    "What the user sees after clicking:",
+    "What happens after payment:",
+    "Sample preview format:",
+    "Issue:",
+    "Suggested rewrite:",
+    "Reason:",
+    "Exact copy or UI change:"
+  ];
+
+  for (const label of labelBreakAfter) {
+    const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    text = text.replace(new RegExp(`(${escaped})([^\\n])`, "g"), "$1\n$2");
+  }
+
+  text = text
+    .replace(/(7-Day Implementation Plan)(?=Day\s+\d+:)/g, "$1\n")
+    .replace(/(14-Day Follow-up Checklist)\s*-\s*/g, "$1\n- ")
+    .replace(/(Important Note)(?=All recommendations)/g, "$1\n")
+    .replace(/([.!?"])-\s+/g, "$1\n- ")
+    .replace(/([^\n])-\s+(Why it hurts paid conversion:|What to change:|Priority:|Validation metric:|Page location:|Implementation effort:|Expected impact level:|Exact copy or UI change:|Hypothesis:|Control:|Variant:|Metric:|Minimum data note:)/g, "$1\n- $2")
+    .replace(/([:\."])\s*-\s+(Secure PayPal checkout\.|One-time payment of \$29\.|Link to the published refund\/support policy\.|Link to an anonymized sample Pro Fix Plan\.|Clear explanation:|Review |Check |Compare |Confirm |Test |Verify |Use )/g, "$1\n- $2")
+    .replace(/\n-\s*\n(Issue:|Suggested rewrite:|Reason:)/g, "\n- $1")
+    .replace(/([.!?])(?=Day\s+\d+:)/g, "$1\n")
+    .replace(/([a-z\)])(?=\d+\.\s+[A-Z])/g, "$1\n")
+    .replace(/\?(?=(The free diagnosis|The \$9|Yes\.|The Pro Fix Plan|After payment confirmation|The plan is))/g, "?\n")
+    .replace(/([.!?"])(?=(The strongest opportunity|After payment confirmation|Sample preview format:|Page reviewed:))/g, "$1\n")
+    .replace(/^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/gm, "")
+    .replace(/^\s*\|[-:\s|]+$/gm, "")
+    .replace(/(Clear explanation:\s*)"/g, "$1")
+    .replace(/^\s*"\s*$/gm, "")
+    .replace(/"\s*\n(After payment confirmation)/g, "\n$1")
+    .replace(/(full fix plan\.)"/g, "$1")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+  return text;
+}
+
 function buildSolutionExportText(report: string, input: AuditInput | null) {
-  const cleaned = scrubUnsafeExportText(report || "");
-  const rawLines = prepareExportLines(cleaned);
-  const contentLines = rawLines[0]?.startsWith("# ")
+  const cleaned = normalizeExportMarkdownSpacing(scrubUnsafeExportText(report || ""));
+  const rawLines = cleaned.split("\n").map((line) => line.trimEnd());
+  const contentLines = rawLines[0]?.trim().startsWith("# ")
     ? rawLines.slice(1)
     : rawLines;
 
@@ -295,7 +409,7 @@ function downloadBlobFile(filename: string, blob: Blob) {
 }
 
 function downloadPdfFile(filename: string, content: string) {
-  const lines = prepareExportLines(content);
+  const lines = normalizeExportMarkdownSpacing(content).split("\n");
   const doc = new jsPDF({ unit: "pt", format: "a4" });
 
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -311,111 +425,186 @@ function downloadPdfFile(filename: string, content: string) {
     }
   }
 
-  function writeWrapped(raw: string, options?: { size?: number; bold?: boolean; indent?: number; gap?: number }) {
+  function cleanInlineMarkdown(value: string) {
+    return value
+      .replace(/^#+\s*$/, "")
+      .replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/`([^`]+)`/g, "$1")
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function writeWrapped(
+    raw: string,
+    options?: {
+      size?: number;
+      bold?: boolean;
+      indent?: number;
+      gap?: number;
+      before?: number;
+    }
+  ) {
+    const text = cleanInlineMarkdown(raw);
+    if (!text) return;
+
     const size = options?.size ?? 10;
     const indent = options?.indent ?? 0;
-    const gap = options?.gap ?? 7;
+    const gap = options?.gap ?? 8;
+    const before = options?.before ?? 0;
+    const lineHeight = size + 5;
+    const availableWidth = Math.max(80, maxWidth - indent);
+
+    y += before;
+
+    const wrapped = doc.splitTextToSize(text, availableWidth) as string[];
+    addPageIfNeeded(wrapped.length * lineHeight + gap);
 
     doc.setFont("helvetica", options?.bold ? "bold" : "normal");
     doc.setFontSize(size);
 
-    const wrapped = doc.splitTextToSize(raw, maxWidth - indent) as string[];
-    const lineHeight = size + 4;
+    for (const wrappedLine of wrapped) {
+      doc.text(wrappedLine, margin + indent, y);
+      y += lineHeight;
+    }
 
-    addPageIfNeeded(wrapped.length * lineHeight + gap);
-    doc.text(wrapped, margin + indent, y);
-    y += wrapped.length * lineHeight + gap;
+    y += gap;
+  }
+
+  function writeHeading(line: string) {
+    const level = line.match(/^#{1,6}/)?.[0].length || 1;
+    const text = cleanInlineMarkdown(line.replace(/^#{1,6}\s+/, ""));
+
+    if (!text) return;
+
+    if (level === 1) {
+      writeWrapped(text, { size: 18, bold: true, gap: 16, before: y > 70 ? 8 : 0 });
+      return;
+    }
+
+    if (level === 2) {
+      writeWrapped(text, { size: 14, bold: true, gap: 11, before: 12 });
+      return;
+    }
+
+    writeWrapped(text, { size: 11, bold: true, gap: 8, before: 8 });
+  }
+
+  function isMarkdownTableDivider(line: string) {
+    return /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line.trim());
+  }
+
+  function writeTableLine(line: string) {
+    if (isMarkdownTableDivider(line)) return;
+
+    const cells = line
+      .split("|")
+      .map((cell) => cleanInlineMarkdown(cell))
+      .filter(Boolean);
+
+    if (cells.length === 0) return;
+
+    writeWrapped(cells.join("  |  "), {
+      size: 8,
+      bold: /^feature|area|item/i.test(cells[0]),
+      gap: 5
+    });
   }
 
   doc.setProperties({
     title: filename.replace(/\.pdf$/i, ""),
-    subject: "AI Conversion Clinic Export",
+    subject: "AI Conversion Clinic report",
     creator: "AI Conversion Clinic"
   });
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(10);
-  doc.text("AI Conversion Clinic", margin, 32);
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
 
-  for (const line of lines) {
-    const trimmed = line.trim();
-
-    if (!trimmed) {
-      y += 8;
+    if (!line || /^#+$/.test(line)) {
+      y += 7;
       continue;
     }
 
-    if (trimmed.startsWith("# ")) {
-      writeWrapped(trimmed.replace(/^#\s+/, ""), { size: 22, bold: true, gap: 14 });
+    if (/^#{1,6}\s+/.test(line)) {
+      writeHeading(line);
       continue;
     }
 
-    if (trimmed.startsWith("## ")) {
-      y += 6;
-      writeWrapped(trimmed.replace(/^##\s+/, ""), { size: 14, bold: true, gap: 8 });
+    if (/^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line) || /^\|[-:\s|]+$/.test(line)) {
       continue;
     }
 
-    if (trimmed.startsWith("- ")) {
-      writeWrapped(`• ${trimmed.replace(/^-\s+/, "")}`, { size: 10, indent: 12, gap: 5 });
+    if (line.includes("|") && line.split("|").length >= 3) {
+      writeTableLine(line);
       continue;
     }
 
-    if (/^(Action|Success check):/i.test(trimmed)) {
-      writeWrapped(trimmed, { size: 10, indent: 14, gap: 5 });
+    if (/^[-•]\s+/.test(line)) {
+      writeWrapped(`- ${line.replace(/^[-•]\s+/, "")}`, {
+        size: 10,
+        indent: 14,
+        gap: 6
+      });
       continue;
     }
 
-    writeWrapped(trimmed, { size: 10, gap: 6 });
+    if (/^Day\s+\d+:/i.test(line)) {
+      writeWrapped(line, { size: 10, bold: true, gap: 7 });
+      continue;
+    }
+
+    if (/^\d+\.\s+/.test(line)) {
+      writeWrapped(line, { size: 10, indent: 12, gap: 6 });
+      continue;
+    }
+
+    writeWrapped(line, { size: 10, gap: 8 });
   }
 
   doc.save(filename);
 }
-
 function buildDocxParagraph(line: string) {
-  const trimmed = normalizeExportText(line);
+  const trimmed = line.trim();
 
   if (!trimmed) {
     return new Paragraph({ text: "" });
   }
 
-  if (trimmed.startsWith("# ")) {
-    return new Paragraph({
-      text: trimmed.replace(/^#\s+/, ""),
-      heading: HeadingLevel.TITLE,
-      spacing: { after: 240 }
-    });
-  }
+  const headingMatch = trimmed.match(/^(#{1,6})\s+(.+)$/);
+  if (headingMatch) {
+    const level = headingMatch[1].length;
+    const text = headingMatch[2];
 
-  if (trimmed.startsWith("## ")) {
-    return new Paragraph({
-      text: trimmed.replace(/^##\s+/, ""),
-      heading: HeadingLevel.HEADING_2,
-      spacing: { before: 220, after: 120 }
-    });
-  }
-
-  if (trimmed.startsWith("- ")) {
-    return new Paragraph({
-      children: [new TextRun(`• ${trimmed.replace(/^-\s+/, "")}`)],
-      spacing: { after: 80 }
-    });
-  }
-
-  const labelMatch = trimmed.match(/^(Action|Success check):\s*(.*)$/i);
-  if (labelMatch) {
     return new Paragraph({
       children: [
-        new TextRun({ text: `${labelMatch[1]}: `, bold: true }),
-        new TextRun(labelMatch[2])
+        new TextRun({
+          text,
+          bold: true,
+          size: level <= 1 ? 32 : level === 2 ? 26 : 22
+        })
       ],
+      spacing: { before: level <= 2 ? 280 : 180, after: 160 }
+    });
+  }
+
+  if (/^[-•]\s+/.test(trimmed)) {
+    return new Paragraph({
+      children: [new TextRun({ text: trimmed.replace(/^[-•]\s+/, "• ") })],
+      spacing: { after: 100 },
+      indent: { left: 360 }
+    });
+  }
+
+  if (/^\|.*\|$/.test(trimmed)) {
+    return new Paragraph({
+      children: [new TextRun({ text: trimmed, size: 18 })],
       spacing: { after: 80 }
     });
   }
 
   return new Paragraph({
-    children: [new TextRun(trimmed)],
-    spacing: { after: 100 }
+    children: [new TextRun({ text: trimmed })],
+    spacing: { after: 120 }
   });
 }
 
