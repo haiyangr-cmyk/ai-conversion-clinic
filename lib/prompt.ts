@@ -79,9 +79,23 @@ Client input:
 Rules:
 - Write in English.
 - Do not provide the full paid fix plan.
+
+CRITICAL PAID REPORT QUALITY RULES:
+- Never output placeholders such as [your actual price], [price], [customer name], [company], [X], or availability placeholders.
+- Always use the actual selected product name and price when available: Quick Fix Report ($9) or Pro Fix Plan ($29).
+- Do not mention password-protected PDF delivery, email delivery within 5 minutes, or any delivery flow that is not part of the actual product.
+- The real flow is: PayPal payment confirmed, user returns to checkout, user generates the full fix plan, user views/copies/exports the report.
+- Do not invent testimonials, customer counts, partner logos, revenue claims, guarantees, countdown timers, scarcity, or verified customer proof.
+- Do not recommend fake Reddit comments, alt accounts, fake user testimonials, or deceptive Product Hunt / Reddit promotion.
+- Do not say "inferred", "assume the page currently has", or expose uncertainty in the final paid report. If page details are limited, state the limitation clearly and give practical recommendations based on the provided input.
+- Avoid broken special characters, decorative symbols, checkmark glyphs, or arrows that may export badly to PDF. Use plain bullets and numbered lists only.
+- Avoid recommending tools that no longer exist or are deprecated. Do not recommend Google Optimize.
+- Keep the report specific to the user's page URL, product/service, target customer, conversion goal, and stated conversion problem.
+- The Pro Fix Plan must feel more valuable than the free diagnosis: include prioritization, concrete rewrites, objection handling, trust/payment reassurance, and implementation steps.
+
 - Do not provide full hero rewrites, full CTA rewrites, pricing strategy, or 7-day plan.
 - Focus only on diagnosis: score, top blockers, severity, and why they hurt conversion.
-- End with a short solution preview that makes the paid fix plan valuable.
+- End with a short fix plan preview that makes the paid fix plan valuable.
 - Do not promise guaranteed results.
 - Format in Markdown.
 
@@ -203,7 +217,7 @@ Hard safety rules:
 - Do not mention specific companies such as HubSpot, Mailchimp, Zapier, AdEspresso, Hootsuite, or any other brand unless the user provided them.
 - Do not recommend guarantees such as "double signups", "or it is free", "20% lift", "4x growth", "refund 100%", or "work for free until results" unless the user explicitly provided that policy.
 - Do not invent exact pricing, package names, refund terms, timelines, or legal guarantees.
-- When proof is missing, write "verified customer proof if available", "measured result if available", or "case study if available".
+- When proof is missing, do not invent it. Say that real proof should be added only when it exists.
 - When analytics are missing, state that recommendations are hypotheses to validate with analytics and customer feedback.
 - Do not write as if you are the business owner. Avoid unsupported first-person claims such as "we helped", "our clients", or "we guarantee".
 - Keep all examples clearly generic and non-factual unless supplied by the user.
@@ -212,9 +226,9 @@ Hard safety rules:
 - Do not invent time-bound delivery promises such as "in 7 days we transform your page" unless the user explicitly provided that service promise.
 - Do not invent business history such as "I spent 4 years", "we helped a SaaS client", or "we built this after working with X clients".
 - Do not recommend fake trust bars, fake logo rows, fake client counts, or fake case studies.
-- If a section needs proof, write: "Add verified customer proof if available."
-- If a section needs a guarantee/refund/support policy, write: "Add your actual support or refund policy if available."
-- If a section needs pricing, write: "[your actual price]" and do not invent a price tier.
+- If a section needs proof, write: "Add verified customer proof only when you have it."
+- If a section needs a guarantee/refund/support policy, refer only to the published support or refund policy.
+- If a section needs pricing, use the actual selected plan name and price when available. If the price is unavailable, omit the price instead of using placeholders.
 - Product Hunt / Reddit copy must be honest, modest, and based only on the product's actual value proposition.
 - Do not change the user's business model, pricing model, payment terms, guarantee policy, refund policy, contract terms, or service scope.
 - Do not recommend performance-based pricing, "pay only if results improve", "no upfront payment", "charge only when it wins", or similar commercial terms unless the user explicitly provided that model.

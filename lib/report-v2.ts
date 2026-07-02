@@ -301,9 +301,9 @@ Additional strict truthfulness rules:
 - Never invent examples like "Used by 200+ teams", "saved 5 hours/week", "SOC 2 compliant", "GDPR compliant", "No credit card required", "setup in 2 minutes", or specific customer quotes unless provided by the user.
 - Never invent money-back guarantees, satisfaction guarantees, free calls, discovery calls, trial lengths, demo lengths, offer terms, discounts, or risk reversals unless provided by the user.
 - If a guarantee, refund policy, trial detail, or demo length is not provided, recommend adding verified terms instead of writing them as final copy.
-- Do not invent fake customer results such as "booked 40% more demos" or "3x more leads". Recommend adding a real result if available.
+- Do not invent fake customer results such as "booked 40% more demos" or "3x more leads". Recommend adding a real result only when verified.
 - When proof is missing, recommend the type of proof to add, not the fake proof itself.
-- Correct format: "Add verified customer logos if available."
+- Correct format: "Add verified customer logos only when verified."
 - Correct format: "If true, add: setup takes less than [verified setup time]."
 - Correct format: "Add [customer quote] from a real buyer."
 - Incorrect format: "Used by 200+ sales teams."
@@ -334,7 +334,7 @@ R6 natural consultant language rules:
 - When evidence is missing, do not write fake landing-page copy. Write consultant recommendations instead.
 - Avoid awkward placeholder language such as "verified result", "actual offer", or "your verified offer".
 - Prefer natural phrases:
-  - "Add measurable proof if available."
+  - "Add measurable proof only when verified."
   - "Use a CTA that matches the real next step."
   - "Clarify the actual demo or consultation process."
   - "Define the customer segment you serve best."
@@ -353,7 +353,7 @@ R7 deterministic delivery rules:
 - For Pro, use this exact meaning: "This Pro audit is a strategy review based on the information provided. It does not guarantee specific results. Validate recommendations with page analytics, customer feedback, and A/B testing."
 - Do not write phrases like "actual page content was not reviewed", "publicly available information", or "recommendations are inferred from limited information" in customer-facing copy.
 - Do not invent business history, number of customers, number of landing pages analyzed, timeline promises, refund promises, call lengths, or implementation timelines.
-- If a claim needs proof, write "Add measurable proof if available" rather than inventing the proof.
+- If a claim needs proof, write "Add measurable proof only when verified" rather than inventing the proof.
 
 
 R8 Pro action-plan quality rules:
@@ -375,7 +375,7 @@ R9 point-of-view rules:
 - Do not write from the service provider's first-person perspective unless the customer explicitly provided that wording.
 - Avoid unsupported "we", "our", or "we have worked with..." claims.
 - Write as a consultant advising the customer what their page should add, clarify, or test.
-- Prefer "Add relevant customer proof if available" over "We have worked with similar companies."
+- Prefer "Add relevant customer proof only when verified" over "We have worked with similar companies."
 - Prefer "Explain how the service adapts to the buyer's industry" over "We can tailor this to your vertical."
 - Prefer "The page should clarify the process" over "Our process..."
 

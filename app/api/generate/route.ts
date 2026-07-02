@@ -371,9 +371,9 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
   if (!hasRiskReversal) {
     text = text.replace(/\b100%\s+satisfaction\s+guarantee\b/gi, "add a verified risk-reversal statement if you truly offer one");
     text = text.replace(/\bsatisfaction\s+guarantee\b/gi, "add a verified risk-reversal statement if you truly offer one");
-    text = text.replace(/\bmoney[- ]back\s+guarantee\b/gi, "add a verified refund policy if available");
-    text = text.replace(/\byour money back\b/gi, "your verified refund policy if available");
-    text = text.replace(/\bno[- ]risk\s+guarantee\b/gi, "verified risk-reversal statement if available");
+    text = text.replace(/\bmoney[- ]back\s+guarantee\b/gi, "add a verified refund policy only when verified");
+    text = text.replace(/\byour money back\b/gi, "your verified refund policy only when verified");
+    text = text.replace(/\bno[- ]risk\s+guarantee\b/gi, "verified risk-reversal statement only when verified");
   }
 
   const hasCallTerms =
@@ -391,11 +391,11 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
     text = text.replace(/\bfree\s+consultation\b/gi, "your verified consultation process");
   }
 
-  text = text.replace(/\bbook(ed)?\s+(a\s+)?verified percentage\s+more\s+(demos|calls|sales|leads)\b/gi, "add a real customer result if available");
+  text = text.replace(/\bbook(ed)?\s+(a\s+)?verified percentage\s+more\s+(demos|calls|sales|leads)\b/gi, "add a real customer result only when verified");
   text = text.replace(/\b\d+x\s+more\s+(demos|calls|sales|leads|revenue)\b/gi, "a verified performance result");
-  text = text.replace(/\bknown\s+SaaS\s+brand\b/gi, "a real customer if available");
+  text = text.replace(/\bknown\s+SaaS\s+brand\b/gi, "a real customer only when verified");
   text = text.replace(/\bfrom their company\b/gi, "from a real customer");
-  text = text.replace(/\bTrusted by\.\.\./gi, "Add verified customer proof if available");
+  text = text.replace(/\bTrusted by\.\.\./gi, "Add verified customer proof only when verified");
 
 
 
@@ -413,9 +413,9 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
     text = text.replace(/\bguaranteed?\b/gi, "only if you can verify this claim");
     text = text.replace(/\b100%\s+satisfaction\s+guarantee\b/gi, "a verified risk-reversal statement if you truly offer one");
     text = text.replace(/\bsatisfaction\s+guarantee\b/gi, "a verified risk-reversal statement if you truly offer one");
-    text = text.replace(/\bmoney[- ]back\s+guarantee\b/gi, "a verified refund policy if available");
-    text = text.replace(/\byour money back\b/gi, "your verified refund policy if available");
-    text = text.replace(/\bno[- ]risk\s+guarantee\b/gi, "verified risk-reversal copy if available");
+    text = text.replace(/\bmoney[- ]back\s+guarantee\b/gi, "a verified refund policy only when verified");
+    text = text.replace(/\byour money back\b/gi, "your verified refund policy only when verified");
+    text = text.replace(/\bno[- ]risk\s+guarantee\b/gi, "verified risk-reversal copy only when verified");
   }
 
   const hasVerifiedFreeOffer =
@@ -448,7 +448,7 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
     has("results");
 
   if (!hasVerifiedOutcomeProof) {
-    text = text.replace(/\bbook(ed)?\s+\d+%?\s*more\s+(demos|calls|sales|leads)\b/gi, "add a real customer result if available");
+    text = text.replace(/\bbook(ed)?\s+\d+%?\s*more\s+(demos|calls|sales|leads)\b/gi, "add a real customer result only when verified");
     text = text.replace(/\b\d+%?\s*more\s+(demos|calls|sales|leads|revenue)\b/gi, "a verified customer result");
     text = text.replace(/\b\d+x\s+more\s+(demos|calls|sales|leads|revenue)\b/gi, "a verified customer result");
     text = text.replace(/\b3x\s+more\b/gi, "a verified improvement");
@@ -463,15 +463,15 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
     text = text.replace(/\bno\s+sales\s+pitch\b/gi, "clarify what happens after the CTA");
   }
 
-  text = text.replace(/\btrusted by many companies\b/gi, "add verified customer proof if available");
-  text = text.replace(/\btrusted by companies\b/gi, "add verified customer proof if available");
-  text = text.replace(/\bknown SaaS brand\b/gi, "a real customer if available");
-  text = text.replace(/\bclient logos\b/gi, "verified customer logos if available");
-  text = text.replace(/\bcustomer logos\b/gi, "verified customer logos if available");
-  text = text.replace(/\blogo row\b/gi, "verified proof row if available");
+  text = text.replace(/\btrusted by many companies\b/gi, "add verified customer proof only when verified");
+  text = text.replace(/\btrusted by companies\b/gi, "add verified customer proof only when verified");
+  text = text.replace(/\bknown SaaS brand\b/gi, "a real customer only when verified");
+  text = text.replace(/\bclient logos\b/gi, "verified customer logos only when verified");
+  text = text.replace(/\bcustomer logos\b/gi, "verified customer logos only when verified");
+  text = text.replace(/\blogo row\b/gi, "verified proof row only when verified");
 
   // Clean awkward sanitizer leftovers.
-  text = text.replace(/\bonly if you can verify this claim or your verified refund policy if available\b/gi, "only if backed by a verified refund policy");
+  text = text.replace(/\bonly if you can verify this claim or your verified refund policy only when verified\b/gi, "only if backed by a verified refund policy");
   text = text.replace(/\bif it fits\b/gi, "if it is accurate");
   text = text.replace(/\bstate whether a credit card is required, free\b/gi, "state whether a credit card is required");
 
@@ -483,8 +483,8 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
   text = text.replace(/\byour verified demo or consultation length\b/gi, "your actual call or demo length, if applicable");
   text = text.replace(/\byour verified consultation offer\b/gi, "your actual consultation offer, if applicable");
   text = text.replace(/\byour verified demo or consultation process\b/gi, "your actual demo or consultation process");
-  text = text.replace(/\bverified customer logos if available if available\b/gi, "verified customer logos if available");
-  text = text.replace(/\bverified proof row if available if available\b/gi, "verified proof row if available");
+  text = text.replace(/\bverified customer logos only when verified\b/gi, "verified customer logos only when verified");
+  text = text.replace(/\bverified proof row only when verified\b/gi, "verified proof row only when verified");
 
   // Remove unsupported time-bound performance promises.
   text = text.replace(/\bdouble\s+([^.,;]+?)\s+in\s+\d+\s+days?\b/gi, "improve $1 with verified proof and clearer page messaging");
@@ -536,11 +536,11 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
     }
 
     if (cleaned.includes("client") || cleaned.includes("customer") || cleaned.includes("company") || cleaned.includes("name")) {
-      return "a real customer if available";
+      return "a real customer only when verified";
     }
 
     if (cleaned.includes("quote") || cleaned.includes("testimonial")) {
-      return "a real customer quote if available";
+      return "a real customer quote only when verified";
     }
 
     return "verified information";
@@ -582,14 +582,14 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
   text = text.replace(/\bcompanies of all sizes\b/gi, "your best-fit customer segment");
   text = text.replace(/\bwith\s+\d+[-–]\d+\s+reps\b/gi, "in your stated ICP");
   text = text.replace(/\b5[-–]50\s+reps\b/gi, "your stated ICP");
-  text = text.replace(/\bsimilar companies\b/gi, "real comparable customers if available");
-  text = text.replace(/\bspecific metrics from real customers\b/gi, "verified customer metrics if available");
-  text = text.replace(/\bspecific metrics from real comparable customers if available\b/gi, "verified customer metrics if available");
+  text = text.replace(/\bsimilar companies\b/gi, "real comparable customers only when verified");
+  text = text.replace(/\bspecific metrics from real customers\b/gi, "verified customer metrics only when verified");
+  text = text.replace(/\bspecific metrics from real comparable customers only when verified\b/gi, "verified customer metrics only when verified");
 
   // Make remaining proof recommendations cleaner.
-  text = text.replace(/\bUsed by\s+a real customer if available\b/gi, "Add verified customer proof if available");
-  text = text.replace(/\bfrom\s+a real customer if available\b/gi, "from a real customer if available");
-  text = text.replace(/\bAdd\s+a real customer if available\b/gi, "Add a real customer example if available");
+  text = text.replace(/\bUsed by\s+a real customer only when verified\b/gi, "Add verified customer proof only when verified");
+  text = text.replace(/\bfrom\s+a real customer only when verified\b/gi, "from a real customer only when verified");
+  text = text.replace(/\bAdd\s+a real customer only when verified\b/gi, "Add a real customer example only when verified");
   text = text.replace(/\byour audit offer\b/gi, "your offer");
   text = text.replace(/\byour actual offer offer\b/gi, "your actual offer");
 
@@ -630,24 +630,24 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
 
 
   // R7 delivery safety: remove remaining unsupported proof, timing, refund, and company-scale claims.
-  text = text.replace(/\baverage client sees?\s+[^.,;]+/gi, "add real customer results if available");
+  text = text.replace(/\baverage client sees?\s+[^.,;]+/gi, "add real customer results only when verified");
   text = text.replace(/\bclients?\s+see(s)?\s+[^.,;]+/gi, "real customers may show measurable results if you have proof");
   text = text.replace(/\bwithin\s+\d+[-–]\d+\s+weeks?\b/gi, "after implementation and testing");
   text = text.replace(/\bwithin\s+\d+\s+weeks?\b/gi, "after implementation and testing");
   text = text.replace(/\bwithin\s+\d+\s+days?\b/gi, "after implementation and testing");
 
-  text = text.replace(/\b\d+%[\+]?[\s-]*(lift|increase|improvement|conversion lift)\b/gi, "measurable proof if available");
+  text = text.replace(/\b\d+%[\+]?[\s-]*(lift|increase|improvement|conversion lift)\b/gi, "measurable proof only when verified");
   text = text.replace(/\b\d+%[\+]?/g, "measurable proof");
-  text = text.replace(/\b\d+x\s+(more|increase|lift|growth|results?)\b/gi, "measurable proof if available");
+  text = text.replace(/\b\d+x\s+(more|increase|lift|growth|results?)\b/gi, "measurable proof only when verified");
 
   text = text.replace(/\bif you don'?t see improvement after\s+[^.,;]+/gi, "only include a refund or guarantee if the business truly offers it");
   text = text.replace(/\bwe'?ll refund\s+[^.,;]+/gi, "state the refund policy only if it truly exists");
   text = text.replace(/\brefund your investment\b/gi, "state the refund policy only if it truly exists");
   text = text.replace(/\bcomplete rebuild\b/gi, "larger implementation project");
 
-  text = text.replace(/\bwe analyzed\s+\d+\+?\s+landing pages\b/gi, "add real experience proof if available");
-  text = text.replace(/\banalyzed\s+\d+\+?\s+landing pages\b/gi, "real experience proof if available");
-  text = text.replace(/\bwe have helped\s+[^.,;]+/gi, "add verified customer proof if available");
+  text = text.replace(/\bwe analyzed\s+\d+\+?\s+landing pages\b/gi, "add real experience proof only when verified");
+  text = text.replace(/\banalyzed\s+\d+\+?\s+landing pages\b/gi, "real experience proof only when verified");
+  text = text.replace(/\bwe have helped\s+[^.,;]+/gi, "add verified customer proof only when verified");
   text = text.replace(/\bwe specialize in\s+[^.,;]+/gi, "clarify your strongest customer segment");
   text = text.replace(/\bwe focus on\s+[^.,;]+/gi, "clarify your strongest customer segment");
 
@@ -664,7 +664,7 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
   text = text.replace(/\bif true\b/gi, "if accurate");
   text = text.replace(/\bIf true\b/g, "If accurate");
   text = text.replace(/\bsaved\b/gi, "saved");
-  text = text.replace(/\bverified saved\b/gi, "verified time saved if available");
+  text = text.replace(/\bverified saved\b/gi, "verified time saved only when verified");
 
   // Keep the final report note deterministic.
   text = text.replace(/\bActual page content was not reviewed\.?/gi, "");
@@ -675,7 +675,7 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
 
   // R8 final delivery polish.
   text = text.replace(/\brequired required\b/gi, "required");
-  text = text.replace(/\bif available if available\b/gi, "if available");
+  text = text.replace(/\bonly when verified\b/gi, "only when verified");
   text = text.replace(/\bif accurate if accurate\b/gi, "if accurate");
   text = text.replace(/\bif verified if verified\b/gi, "if verified");
   text = text.replace(/\bproof proof\b/gi, "proof");
@@ -703,27 +703,27 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
 
 
   // R9 final POV cleanup: remove first-person sales claims and leftover placeholder language.
-  text = text.replace(/\bacross verified information\b/gi, "with verified customer proof, if available");
-  text = text.replace(/\bverified information\b/gi, "verified proof if available");
-  text = text.replace(/\bverified information\./gi, "verified proof if available.");
+  text = text.replace(/\bacross verified information\b/gi, "with verified customer proof only when verified");
+  text = text.replace(/\bverified information\b/gi, "verified proof only when verified");
+  text = text.replace(/\bverified information\./gi, "verified proof only when verified.");
 
-  text = text.replace(/\bwe have worked with similar B2B teams\s+with verified customer proof, if available\b/gi, "Add relevant customer proof from similar B2B teams if available");
-  text = text.replace(/\bwe have worked with similar B2B teams\b/gi, "Add relevant customer proof from similar B2B teams if available");
-  text = text.replace(/\bwe have worked with similar companies\b/gi, "Add relevant customer proof from similar companies if available");
-  text = text.replace(/\bwe have helped similar companies\b/gi, "Add relevant customer proof from similar customers if available");
+  text = text.replace(/\bwe have worked with similar B2B teams\s+with verified customer proof only when verified\b/gi, "Add relevant customer proof from similar B2B teams only when verified");
+  text = text.replace(/\bwe have worked with similar B2B teams\b/gi, "Add relevant customer proof from similar B2B teams only when verified");
+  text = text.replace(/\bwe have worked with similar companies\b/gi, "Add relevant customer proof from similar companies only when verified");
+  text = text.replace(/\bwe have helped similar companies\b/gi, "Add relevant customer proof from similar customers only when verified");
 
-  text = text.replace(/\bhere'?s a case study from a similar company\s+verified proof if available\b/gi, "Add a real case study from a similar customer if available");
-  text = text.replace(/\bhere'?s a case study from a similar company\b/gi, "Add a real case study from a similar customer if available");
+  text = text.replace(/\bhere'?s a case study from a similar company\s+verified proof only when verified\b/gi, "Add a real case study from a similar customer only when verified");
+  text = text.replace(/\bhere'?s a case study from a similar company\b/gi, "Add a real case study from a similar customer only when verified");
   text = text.replace(/\bwe can also tailor this to your vertical\b/gi, "Explain how the service adapts to the buyer's industry or use case");
   text = text.replace(/\bwe tailor this to your vertical\b/gi, "Explain how the service adapts to the buyer's industry or use case");
 
-  text = text.replace(/\btrusted by hundreds of companies\b/gi, "supported by verified customer proof if available");
-  text = text.replace(/\btrusted by hundreds\b/gi, "supported by verified customer proof if available");
-  text = text.replace(/\bhundreds of companies\b/gi, "verified customer proof if available");
+  text = text.replace(/\btrusted by hundreds of companies\b/gi, "supported by verified customer proof only when verified");
+  text = text.replace(/\btrusted by hundreds\b/gi, "supported by verified customer proof only when verified");
+  text = text.replace(/\bhundreds of companies\b/gi, "verified customer proof only when verified");
 
-  text = text.replace(/\bimprove lead-to-deal conversion by a measurable result you can support with proof\b/gi, "improve lead-to-deal conversion with measurable proof if available");
-  text = text.replace(/\bby a measurable result you can support with proof\b/gi, "with measurable proof if available");
-  text = text.replace(/\bby measurable proof\b/gi, "with measurable proof if available");
+  text = text.replace(/\bimprove lead-to-deal conversion by a measurable result you can support with proof\b/gi, "improve lead-to-deal conversion with measurable proof only when verified");
+  text = text.replace(/\bby a measurable result you can support with proof\b/gi, "with measurable proof only when verified");
+  text = text.replace(/\bby measurable proof\b/gi, "with measurable proof only when verified");
 
   text = text.replace(/\bOur process\b/gi, "The page should explain the process");
   text = text.replace(/\bour process\b/gi, "the process");
@@ -736,10 +736,10 @@ function sanitizeGeneratedClaim(value: string, input: AuditInput) {
 
 
   // R10 final neutral consultant voice cleanup.
-  text = text.replace(/\bWe have experience with SaaS, fintech, and professional services\./gi, "Add relevant industry-specific proof if available.");
-  text = text.replace(/\bwe have experience with SaaS, fintech, and professional services\./gi, "add relevant industry-specific proof if available.");
-  text = text.replace(/\bwe'?ll show relevant case studies\b/gi, "show relevant case studies if available");
-  text = text.replace(/\bwe will show relevant case studies\b/gi, "show relevant case studies if available");
+  text = text.replace(/\bWe have experience with SaaS, fintech, and professional services\./gi, "Add relevant industry-specific proof only when verified.");
+  text = text.replace(/\bwe have experience with SaaS, fintech, and professional services\./gi, "add relevant industry-specific proof only when verified.");
+  text = text.replace(/\bwe'?ll show relevant case studies\b/gi, "show relevant case studies only when verified");
+  text = text.replace(/\bwe will show relevant case studies\b/gi, "show relevant case studies only when verified");
   text = text.replace(/\bContact our team\b/gi, "Use the appropriate contact path");
   text = text.replace(/\bcontact our team\b/gi, "use the appropriate contact path");
   text = text.replace(/\bhands-on implementation support\b/gi, "implementation support if offered");
@@ -892,7 +892,7 @@ function formatReportV2AsText(report: AuditReportV2) {
   const lines: string[] = [];
 
   const pageType = report.meta.pageType.replace(/_/g, " ");
-  const reportTitle = isPro ? "Pro Conversion Audit Report" : "Basic Conversion Audit Report";
+  const reportTitle = isPro ? "Pro Fix Plan" : "Quick Fix Report";
 
   const addBlank = () => lines.push("");
   const addSection = (title: string) => {
@@ -989,6 +989,37 @@ function formatReportV2AsText(report: AuditReportV2) {
   lines.push(deliveryImportantNote(report.meta.tier));
 
   return lines.join("\n");
+}
+
+
+function assertPaidReportQuality(report: string) {
+  const blockedPatterns: Array<{ pattern: RegExp; label: string }> = [
+    { pattern: /\[your actual price\]/i, label: "pricing placeholder" },
+    { pattern: /\bif available\b/i, label: "template availability placeholder" },
+    { pattern: /\[price\]/i, label: "price placeholder" },
+    { pattern: /\[customer name\]/i, label: "customer placeholder" },
+    { pattern: /\[company\]/i, label: "company placeholder" },
+    { pattern: /password-protected PDF/i, label: "incorrect PDF delivery promise" },
+    { pattern: /email delivery within 5 minutes/i, label: "incorrect email delivery promise" },
+    { pattern: /Google Optimize/i, label: "deprecated tool recommendation" },
+    { pattern: /Join 500\+/i, label: "unverified customer count" },
+    { pattern: /expires in 24 hours/i, label: "unsupported scarcity claim" },
+    { pattern: /free diagnosis expires/i, label: "unsupported scarcity claim" },
+    { pattern: /fake Reddit comments/i, label: "deceptive promotion suggestion" },
+    { pattern: /alt account/i, label: "deceptive promotion suggestion" },
+    { pattern: /from user\/alt/i, label: "deceptive promotion suggestion" },
+    { pattern: /assume the page currently has/i, label: "template/inference leakage" },
+    { pattern: /current hero \(inferred\)/i, label: "template/inference leakage" }
+  ];
+
+  const matched = blockedPatterns.find(({ pattern }) => pattern.test(report));
+
+  if (matched) {
+    console.error("PAID_REPORT_QUALITY_BLOCKED", matched.label);
+    throw new Error(
+      "The paid report did not pass quality checks. Please generate it again."
+    );
+  }
 }
 
 async function sendLeadWebhook(input: AuditInput, report: string) {
@@ -1220,13 +1251,13 @@ async function runDiagnosisWithCache(input: AuditInput, request: Request) {
   };
 }
 
-function sanitizeSolutionMarkdown(text: string) {
+function sanitizeSolutionMarkdown(text: string, input?: AuditInput) {
   let output = text;
 
-  const proof = "verified customer proof if available";
-  const metric = "a verified performance result if available";
-  const policy = "your actual support or refund policy if available";
-  const price = "[your actual price]";
+  const proof = "real customer proof";
+  const metric = "a verified performance result";
+  const policy = "your published support or refund policy";
+  const price = input?.tier === "pro" ? "Pro Fix Plan ($29)" : input?.tier === "basic" ? "Quick Fix Report ($9)" : "the selected one-time plan price";
 
   // Remove invented brand/customer proof.
   output = output.replace(/\b(HubSpot|Mailchimp|Zapier|AdEspresso|Hootsuite|Salesforce|Slack|Notion|Stripe|Shopify)\b/gi, "verified customer");
@@ -1236,7 +1267,7 @@ function sanitizeSolutionMarkdown(text: string) {
   output = output.replace(/\blogos? of recognizable brands[^.\n]*/gi, proof);
   output = output.replace(/\bclient:\s*[^\n]+/gi, `Client: ${proof}`);
   output = output.replace(/\bcase study\b[^.\n]*(\d|%|x|revenue|signup|conversion|client)[^.\n]*/gi, `case study using ${metric}`);
-  output = output.replace(/\bvideo case study\b/gi, "verified case study if available");
+  output = output.replace(/\bvideo case study\b/gi, "verified case study only when verified");
 
   // Remove invented performance numbers and lift promises.
   output = output.replace(/\b\d+(?:\.\d+)?%\s*(?:to|→|-|–|—)\s*\d+(?:\.\d+)?%/gi, metric);
@@ -1255,7 +1286,7 @@ function sanitizeSolutionMarkdown(text: string) {
   output = output.replace(/\bno upfront (price|payment|fee|cost)[^.\n]*/gi, `Use ${policy}.`);
   output = output.replace(/\bfree audit, then pay only[^.\n]*/gi, `Free diagnosis first, then use ${policy}.`);
   output = output.replace(/\brisk[- ]reversed entry point\b/gi, "low-friction entry point");
-  output = output.replace(/\bspending at least\s+\[?your actual price\]?\s*k\/month[^.\n]*/gi, "with a clearly defined target customer if available");
+  output = output.replace(/\bspending at least\s+\[?your actual price\]?\s*k\/month[^.\n]*/gi, "with a clearly defined target customer only when verified");
   output = output.replace(/\b\d+%\\+? of visitors\b/gi, "many visitors");
   output = output.replace(/\bleak\s+\d+%\\+? of visitors\b/gi, "lose visitors before they convert");
   output = output.replace(/\bmore closed deals\b/gi, "more qualified conversion actions");
@@ -1263,7 +1294,7 @@ function sanitizeSolutionMarkdown(text: string) {
   output = output.replace(/\bhigher revenue from the same traffic\b/gi, "better use of the same traffic");
   output = output.replace(/\bturns? ad traffic into booked calls and closed deals\b/gi, "helps more ad visitors take the next conversion step");
   output = output.replace(/\bturn your ad clicks into pipeline[^.\n]*/gi, "help more ad visitors take the next conversion step");
-  output = output.replace(/\bYou your actual support or refund policy if available\b/gi, `Use ${policy}`);
+  output = output.replace(/\bYou your actual support or refund policy only when verified\b/gi, `Use ${policy}`);
 
 
   // Remove unsupported guarantees, refund terms, and free offers.
@@ -1276,9 +1307,9 @@ function sanitizeSolutionMarkdown(text: string) {
   output = output.replace(/\$\d[\d,]*(?:\.\d{2})?/g, price);
   output = output.replace(/\$X,XXX/g, price);
   output = output.replace(/\bone[- ]time landing page overhaul\s*[–-]\s*\[?your actual price\]?[^.\n]*/gi, `One-time landing page improvement package — ${price}`);
-  output = output.replace(/\bmonthly retainer\b/gi, "ongoing support option if available");
-  output = output.replace(/\bno long[- ]term contracts?\b/gi, "clear contract terms if available");
-  output = output.replace(/\bcancel anytime\b/gi, "clear cancellation terms if available");
+  output = output.replace(/\bmonthly retainer\b/gi, "ongoing support option only when verified");
+  output = output.replace(/\bno long[- ]term contracts?\b/gi, "clear contract terms only when verified");
+  output = output.replace(/\bcancel anytime\b/gi, "clear cancellation terms only when verified");
 
   // Remove fake founder/history claims in launch copy.
   output = output.replace(/\bI spent\s+\d+\s+years[^.\n]*/gi, "I have been reviewing common landing page conversion issues");
@@ -1290,7 +1321,7 @@ function sanitizeSolutionMarkdown(text: string) {
   // Tone down hype.
   output = output.replace(/\bclosing machine\b/gi, "clearer conversion path");
   output = output.replace(/\bproven copywriting\b/gi, "conversion-focused copywriting");
-  output = output.replace(/\bbacked by real conversion data\b/gi, "validated with analytics if available");
+  output = output.replace(/\bbacked by real conversion data\b/gi, "validated with analytics only when verified");
   output = output.replace(/\bNo AI hype, just results\./gi, "Clear diagnosis and practical fixes.");
   // Tone down remaining unsupported proof/hype language.
   output = output.replace(/\bsales machine\b/gi, "clearer conversion path");
@@ -1326,9 +1357,9 @@ async function generateWithAI(input: AuditInput) {
   const diagnosisInstruction = `
 MODE: FREE DIAGNOSIS ONLY.
 Return valid JSON matching the required schema, but only reveal diagnostic information.
-Focus on score, executive summary, top conversion blockers, severity, and solution preview.
+Focus on score, executive summary, top conversion blockers, severity, and fix plan preview.
 Do not reveal full hero rewrites, full CTA rewrites, pricing strategy, full FAQ, full hooks, or a complete 7-day implementation plan.
-Keep paid-solution sections minimal or preview-level only.`;
+Keep paid fix plan sections minimal or preview-level only.`;
 
   const prompt = generationMode === "diagnosis"
     ? `${buildAuditPromptV2(normalizedInput)}\n\n${diagnosisInstruction}`
@@ -1385,7 +1416,7 @@ Keep paid-solution sections minimal or preview-level only.`;
 
     if (generationMode === "solution") {
       return {
-        report: sanitizeSolutionMarkdown(rawText),
+        report: sanitizeSolutionMarkdown(rawText, normalizedInput),
         reportV2: null,
         demo: false
       };
@@ -1463,7 +1494,7 @@ Keep paid-solution sections minimal or preview-level only.`;
 
   if (generationMode === "solution") {
     return {
-      report: sanitizeSolutionMarkdown(rawText),
+      report: sanitizeSolutionMarkdown(rawText, normalizedInput),
       reportV2: null,
       demo: false
     };
@@ -1487,7 +1518,7 @@ export async function POST(request: NextRequest) {
       if (!input.paymentToken) {
         return Response.json({
           ok: false,
-          error: "Payment verification is required before generating a conversion solution."
+          error: "Payment verification is required before generating the full fix plan."
         }, { status: 402 });
       }
 
@@ -1508,6 +1539,10 @@ export async function POST(request: NextRequest) {
     const result = generationMode === "diagnosis"
       ? await runDiagnosisWithCache(input, request)
       : await generateWithAI(input);
+
+    if (generationMode === "solution") {
+      assertPaidReportQuality(result.report);
+    }
 
     await sendLeadWebhook(input, result.report);
 

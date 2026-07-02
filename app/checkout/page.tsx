@@ -146,7 +146,7 @@ Run Free Diagnosis
 
 Day 1: Rewrite the hero message around the visitor's pain.
 Day 2: Replace generic CTAs with diagnosis and solution CTAs.
-Day 3: Add a locked solution preview.
+Day 3: Add a locked fix plan preview.
 Day 4: Add trust and support notes near payment.
 Day 5: Add an example diagnosis page.
 Day 6: Test one high-intent Reddit or Product Hunt traffic source.

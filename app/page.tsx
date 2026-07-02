@@ -223,7 +223,7 @@ export default function HomePage() {
               expectedOutcome: "More visitors understand they can try the tool before paying."
             },
             {
-              title: "Show a locked solution preview",
+              title: "Show a locked fix plan preview",
               action: "List the exact modules users can unlock after the diagnosis.",
               expectedOutcome: "Users see what the paid fix plan contains."
             }
@@ -235,7 +235,7 @@ export default function HomePage() {
         hooks: [],
         sevenDayPlan: [
           { day: 1, title: "Rewrite hero message", action: "Use a pain-led headline and diagnosis-focused CTA.", expectedOutcome: "Visitors understand the offer faster." },
-          { day: 2, title: "Add solution preview", action: "Show what is locked behind the full fix plan.", expectedOutcome: "Unlock intent becomes clearer." },
+          { day: 2, title: "Add fix plan preview", action: "Show what is locked behind the full fix plan.", expectedOutcome: "Unlock intent becomes clearer." },
           { day: 3, title: "Add trust support", action: "Keep Support, Refund, and Privacy visible.", expectedOutcome: "Payment risk feels lower." }
         ],
         disclaimer: "This sample diagnosis is for local testing only. Recommendations should be validated with analytics, customer feedback, and A/B testing."

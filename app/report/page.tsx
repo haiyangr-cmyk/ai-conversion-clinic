@@ -122,14 +122,14 @@ function scrubUnsafeExportText(text: string) {
   let output = text;
 
   output = output.replace(/\b(HubSpot|Mailchimp|Zapier|AdEspresso|Hootsuite|Salesforce|Slack|Stripe|Shopify)\b/gi, "verified customer");
-  output = output.replace(/\b\d+(?:\.\d+)?\s*(?:-|–|—)\s*\d+(?:\.\d+)?%\s*(better|lift|increase|improvement|conversion)?/gi, "a verified performance result if available");
-  output = output.replace(/\b\d+(?:\.\d+)?%\s*(?:to|→|-|–|—)\s*\d+(?:\.\d+)?%/gi, "a verified performance result if available");
-  output = output.replace(/\b\d+(?:\.\d+)?x\b/gi, "a verified performance result if available");
+  output = output.replace(/\b\d+(?:\.\d+)?\s*(?:-|–|—)\s*\d+(?:\.\d+)?%\s*(better|lift|increase|improvement|conversion)?/gi, "a verified performance result");
+  output = output.replace(/\b\d+(?:\.\d+)?%\s*(?:to|→|-|–|—)\s*\d+(?:\.\d+)?%/gi, "a verified performance result");
+  output = output.replace(/\b\d+(?:\.\d+)?x\b/gi, "a verified performance result");
   output = output.replace(/\b\d+%\+?\s+of\s+visitors\b/gi, "many visitors");
-  output = output.replace(/\b(or it'?s free|or you do not pay|or you don't pay|you don’t pay|first month free|pay only after|pay only when|charge only when|refund 100%|100% refund|100% satisfaction|money[- ]back guarantee|performance guarantee|work for free until)\b[^.\n]*/gi, "your actual support or refund policy if available");
-  output = output.replace(/\btrusted by\s+\d+\+?[^.\n]*/gi, "trusted by verified customer proof if available");
-  output = output.replace(/\bused by\s+[^.\n]*\d+\+?[^.\n]*/gi, "used by verified customer proof if available");
-  output = output.replace(/\$X,XXX|\$\d[\d,]*(?:\.\d{2})?/g, "[your actual price]");
+  output = output.replace(/\b(or it'?s free|or you do not pay|or you don't pay|you don’t pay|first month free|pay only after|pay only when|charge only when|refund 100%|100% refund|100% satisfaction|money[- ]back guarantee|performance guarantee|work for free until)\b[^.\n]*/gi, "your published support or refund policy");
+  output = output.replace(/\btrusted by\s+\d+\+?[^.\n]*/gi, "trusted by real customer proof");
+  output = output.replace(/\bused by\s+[^.\n]*\d+\+?[^.\n]*/gi, "used by real customer proof");
+  output = output.replace(/\$X,XXX/g, "the selected one-time plan price");
   output = output.replace(/\bsales machine\b/gi, "clearer conversion path");
   output = output.replace(/\bproven system\b/gi, "structured conversion process");
   output = output.replace(/\bproven principles\b/gi, "conversion best practices");
