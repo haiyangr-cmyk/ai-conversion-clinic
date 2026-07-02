@@ -2595,3 +2595,65 @@ form .limit-error-actions a:hover,
   font-size: 14px;
   line-height: 1.6;
 }
+
+
+/* Formatted fallback report renderer */
+.formatted-report {
+  display: grid;
+  gap: 0.8rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.65;
+}
+
+.formatted-report h3 {
+  margin: 1.25rem 0 0.25rem;
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.formatted-report h4 {
+  margin: 1rem 0 0.15rem;
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.formatted-report p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.formatted-report .formatted-bullet {
+  position: relative;
+  padding-left: 1.15rem;
+}
+
+.formatted-report .formatted-bullet::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+}
+
+.formatted-report .formatted-numbered,
+.formatted-report .formatted-day,
+.formatted-report .formatted-label {
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.formatted-report .formatted-table-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.5rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 0.8rem;
+  background: rgba(15, 23, 42, 0.35);
+  font-size: 0.92rem;
+}
+
+.formatted-report .formatted-table-row span {
+  min-width: 0;
+}
+

@@ -362,6 +362,7 @@ function normalizeExportMarkdownSpacing(content: string) {
     .replace(/([.!?"])(?=(The strongest opportunity|After payment confirmation|Sample preview format:|Page reviewed:))/g, "$1\n")
     .replace(/^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/gm, "")
     .replace(/^\s*\|[-:\s|]+$/gm, "")
+    .replace(/([.!?"])\s*\|\s*$/gm, "$1")
     .replace(/(Clear explanation:\s*)"/g, "$1")
     .replace(/^\s*"\s*$/gm, "")
     .replace(/"\s*\n(After payment confirmation)/g, "\n$1")
@@ -1003,7 +1004,14 @@ function V2Report({ report }: { report: AuditReportV2 }) {
 
 
 function FormattedTextReport({ text }: { text: string }) {
-  const rawLines = prepareExportLines(text).map((line) => line.trim()).filter(Boolean);
+  const normalizedText = normalizeExportMarkdownSpacing(text || "");
+  const rawLines = normalizedText
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => !/^#+$/.test(line))
+    .filter((line) => !/^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line));
+
   const lines = rawLines[0]?.startsWith("# ") ? rawLines.slice(1) : rawLines;
 
   return (
@@ -1020,15 +1028,36 @@ function FormattedTextReport({ text }: { text: string }) {
           return <h4 key={index}>{headingText}</h4>;
         }
 
-        if (line.startsWith("- ")) {
-          return <p className="formatted-bullet" key={index}>{line.replace(/^-\s+/, "")}</p>;
+        if (line.includes("|") && line.split("|").length >= 3) {
+          const cells = line
+            .split("|")
+            .map((cell) => cell.trim())
+            .filter(Boolean);
+
+          if (cells.length === 0) return null;
+
+          return (
+            <p className="formatted-table-row" key={index}>
+              {cells.map((cell, cellIndex) => (
+                <span key={`${index}-${cellIndex}`}>{cell}</span>
+              ))}
+            </p>
+          );
+        }
+
+        if (line.startsWith("- ") || line.startsWith("• ")) {
+          return <p className="formatted-bullet" key={index}>{line.replace(/^[-•]\s+/, "")}</p>;
         }
 
         if (/^Day\s+\d+:/i.test(line)) {
           return <p className="formatted-day" key={index}>{line}</p>;
         }
 
-        if (/^[A-Za-z /]+:$/.test(line)) {
+        if (/^\d+\.\s+/.test(line)) {
+          return <p className="formatted-numbered" key={index}>{line}</p>;
+        }
+
+        if (/^[A-Z][A-Za-z &/+-]+:$/.test(line)) {
           return <p className="formatted-label" key={index}>{line}</p>;
         }
 
@@ -1275,23 +1304,7 @@ export default function ReportPage() {
           ) : reportV2 ? (
             <V2Report report={reportV2} />
           ) : (
-            <pre
-              className="fallback-report-text"
-              style={{
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-word",
-                margin: 0,
-                color: "#f8fafc",
-                lineHeight: 1.65,
-                fontSize: 15,
-                background: "rgba(15, 23, 42, 0.72)",
-                border: "1px solid rgba(148, 163, 184, 0.22)",
-                borderRadius: 18,
-                padding: 24
-              }}
-            >
-              {report}
-            </pre>
+            <FormattedTextReport text={report} />
           )}
 
           {reportMode === "diagnosis" && !reportV2 ? (
