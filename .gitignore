@@ -8,3 +8,6 @@ tsconfig.tsbuildinfo
 
 .env.local.live.backup
 .env*.backup
+
+.env.local.live.backup
+.env*.backup

@@ -217,6 +217,15 @@ export default function CheckoutPage() {
   }
 
   useEffect(() => {
+    if (isLocalDevCheckout) {
+      setPaypalLoading(false);
+      setError("");
+      if (paypalRef.current) {
+        paypalRef.current.innerHTML = "";
+      }
+      return;
+    }
+
     if (!input || !paypalRef.current || paymentComplete) return;
 
     async function renderButtons() {

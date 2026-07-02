@@ -121,7 +121,7 @@ function stripInlineMarkdown(text: string) {
 function scrubUnsafeExportText(text: string) {
   let output = text;
 
-  output = output.replace(/\b(HubSpot|Mailchimp|Zapier|AdEspresso|Hootsuite|Salesforce|Slack|Stripe|Shopify)\b/gi, "verified customer");
+  output = output.replace(/\b(HubSpot|Mailchimp|Zapier|AdEspresso|Hootsuite|Salesforce|Slack|Stripe)\b/gi, "verified customer");
   output = output.replace(/\b\d+(?:\.\d+)?\s*(?:-|–|—)\s*\d+(?:\.\d+)?%\s*(better|lift|increase|improvement|conversion)?/gi, "a verified performance result");
   output = output.replace(/\b\d+(?:\.\d+)?%\s*(?:to|→|-|–|—)\s*\d+(?:\.\d+)?%/gi, "a verified performance result");
   output = output.replace(/\b\d+(?:\.\d+)?x\b/gi, "a verified performance result");
@@ -1028,7 +1028,7 @@ export default function ReportPage() {
 
                   <ul className="report-trust-bar" aria-label="Payment trust signals">
                     <li>Secure PayPal checkout</li>
-                    <li>Instant report access after payment</li>
+                    <li>Generate after payment confirmation</li>
                     <li>Sample report available</li>
                     <li>Refund policy available</li>
                   </ul>
@@ -1036,7 +1036,7 @@ export default function ReportPage() {
                   <div className="payment-flow-card" aria-label="What happens after payment">
                     <div className="payment-flow-header">
                       <span>What happens after payment</span>
-                      <strong>PayPal confirms first, then your full fix plan is generated.</strong>
+                      <strong>After payment confirmation, you can generate, view, copy, or export the full fix plan.</strong>
                     </div>
 
                     <ol className="payment-flow-steps">
@@ -1086,7 +1086,23 @@ export default function ReportPage() {
           ) : reportV2 ? (
             <V2Report report={reportV2} />
           ) : (
-            <FormattedTextReport text={report} />
+            <pre
+              className="fallback-report-text"
+              style={{
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+                margin: 0,
+                color: "#f8fafc",
+                lineHeight: 1.65,
+                fontSize: 15,
+                background: "rgba(15, 23, 42, 0.72)",
+                border: "1px solid rgba(148, 163, 184, 0.22)",
+                borderRadius: 18,
+                padding: 24
+              }}
+            >
+              {report}
+            </pre>
           )}
 
           {reportMode === "diagnosis" && !reportV2 ? (
@@ -1097,7 +1113,7 @@ export default function ReportPage() {
 
                 <ul className="report-trust-bar" aria-label="Payment trust signals">
                   <li>Secure PayPal checkout</li>
-                  <li>Instant report access after payment</li>
+                  <li>Generate after payment confirmation</li>
                   <li>Sample report available</li>
                   <li>Refund policy available</li>
                 </ul>
@@ -1105,7 +1121,7 @@ export default function ReportPage() {
                 <div className="payment-flow-card" aria-label="What happens after payment">
                   <div className="payment-flow-header">
                     <span>What happens after payment</span>
-                    <strong>PayPal confirms first, then your full fix plan is generated.</strong>
+                    <strong>After payment confirmation, you can generate, view, copy, or export the full fix plan.</strong>
                   </div>
 
                   <ol className="payment-flow-steps">

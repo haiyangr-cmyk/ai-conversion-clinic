@@ -27,6 +27,7 @@ ${tierInstruction}
 - Use clear, professional, plain English.
 - Format the report in Markdown.
 
+
 Use this exact structure:
 
 # AI Conversion Audit Report
@@ -122,11 +123,37 @@ Briefly explain what the full paid fix plan would include.`;
 export function buildSolutionPrompt(input: AuditInput) {
   const isPro = input.tier === "pro";
   const tierName = isPro ? "Pro Fix Plan" : "Quick Fix Report";
+  const paidReportHardContract = isPro
+    ? `
+PAID REPORT HARD CONTRACT:
+- Use exact product names and prices only: Free Diagnosis, Quick Fix Report ($9), Pro Fix Plan ($29).
+- When comparing paid tiers, write "the $9 Quick Fix Report and the $29 Pro Fix Plan".
+- Never write "$29 version", "$29 tier", "$29 vs $29", "$9 Pro", or "$29 Quick Fix".
+- Do not mention immediately, instant, instantly, in X minutes, within X hours, no waiting, no additional steps, delivered within, receive a link, or email delivery.
+- Use this exact delivery wording whenever needed: "After payment confirmation, the user can generate, view, copy, or export the full fix plan."
+- Do not mention account pages, saved accounts, stored reports, sign-up, pre-filled email, or revisit-at-any-time features.
+- Do not promise 30-day refunds, full refunds, satisfaction refunds, guarantees, no-questions-asked refunds, or support windows. You may only say: "Link to the published refund/support policy."
+- Do not invent customer proof, verified customers, PayPal Verified status, logos, usage counts, testimonials, proven results, protected-by-PayPal claims, or real customer examples.
+- Do not say real sample, real example, previous customer, similar client page, real content, or actual recommendation. Use "sample" or "anonymized sample" only.
+- Do not use exact capability counts unless provided by the site context. Avoid 5+, 6+, 10+, 15+, 20+, 30+, 40+, 3-5, 8-12, and 12-15.
+- Do not include Product Hunt, Reddit, launch copy, community posts, email follow-up sequences, re-engagement emails, scarcity, coupon, discount, countdown, first 50/100, or price-increase tactics.
+- Do not use likely, assumed, hypothesized, estimated, current from context, Current (assumed), Current (inferred), or placeholder brackets.
+- Do not use checkmark/cross symbols. Use Yes, No, or Limited.
+- Before returning the report, silently scan for all forbidden terms above and rewrite them using allowed neutral wording. Do not mention this scan.
+`
+    : "";
+
 
   const tierInstruction = isPro
     ? `This is the $29 Pro Fix Plan.
-Make it substantially deeper than Basic.
-Include multiple variants, page-structure guidance, objection handling, A/B test guidance, launch follow-up copy variants, and a 14-day follow-up checklist.
+Make it substantially deeper than the $9 Quick Fix Report.
+Focus only on paid conversion diagnosis, prioritized fixes, copy rewrites, CTA/checkout improvements, trust reassurance, objection handling, and implementation guidance.
+Do not include launch follow-up copy, email follow-up sequences, re-engagement email sequences, Product Hunt copy, Reddit copy, offer variants, scarcity tactics, fake urgency, fake guarantees, customer proof placeholders, or promotional scripts.
+Use exact product pricing only: Quick Fix Report is $9. Pro Fix Plan is $29. Never describe Quick Fix Report as $29. Never write "$29 and $29", "$29 or $29", or "price difference between $29 and $29". When comparing tiers, write "$9 Quick Fix Report and $29 Pro Fix Plan".
+Do not include expiry windows, saved-for-X-days claims, limited availability, countdowns, first 50, first 100, price increases, discount windows, launch-week pricing, or generated-plan expiration unless explicitly provided by the business.
+Do not use "likely", "assumed", "hypothesized", "estimated", or "current likely" in the final report.
+Do not say "instant download", "instantly downloadable", or "instant access". Use: "After payment confirmation, the user can generate, view, copy, or export the full fix plan."
+Do not use checkmark or cross symbols in tables. Use plain text: Yes / No / Limited.
 Do not include human review, dashboard features, account features, or manual consulting promises.`
     : `This is the $9 Quick Fix Report.
 Keep it concise and focused on the highest-leverage fixes.
@@ -136,43 +163,114 @@ Do not include Pro-only sections such as headline variants, CTA variants, sectio
   const structure = isPro
     ? `# Pro Fix Plan
 
-## Recommended Positioning
+## Executive Diagnosis
+Write one clear paragraph explaining the main paid-conversion problem on this page.
+Focus on why a visitor who completes the free diagnosis may not upgrade to the Pro Fix Plan.
+Do not use hypothetical, estimated, current likely, or assumed wording.
 
-## Hero Rewrite
+## Conversion Score Breakdown
+Score each item from 1 to 10:
+- Offer clarity
+- Paid plan perceived value
+- CTA strength
+- Trust and payment reassurance
+- Objection handling
+- Checkout readiness
 
-## Hero Variants
+For each score, include:
+- Score
+- Evidence from the submitted page context
+- One specific fix
 
-## CTA Fixes
+## Top 3 Paid Conversion Leaks
+For each leak, include:
+- Leak name
+- Why it hurts paid conversion
+- What to change
+- Priority: High / Medium / Low
+- Validation metric
 
-## CTA Variants
+## Priority Fix Roadmap
+Give the first 3 fixes to implement in order.
+For each fix, include:
+- Page location
+- Implementation effort
+- Expected impact level
+- Exact copy or UI change
 
-## Section-by-Section Page Rewrite
+## Hero & Above-the-Fold Rewrite
+Provide:
+- Recommended headline
+- Recommended subheadline
+- Primary CTA
+- CTA microcopy
+- Two alternate headline variants
 
-## Trust & Proof Plan
+Use only truthful copy. Do not include fake urgency, fake scarcity, fake proof, unsupported statistics, or performance promises.
 
-## Pricing / Offer Variants
+## CTA & Checkout Unlock Fixes
+Focus on the free diagnosis result page and checkout path.
+Include:
+- Primary unlock CTA
+- Secondary reassurance line
+- Button text
+- What the user sees after clicking
+- What happens after payment
 
-## Objection Handling / FAQ
+Use the real product flow:
+Payment is confirmed, then the user generates and views the full fix plan, and can copy or export the report.
+
+## Trust & Payment Reassurance
+Recommend only truthful trust elements:
+- Secure PayPal checkout
+- One-time payment
+- Published refund/support policy link
+- Sample report link
+- Clear what-happens-after-payment explanation
+
+Do not invent testimonials, customer counts, logos, guarantees, countdowns, expiry windows, delivery times, or scarcity.
+
+## Objection Handling FAQ
+Write answers for these 5 objections:
+1. Why pay after the free diagnosis?
+2. How is Pro different from Quick Fix Report?
+3. Is this specific to my page?
+4. What if I am not technical?
+5. What happens after payment?
+
+Answers must be accurate. Refer only to the published refund/support policy. Do not invent guarantees.
 
 ## A/B Testing Plan
+Provide exactly 3 tests:
+1. CTA copy test
+2. Paid value preview test
+3. Checkout reassurance test
+
+For each test include:
+- Hypothesis
+- Control
+- Variant
+- Metric
+- Minimum data note
+
+Do not require unrealistic sample sizes. Do not promise statistical significance.
 
 ## 7-Day Implementation Plan
+Give one practical action per day for improving paid conversion.
 
 ## 14-Day Follow-up Checklist
-
-## Product Hunt Launch Copy
-
-## Reddit Post & Comment Variants
+Give a concise checklist for measuring and iterating the paid conversion funnel.
 
 ## Important Note
-Recommendations should be validated with analytics, customer feedback, and A/B testing.`
+State that all recommendations are hypotheses to validate with analytics and customer feedback.
+Do not claim guaranteed improvement.`
     : `# Quick Fix Report
 
-## Recommended Positioning
 
-## Hero Rewrite
 
-## CTA Fixes
+
+
+
 
 ## Trust & Proof Fixes
 
@@ -180,7 +278,6 @@ Recommendations should be validated with analytics, customer feedback, and A/B t
 
 ## 7-Day Action Plan
 
-## Product Hunt / Reddit Follow-up Copy
 
 ## Important Note
 Recommendations should be validated with analytics, customer feedback, and A/B testing.`;
@@ -200,6 +297,7 @@ Client input:
 
 Tier instructions:
 ${tierInstruction}
+${paidReportHardContract}
 
 Rules:
 - Write in English.
@@ -229,7 +327,7 @@ Hard safety rules:
 - If a section needs proof, write: "Add verified customer proof only when you have it."
 - If a section needs a guarantee/refund/support policy, refer only to the published support or refund policy.
 - If a section needs pricing, use the actual selected plan name and price when available. If the price is unavailable, omit the price instead of using placeholders.
-- Product Hunt / Reddit copy must be honest, modest, and based only on the product's actual value proposition.
+- Do not include Product Hunt, Reddit, promotional comments, maker comments, or launch copy in the paid report unless the user explicitly asks for promotional assets.
 - Do not change the user's business model, pricing model, payment terms, guarantee policy, refund policy, contract terms, or service scope.
 - Do not recommend performance-based pricing, "pay only if results improve", "no upfront payment", "charge only when it wins", or similar commercial terms unless the user explicitly provided that model.
 - Do not claim the business gets more closed deals, higher revenue, or better close rates. You may frame these as desired outcomes only, not promises.
@@ -241,4 +339,3 @@ Use this exact structure:
 
 ${structure}`;
 }
-
