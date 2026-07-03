@@ -404,7 +404,11 @@ export default function CheckoutPage() {
         tier: input.tier
       });
 
-      router.push("/report");
+      // Use a hard navigation after writing the report payload.
+      // In local dev, router.push can request /report but leave the visible page on /checkout after state refreshes.
+      await new Promise((resolve) => window.setTimeout(resolve, 0));
+      window.location.assign("/report");
+      return;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Report generation failed. Please try again.");
     } finally {

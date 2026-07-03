@@ -1066,6 +1066,14 @@ function paidGoalLabel(input: AuditInput) {
     subscribers: "Get more email subscribers",
     trial_signups: "Get more trial signups"
   };
+  const context = [input.url, input.product, input.audience, input.conversionGoal]
+    .map((value) => String(value || "").toLowerCase())
+    .join(" ");
+
+  if (raw === "paid_users" && /ecommerce|e-commerce|product page|store|shopify|purchase|buy|add to cart|checkout|retail/.test(context)) {
+    return "Get more purchases";
+  }
+
   return labels[raw] || raw.replace(/_/g, " ") || "Improve conversions";
 }
 
@@ -1241,9 +1249,341 @@ function paidArchetypeConfig(input: AuditInput): PaidArchetypeConfig {
     };
   }
 
+  if (archetype === "ecommerce") {
+    return {
+      label: "Ecommerce product or collection page",
+      primaryCta: "Add to Cart",
+      overview: `The page should make the purchase decision easier for ${audience}. The strongest opportunity is to reduce product uncertainty before the add-to-cart action by clarifying value, proof, shipping, returns, and purchase confidence.`,
+      scoreRows: [
+        "Product value clarity | 7/10 | Shoppers need to understand why this product is worth buying before comparing alternatives. | Add a clear value stack near the product title and price.",
+        "Add-to-cart readiness | 6/10 | Purchase actions convert better when price, product benefit, proof, and reassurance are adjacent. | Place shipping, returns, and trust microcopy near the add-to-cart button.",
+        "Review and proof strength | 5/10 | Premium product pages need visible review quality and buyer confidence near the decision area. | Surface star rating, review count, review highlights, or press proof close to the CTA.",
+        "Risk reversal | 5/10 | Shoppers hesitate when fit, feel, quality, delivery, sizing, or returns are unclear. | Add a compact reassurance block covering returns, guarantee, shipping, and support.",
+        "Mobile purchase path | 6/10 | Product pages lose shoppers when key buying information is scattered on mobile. | Keep image, price, CTA, proof, and reassurance easy to scan before checkout."
+      ],
+      fixes: [
+        {
+          title: "The product value stack is not concrete enough",
+          why: "Shoppers need an immediate reason to believe the product is worth the price before they compare cheaper alternatives.",
+          change: "Add three bullets near the product title: material or quality differentiator, comfort or use-case benefit, and low-risk purchase reassurance.",
+          metric: "Product-page add-to-cart rate."
+        },
+        {
+          title: "Purchase reassurance is too far from Add to Cart",
+          why: "Shipping, returns, quality, and support concerns create hesitation exactly at the buying moment.",
+          change: "Move the strongest reassurance points directly below or beside the add-to-cart button.",
+          metric: "Add-to-cart to checkout-start rate."
+        },
+        {
+          title: "Proof does not work hard enough at the decision point",
+          why: "Premium shoppers need evidence from other buyers before they commit.",
+          change: "Place review stars, review count, buyer quote, best-seller badge, or press proof close to the price and CTA.",
+          metric: "CTA click-through rate after proof exposure."
+        }
+      ],
+      copyBlocks: [
+        {
+          title: "Product value stack",
+          lines: [
+            "Why shoppers choose this:",
+            "Breathable premium cotton for comfortable everyday sleep.",
+            "A crisp, classic feel designed for year-round use.",
+            "Easy returns and clear support if it is not the right fit."
+          ]
+        },
+        {
+          title: "Add-to-cart reassurance copy",
+          lines: [
+            "Add to Cart",
+            "Secure checkout. Clear returns. Support available if anything is wrong.",
+            "Place shipping, returns, and sizing details directly near the purchase action."
+          ]
+        },
+        {
+          title: "Review proof block",
+          lines: [
+            "Loved by shoppers looking for breathable, comfortable bedding.",
+            "Show star rating, review count, and one short verified-buyer quote near the add-to-cart area."
+          ]
+        }
+      ],
+      trust: [
+        "Show review stars and review count near the product CTA.",
+        "Put shipping and return details close to Add to Cart.",
+        "Clarify material, feel, care, size, and guarantee details.",
+        "Use only verified reviews, real press proof, or factual trust claims."
+      ],
+      plan: [
+        "Add a three-bullet product value stack near the product title and price.",
+        "Move shipping and return reassurance next to the Add to Cart button.",
+        "Add a review highlight or buyer quote near the product decision area.",
+        "Clarify the top quality, fit, feel, or care concern before checkout.",
+        "Check mobile scanability of product image, price, CTA, proof, and reassurance.",
+        "Verify the cart and checkout path on desktop and mobile.",
+        "Review add-to-cart rate, checkout-start rate, and purchase completion."
+      ],
+      followUp: [
+        "Review add-to-cart rate.",
+        "Review add-to-cart to checkout-start rate.",
+        "Review checkout-start to purchase-completion rate.",
+        "Check whether review proof exposure improves CTA clicks.",
+        "Review product-page mobile conversion separately from desktop.",
+        "Collect shopper questions about shipping, returns, feel, quality, sizing, or care.",
+        "Choose the next test based on the largest product-page or checkout drop-off."
+      ]
+    };
+  }
+
+  if (archetype === "service") {
+    return {
+      label: "Service lead-generation page",
+      primaryCta: "Book a Fit Call",
+      overview: `The page should make the service decision feel lower risk for ${audience}. The strongest opportunity is to clarify the offer, prove the process, and make the booking or inquiry action feel specific and worthwhile.`,
+      scoreRows: [
+        "Service offer clarity | 7/10 | Visitors need to understand what is included, who it is for, and what outcome the service supports. | Add a concise offer breakdown near the primary CTA.",
+        "Booking CTA strength | 6/10 | Service buyers hesitate when the call or inquiry feels vague. | Make the booking CTA specific about the outcome of the call.",
+        "Proof and credibility | 5/10 | Visitors need proof of expertise before contacting. | Move case studies, examples, or process proof closer to the CTA.",
+        "Process clarity | 5/10 | Unclear process creates friction for high-consideration services. | Add a three-step process section before the CTA.",
+        "Qualification clarity | 6/10 | Visitors need to know whether the service fits their budget, stage, or needs. | Add who-it-is-for and who-it-is-not-for copy."
+      ],
+      fixes: [
+        {
+          title: "The booking action is too vague",
+          why: "Visitors avoid calls when they do not know what will happen or what they will get from the conversation.",
+          change: "Rename the CTA around the value of the call and explain what happens after booking.",
+          metric: "Booking CTA click-through rate."
+        },
+        {
+          title: "Proof is not tied closely enough to the offer",
+          why: "Service buyers need confidence that the provider has solved their type of problem.",
+          change: "Place a relevant proof block, work sample, or case example near the service offer.",
+          metric: "Inquiry or booking completion rate."
+        },
+        {
+          title: "The process is not clear enough",
+          why: "High-consideration service buyers hesitate when the next steps feel open-ended.",
+          change: "Add a simple three-step process before the booking CTA.",
+          metric: "Scroll-to-booking and booking-start rate."
+        }
+      ],
+      copyBlocks: [
+        {
+          title: "Booking CTA rewrite",
+          lines: [
+            "Book a Fit Call",
+            "See if this is right for your team.",
+            "Get a clear next-step recommendation before committing."
+          ]
+        },
+        {
+          title: "Process copy",
+          lines: [
+            "1. Share your current situation.",
+            "2. Review fit, scope, and priorities.",
+            "3. Get the recommended next step."
+          ]
+        },
+        {
+          title: "Qualification copy",
+          lines: [
+            "Best for teams that need ongoing support and clear execution.",
+            "Not ideal if you only need a one-off task with no strategic context."
+          ]
+        }
+      ],
+      trust: [
+        "Show relevant examples, case studies, or work samples.",
+        "Explain the service process before the booking action.",
+        "Clarify who the offer is for and who it is not for.",
+        "Make next steps after booking explicit."
+      ],
+      plan: [
+        "Rewrite the primary booking CTA around a specific outcome.",
+        "Add a concise service offer breakdown near the CTA.",
+        "Move a relevant proof block or work sample near the offer.",
+        "Add a three-step process section before the final CTA.",
+        "Clarify best-fit and poor-fit customers.",
+        "QA the scheduler or inquiry form on mobile and desktop.",
+        "Review booking clicks, form starts, and completed inquiries."
+      ],
+      followUp: [
+        "Review booking CTA click-through rate.",
+        "Review booking or inquiry completion rate.",
+        "Check where prospects abandon the scheduler or form.",
+        "Collect objections from sales calls or inquiry emails.",
+        "Compare proof-block viewers with non-viewers.",
+        "Test a process-first section against a proof-first section.",
+        "Choose the next test based on the largest booking-path drop-off."
+      ]
+    };
+  }
+
+  if (archetype === "newsletter") {
+    return {
+      label: "Newsletter signup page",
+      primaryCta: "Subscribe",
+      overview: `The page should make the subscription promise more specific for ${audience}. The strongest opportunity is to show what subscribers receive, why it is worth joining now, and how the email signup will respect their inbox.`,
+      scoreRows: [
+        "Newsletter promise clarity | 7/10 | Visitors need a clear reason to exchange their email address. | State the exact content promise and cadence near the signup form.",
+        "Signup CTA strength | 6/10 | A generic subscribe CTA can feel low urgency. | Use CTA copy tied to the reader outcome.",
+        "Content preview | 5/10 | Readers subscribe faster when they can preview the value they will receive. | Add a sample issue or top topics preview near the form.",
+        "Authority proof | 6/10 | Subscribers need proof that the sender is credible and worth reading. | Show subscriber count, reader quotes, credentials, or recognizable audience proof close to the form.",
+        "Inbox reassurance | 6/10 | Email signup requires trust around frequency and relevance. | Clarify cadence, unsubscribe expectations, and no-spam reassurance."
+      ],
+      fixes: [
+        {
+          title: "The subscription value is not concrete enough",
+          why: "Visitors need to know what they will receive before giving an email address.",
+          change: "Add a sample issue preview and three topic bullets near the form.",
+          metric: "Email signup rate."
+        },
+        {
+          title: "Signup CTA lacks reader outcome",
+          why: "A generic subscribe button does not communicate the benefit of joining.",
+          change: "Rewrite the CTA around the reader's desired outcome.",
+          metric: "Form submit rate."
+        },
+        {
+          title: "Trust and cadence are not visible enough",
+          why: "Readers avoid newsletters when frequency and content quality are unclear.",
+          change: "Add cadence, reader proof, and unsubscribe reassurance close to the form.",
+          metric: "Signup completion rate."
+        }
+      ],
+      copyBlocks: [
+        {
+          title: "Signup block rewrite",
+          lines: [
+            "Get one practical insight in your inbox each week.",
+            "Join readers who use this newsletter to make better product, growth, or career decisions.",
+            "No spam. Unsubscribe anytime."
+          ]
+        },
+        {
+          title: "Content preview",
+          lines: [
+            "Recent topics:",
+            "Practical frameworks.",
+            "Examples from real decisions.",
+            "Actionable takeaways."
+          ]
+        },
+        {
+          title: "Signup reassurance",
+          lines: [
+            "Sent on a predictable cadence.",
+            "Built for readers who want practical advice, not generic updates.",
+            "Unsubscribe anytime."
+          ]
+        }
+      ],
+      trust: [
+        "Show subscriber count or reader proof near the form.",
+        "Clarify send cadence.",
+        "Preview the type of content readers receive.",
+        "Add unsubscribe reassurance near the form."
+      ],
+      plan: [
+        "Rewrite the signup promise around a specific reader outcome.",
+        "Add a content preview near the form.",
+        "Add cadence and no-spam reassurance.",
+        "Move authority proof closer to the form.",
+        "Test the signup form on mobile.",
+        "Review signup starts and form completions.",
+        "Use reader feedback to refine the promise."
+      ],
+      followUp: [
+        "Review email signup rate.",
+        "Review form abandonment.",
+        "Compare subscribe CTA variants.",
+        "Review which preview topics get clicks.",
+        "Ask new subscribers why they joined.",
+        "Test proof placement near the form.",
+        "Choose the next test based on signup drop-off and reader feedback."
+      ]
+    };
+  }
+
+  if (archetype === "course") {
+    return {
+      label: "Course or membership page",
+      primaryCta: goal.toLowerCase().includes("demo") ? "Book a Demo" : "Start Learning",
+      overview: `The page should make the learning outcome clearer for ${audience}. The strongest opportunity is to clarify the result, format, proof, and individual vs team path before asking visitors to trial, enroll, or request a demo.`,
+      scoreRows: [
+        "Learning outcome clarity | 7/10 | Visitors need to understand what skill, result, or career outcome the course supports. | Make the outcome and audience fit visible above the CTA.",
+        "Path selection | 5/10 | Individual, team, trial, and demo paths can compete. | Segment the CTA paths by visitor intent.",
+        "Curriculum proof | 6/10 | Buyers need confidence that the content is practical and current. | Preview modules, examples, or instructor credibility near the CTA.",
+        "Commitment reassurance | 5/10 | Visitors need to understand time commitment, format, and access. | Add format and effort details before signup.",
+        "Team or buyer fit | 6/10 | B2B learning buyers need to know whether the offer fits individual or team needs. | Add a clear individual vs team comparison."
+      ],
+      fixes: [
+        {
+          title: "The outcome is not concrete enough before signup",
+          why: "Course buyers need to know what they will be able to do after joining.",
+          change: "Add a clear learning outcome block above the CTA.",
+          metric: "Trial or enrollment start rate."
+        },
+        {
+          title: "Individual and team paths compete",
+          why: "Mixed audiences can stall when they do not know which path to choose.",
+          change: "Separate individual, team, and demo CTAs with clear labels.",
+          metric: "CTA selection rate by segment."
+        },
+        {
+          title: "Commitment questions are answered too late",
+          why: "Visitors hesitate when time, format, access, or support are unclear.",
+          change: "Add a concise commitment and format block near the signup action.",
+          metric: "CTA-to-signup completion rate."
+        }
+      ],
+      copyBlocks: [
+        {
+          title: "Outcome block",
+          lines: [
+            "What you will be able to do:",
+            "Apply the topic to a real product or business decision.",
+            "Use practical frameworks instead of passive content."
+          ]
+        },
+        {
+          title: "CTA segmentation",
+          lines: [
+            "For individuals: Start Free Trial.",
+            "For teams: Book a Demo.",
+            "For evaluators: View Course Catalog."
+          ]
+        }
+      ],
+      trust: [
+        "Show instructor or expert credibility.",
+        "Preview curriculum modules.",
+        "Clarify time commitment.",
+        "Separate individual and team paths."
+      ],
+      plan: [
+        "Rewrite the hero around a concrete learning outcome.",
+        "Segment individual and team CTA paths.",
+        "Add a curriculum preview near the CTA.",
+        "Add time commitment and format reassurance.",
+        "Move learner or company proof closer to signup.",
+        "QA trial or demo flow on mobile and desktop.",
+        "Review trial starts, demo requests, and course-page clicks."
+      ],
+      followUp: [
+        "Review trial signup rate.",
+        "Review team demo request rate.",
+        "Check which CTA path gets most clicks.",
+        "Review objections about time or format.",
+        "Test outcome-first hero copy.",
+        "Test curriculum preview placement.",
+        "Validate with learning analytics and user feedback."
+      ]
+    };
+  }
+
   return {
-    label: archetype === "ecommerce" ? "Ecommerce page" : archetype === "service" ? "Service lead-generation page" : archetype === "newsletter" ? "Newsletter signup page" : archetype === "course" ? "Course or membership page" : "Generic landing page",
-    primaryCta: archetype === "ecommerce" ? "Add to Cart" : archetype === "newsletter" ? "Subscribe" : archetype === "service" ? "Book a Fit Call" : archetype === "course" ? "Start Learning" : "Take the next step",
+    label: "Generic landing page",
+    primaryCta: "Take the next step",
     overview: `The page should make the offer, proof, and next action easier for ${audience} to understand. The strongest opportunity is to connect ${product} to a clearer conversion path for ${goal.toLowerCase()}.`,
     scoreRows: [
       "Offer clarity | 6/10 | Visitors need faster clarity on who the offer is for and why it matters. | Tighten the hero message around audience, problem, and outcome.",
@@ -1318,6 +1658,10 @@ function paidArchetypeConfig(input: AuditInput): PaidArchetypeConfig {
 
 
 function buildPaidSevenDayPlan(kind: PaidReportKind, config: PaidArchetypeConfig, goal: string) {
+  const isEcommerce = /Ecommerce/i.test(config.label);
+  const isService = /Service/i.test(config.label);
+  const isNewsletter = /Newsletter/i.test(config.label);
+
   if (kind === "quick") {
     return [
       `Day 1: Pick one primary CTA for ${goal.toLowerCase()}. Use "${config.primaryCta}" as the main action and move secondary links below it.`,
@@ -1327,6 +1671,165 @@ function buildPaidSevenDayPlan(kind: PaidReportKind, config: PaidArchetypeConfig
       "Day 5: Check the mobile version and make sure the headline, CTA, proof, and reassurance are visible without friction.",
       "Day 6: Verify that the conversion path works from CTA click to completion on desktop and mobile.",
       "Day 7: Review CTA clicks, conversion starts, and completed conversions; keep the strongest change and queue one next test."
+    ];
+  }
+
+  if (isNewsletter) {
+    return [
+      "Day 1: Signup promise and form alignment",
+      "",
+      "- Page area: hero headline, signup form, repeated subscribe sections, and final CTA.",
+      `- Change: make "${config.primaryCta}" the primary action for ${goal.toLowerCase()} and make secondary links support the email signup path.`,
+      "- Output: signup CTA map, revised subscribe button copy, and one line that explains what readers get after subscribing.",
+      "- Metric: email signup CTA click-through rate.",
+      "",
+      "Day 2: Newsletter value proposition rewrite",
+      "",
+      "- Page area: hero support copy, newsletter description, and signup-adjacent copy.",
+      "- Change: state the reader outcome, content category, cadence, and practical benefit before asking for an email address.",
+      "- Output: two signup-promise variants, one subheadline, and one subscribe microcopy line.",
+      "- Metric: hero-to-signup-form rate.",
+      "",
+      "Day 3: Content preview placement",
+      "",
+      "- Page area: sample issue, recent topics, popular posts, or preview bullets near the signup form.",
+      "- Change: show what readers will receive before they subscribe.",
+      "- Output: one content-preview block with three topic examples or one sample-issue teaser.",
+      "- Metric: signup form completion rate after content-preview exposure.",
+      "",
+      "Day 4: Authority and reader proof block",
+      "",
+      "- Page area: proof closest to the email signup form.",
+      "- Change: add subscriber count, reader quote, recognizable audience proof, or creator credibility near the subscribe action.",
+      "- Output: one authority-proof block and one proof-backed signup support line.",
+      "- Metric: email signup rate after proof exposure.",
+      "",
+      "Day 5: Inbox reassurance and cadence clarity",
+      "",
+      "- Page area: signup form, CTA support copy, and FAQ or footer reassurance.",
+      "- Change: clarify cadence, relevance, unsubscribe expectations, and no-spam reassurance.",
+      "- Output: one inbox-reassurance block and one cadence line.",
+      "- Metric: signup-start to signup-completion rate.",
+      "",
+      "Day 6: Signup form and tracking verification",
+      "",
+      "- Page area: email field, form submit, confirmation message, welcome email, and analytics events.",
+      "- Change: confirm events fire for signup form view, form submit, and confirmed subscription.",
+      "- Output: email signup funnel checklist and baseline signup metrics.",
+      "- Metric: clean signup-form view, submit, and confirmed-subscription data.",
+      "",
+      "Day 7: Launch review and next newsletter test",
+      "",
+      "- Page area: changed signup sections and email signup dashboard.",
+      "- Change: review early directional data and choose the next signup-page or content-preview test.",
+      "- Output: one keep/change/rollback decision and one follow-up newsletter experiment.",
+      "- Metric: improvement in the weakest email signup step."
+    ];
+  }
+
+  if (isService) {
+    return [
+      "Day 1: Booking CTA and lead-path alignment",
+      "",
+      "- Page area: hero, navigation, pricing or package section, proof section, and final CTA.",
+      `- Change: make "${config.primaryCta}" the primary action for ${goal.toLowerCase()} and make secondary links support the booking path.`,
+      "- Output: booking CTA map, revised CTA copy, and one line that explains what happens after booking.",
+      "- Metric: booking CTA click-through rate.",
+      "",
+      "Day 2: Service offer and scope clarification",
+      "",
+      "- Page area: hero support copy, offer section, pricing/package section, and service details.",
+      "- Change: clarify what is included, who the service is best for, and what outcome the client should expect.",
+      "- Output: one offer breakdown, one best-fit customer statement, and one scope clarification block.",
+      "- Metric: scroll-to-booking rate and booking-start rate.",
+      "",
+      "Day 3: Proof and work-sample placement",
+      "",
+      "- Page area: case studies, testimonials, portfolio examples, before/after examples, or client logos near the CTA.",
+      "- Change: move the most relevant proof into the decision area before the booking action.",
+      "- Output: one proof block, one work-sample placement, and one short credibility line.",
+      "- Metric: booking CTA click-through rate after proof exposure.",
+      "",
+      "Day 4: Process and expectation-setting block",
+      "",
+      "- Page area: section before the booking CTA or scheduler.",
+      "- Change: explain what happens before, during, and after the call so the step feels low risk.",
+      "- Output: three-step process copy and one call-expectation microcopy line.",
+      "- Metric: booking-start to booking-completion rate.",
+      "",
+      "Day 5: Qualification and objection handling",
+      "",
+      "- Page area: FAQ, pricing, final CTA, and scheduler entry.",
+      "- Change: answer fit, pricing, timeline, workload, and collaboration objections before the visitor books.",
+      "- Output: three objection-answer pairs and one who-it-is-for / who-it-is-not-for block.",
+      "- Metric: qualified booking rate.",
+      "",
+      "Day 6: Scheduler and form QA",
+      "",
+      "- Page area: scheduler, inquiry form, confirmation message, email confirmation, and mobile booking path.",
+      "- Change: remove unnecessary fields, unclear labels, missing confirmation copy, or mobile friction.",
+      "- Output: desktop and mobile booking QA notes with screenshots.",
+      "- Metric: booking-start to booking-completion rate.",
+      "",
+      "Day 7: Launch review and next service-funnel test",
+      "",
+      "- Page area: changed service sections and booking funnel dashboard.",
+      "- Change: review early directional data and choose the next service-funnel test.",
+      "- Output: one keep/change/rollback decision and one follow-up experiment.",
+      "- Metric: improvement in the weakest lead-generation step."
+    ];
+  }
+
+  if (isEcommerce) {
+    return [
+      "Day 1: Product CTA and purchase-path alignment",
+      "",
+      "- Page area: product title, price, variant selector, Add to Cart button, sticky cart, and checkout entry.",
+      `- Change: make "${config.primaryCta}" the primary action for ${goal.toLowerCase()} and move secondary product links below the purchase path.`,
+      "- Output: product-page CTA map, revised add-to-cart microcopy, and one purchase reassurance line.",
+      "- Metric: product-page add-to-cart rate.",
+      "",
+      "Day 2: Product value stack rewrite",
+      "",
+      "- Page area: product title, short description, bullets near price, and first visible product details.",
+      "- Change: explain material, comfort, use case, and price justification before shoppers compare cheaper alternatives.",
+      "- Output: three product value bullets and one revised product-description opening.",
+      "- Metric: add-to-cart rate among visitors who view the product details.",
+      "",
+      "Day 3: Review and proof placement",
+      "",
+      "- Page area: review stars, review count, buyer quote, best-seller badge, and press proof near the product CTA.",
+      "- Change: move the strongest buyer proof into the purchase decision area.",
+      "- Output: one review-proof block and one short verified-buyer quote placement.",
+      "- Metric: CTA click-through rate after proof exposure.",
+      "",
+      "Day 4: Shipping, returns, and risk-reversal block",
+      "",
+      "- Page area: directly below or beside Add to Cart and again near cart entry.",
+      "- Change: answer the top buying concerns around shipping, returns, sizing, material feel, and support.",
+      "- Output: one compact reassurance block with links to shipping and return details.",
+      "- Metric: add-to-cart to checkout-start rate.",
+      "",
+      "Day 5: Mobile product-page QA",
+      "",
+      "- Page area: mobile product image, price, variant selection, CTA, review proof, and reassurance copy.",
+      "- Change: make the buying path scannable without forcing shoppers to hunt for key details.",
+      "- Output: mobile QA notes with screenshots and a list of hidden or delayed purchase cues.",
+      "- Metric: mobile add-to-cart rate.",
+      "",
+      "Day 6: Cart and checkout tracking verification",
+      "",
+      "- Page area: analytics events for Add to Cart, checkout start, and purchase completion.",
+      "- Change: confirm each event fires cleanly and can be segmented by device.",
+      "- Output: ecommerce funnel event checklist and baseline conversion numbers.",
+      "- Metric: clean add-to-cart, checkout-start, and purchase-completion data.",
+      "",
+      "Day 7: Launch review and next ecommerce test",
+      "",
+      "- Page area: changed product sections and ecommerce funnel dashboard.",
+      "- Change: review early directional data and choose the next product-page or cart test.",
+      "- Output: one keep/change/rollback decision and one follow-up ecommerce experiment.",
+      "- Metric: improvement in the weakest purchase funnel step."
     ];
   }
 
@@ -1382,7 +1885,11 @@ function buildPaidSevenDayPlan(kind: PaidReportKind, config: PaidArchetypeConfig
   ];
 }
 
-function buildPaidFollowUpChecklist(kind: PaidReportKind, goal: string) {
+function buildPaidFollowUpChecklist(kind: PaidReportKind, goal: string, config?: PaidArchetypeConfig) {
+  const isEcommerce = config ? /Ecommerce/i.test(config.label) : false;
+  const isService = config ? /Service/i.test(config.label) : false;
+  const isNewsletter = config ? /Newsletter/i.test(config.label) : false;
+
   if (kind === "quick") {
     return [
       "- Review primary CTA click-through rate.",
@@ -1392,6 +1899,57 @@ function buildPaidFollowUpChecklist(kind: PaidReportKind, goal: string) {
       "- Collect the top two objections from support, sales, or user feedback.",
       "- Choose one next copy test based on the biggest drop-off.",
       "- Validate the winning change with analytics and qualitative feedback."
+    ];
+  }
+
+  if (isNewsletter) {
+    return [
+      "- Confirm analytics events fire for signup form view, form submit, and confirmed subscription.",
+      "- Compare email signup rate before and after the signup-promise and CTA changes.",
+      "- Review signup-form submit rate separately from confirmed-subscription rate.",
+      "- Check whether content-preview exposure improves subscribe clicks and form submissions.",
+      "- Review mobile email signup behavior separately from desktop signup behavior.",
+      "- Review form abandonment and confirmation-message clarity.",
+      "- Collect reader objections about relevance, frequency, content quality, inbox overload, or privacy.",
+      "- Compare performance for visitors who saw authority proof against visitors who did not.",
+      "- Pick one next newsletter A/B test based on the largest remaining signup-funnel drop-off.",
+      "- Archive losing signup copy so the team does not reuse it later.",
+      "- Keep a changelog of newsletter-page edits, dates, and observed metric movement.",
+      "- Validate changes with signup analytics, reader feedback, and email engagement data before making larger redesign decisions."
+    ];
+  }
+
+  if (isService) {
+    return [
+      "- Confirm analytics events fire for booking CTA click, scheduler/form start, and booking or inquiry completion.",
+      "- Compare booking CTA click-through rate before and after the CTA and offer-clarity changes.",
+      "- Review scheduler-start to booking-completion rate separately from hero-to-scheduler click-through rate.",
+      "- Check whether proof exposure improves booking CTA clicks.",
+      "- Review mobile booking behavior separately from desktop booking behavior.",
+      "- Review the scheduler or form for field-level friction and abandonment.",
+      "- Collect prospect objections about price, fit, timeline, scope, collaboration style, or expected deliverables.",
+      "- Compare booking quality before and after the qualification copy changes.",
+      "- Pick one next service-funnel A/B test based on the largest remaining booking-path drop-off.",
+      "- Archive losing service copy so the team does not reuse it later.",
+      "- Keep a changelog of service-page edits, dates, and observed metric movement.",
+      "- Validate changes with analytics, sales feedback, and customer conversations before making larger redesign decisions."
+    ];
+  }
+
+  if (isEcommerce) {
+    return [
+      "- Confirm analytics events fire for Add to Cart, checkout start, and purchase completion.",
+      "- Compare product-page add-to-cart rate before and after the value-stack and reassurance changes.",
+      "- Review add-to-cart to checkout-start rate separately from checkout-start to purchase-completion rate.",
+      "- Check whether review proof exposure improves Add to Cart clicks.",
+      "- Review mobile product-page behavior separately from desktop product-page behavior.",
+      "- Review cart abandonment after shipping, return, or payment information is shown.",
+      "- Collect shopper questions about material, feel, sizing, shipping, returns, price, or support.",
+      "- Compare performance for visitors who interact with reviews against visitors who do not.",
+      "- Pick one next ecommerce A/B test based on the largest remaining purchase-funnel drop-off.",
+      "- Archive losing product copy so the team does not reuse it later.",
+      "- Keep a changelog of product-page edits, dates, and observed metric movement.",
+      "- Validate changes with ecommerce analytics, customer feedback, and A/B testing before making larger redesign decisions."
     ];
   }
 
@@ -1473,7 +2031,7 @@ function buildAdaptivePaidReport(input: AuditInput, kind: PaidReportKind) {
         return;
       }
 
-      lines.push(line);
+      lines.push(line, "");
     });
 
     lines.push("");
@@ -1532,7 +2090,7 @@ function buildAdaptivePaidReport(input: AuditInput, kind: PaidReportKind) {
     ...buildPaidSevenDayPlan(kind, config, goal),
     "",
     "## 14-Day Follow-up Checklist",
-    ...buildPaidFollowUpChecklist(kind, goal),
+    ...buildPaidFollowUpChecklist(kind, goal, config),
     "",
     "## Important Note",
     "These recommendations are strategy recommendations based on the submitted page context. Validate changes with analytics, customer feedback, and A/B testing. No specific performance improvement is claimed."
@@ -2807,7 +3365,13 @@ export async function POST(request: NextRequest) {
 
     const result = generationMode === "diagnosis"
       ? await runDiagnosisWithCache(input, request)
-      : await generateWithAI(input);
+      : {
+          report: input.tier === "pro"
+            ? buildStableProFixPlanReport(input)
+            : buildStableQuickFixReport(input),
+          reportV2: null,
+          demo: false
+        };
 
     if (generationMode === "solution") {
       result.report = finalizePaidReportBeforeQualityGate(result.report);
