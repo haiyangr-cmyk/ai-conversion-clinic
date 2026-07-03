@@ -1028,303 +1028,525 @@ function stableProReportValue(value: unknown, fallback: string) {
 }
 
 
-function buildStableQuickFixReport(input: AuditInput) {
-  const pageUrl = input.url || "Not provided";
-  const product = input.product || "Not provided";
-  const audience = input.audience || "Not provided";
-  const goal =
-    input.conversionGoal === "paid_users"
-      ? "Get more paid users"
-      : String(input.conversionGoal || "Not provided");
+type PaidReportKind = "quick" | "pro";
+type PaidArchetype = "auditProduct" | "saas" | "ecommerce" | "service" | "newsletter" | "course" | "generic";
+
+type PaidArchetypeConfig = {
+  label: string;
+  primaryCta: string;
+  overview: string;
+  scoreRows: string[];
+  fixes: Array<{
+    title: string;
+    why: string;
+    change: string;
+    metric: string;
+  }>;
+  copyBlocks: Array<{
+    title: string;
+    lines: string[];
+  }>;
+  trust: string[];
+  plan: string[];
+  followUp: string[];
+};
+
+function cleanPaidText(value: unknown, fallback: string) {
+  return String(value || "").replace(/\s+/g, " ").trim() || fallback;
+}
+
+function paidGoalLabel(input: AuditInput) {
+  const raw = String(input.conversionGoal || "").trim();
+  const labels: Record<string, string> = {
+    paid_users: "Get more paid users",
+    signups: "Get more signups",
+    purchases: "Get more purchases",
+    leads: "Get more qualified leads",
+    booked_calls: "Get more booked calls",
+    subscribers: "Get more email subscribers",
+    trial_signups: "Get more trial signups"
+  };
+  return labels[raw] || raw.replace(/_/g, " ") || "Improve conversions";
+}
+
+function inferPaidArchetype(input: AuditInput): PaidArchetype {
+  const text = [input.url, input.product, input.audience, input.conversionGoal]
+    .map((value) => String(value || "").toLowerCase())
+    .join(" ");
+
+  if (/aiconversionclinic|ai conversion clinic|quick fix report|pro fix plan|conversion audit|landing page audit|free diagnosis/.test(text)) return "auditProduct";
+  if (/shopify|ecommerce|e-commerce|store|product page|add to cart|cart|purchase|buy|checkout|order|shipping|returns?|retail/.test(text)) return "ecommerce";
+  if (/newsletter|email subscriber|substack|subscribe|publication|reader|inbox/.test(text)) return "newsletter";
+  if (/course|cohort|membership|academy|training|lesson|workshop|education|learning platform|enrollment/.test(text)) return "course";
+  if (/agency|service|consulting|consultant|booked call|book a call|discovery call|inquiry|lead generation|quote|proposal|appointment/.test(text)) return "service";
+  if (/saas|software|platform|app|tool|product team|engineering team|signup|sign up|trial|demo|workspace|workflow|collaboration/.test(text)) return "saas";
+  return "generic";
+}
+
+function paidArchetypeConfig(input: AuditInput): PaidArchetypeConfig {
+  const archetype = inferPaidArchetype(input);
+  const product = cleanPaidText(input.product, "the offer");
+  const audience = cleanPaidText(input.audience, "the target customer");
+  const goal = paidGoalLabel(input);
+
+  if (archetype === "auditProduct") {
+    return {
+      label: "Paid audit funnel",
+      primaryCta: "Get the right paid report",
+      overview: "The page communicates the audit offer, but the paid upgrade path needs clearer value contrast. Visitors need to understand the difference between the free diagnosis, the Quick Fix Report, and the Pro Fix Plan before they reach checkout.",
+      scoreRows: [
+        "Offer clarity | 7/10 | The audit offer is understandable, but the paid tiers need stronger contrast. | Add a compact comparison table near the upgrade CTA.",
+        "Paid value preview | 5/10 | The deeper paid deliverable is not previewed strongly enough before checkout. | Show a sample section that previews the Pro Fix Plan depth.",
+        "CTA strength | 6/10 | The upgrade CTA can be more outcome-focused. | Use CTA copy that names the report and result.",
+        "Trust reassurance | 5/10 | Payment reassurance should be visible near checkout. | Add secure checkout, one-time payment, and support policy copy near the payment button.",
+        "Objection handling | 4/10 | Visitors can wonder why they should pay after receiving a free diagnosis. | Add a short FAQ below the upgrade CTA."
+      ],
+      fixes: [
+        {
+          title: "The paid value gap is not visible enough",
+          why: "Visitors can understand the free diagnosis but may not see why a paid report is worth unlocking.",
+          change: "Show what the Quick Fix Report includes and what the Pro Fix Plan adds.",
+          metric: "Click-through rate from result page to checkout."
+        },
+        {
+          title: "The upgrade CTA lacks a concrete preview",
+          why: "Visitors are asked to pay before seeing the type of output they will receive.",
+          change: "Add a small sample with one issue, one rewrite, and one implementation step.",
+          metric: "Checkout starts among visitors who view the sample."
+        },
+        {
+          title: "Payment reassurance is too far from the decision point",
+          why: "New visitors need trust and process clarity before paying for a digital report.",
+          change: "Place checkout, one-time payment, and support policy copy near the payment action.",
+          metric: "Checkout completion rate."
+        }
+      ],
+      copyBlocks: [
+        {
+          title: "Paid CTA copy",
+          lines: [
+            "Get Your Pro Fix Plan",
+            "Includes prioritized fixes, copy rewrites, CTA improvements, and implementation guidance."
+          ]
+        },
+        {
+          title: "Sample preview copy",
+          lines: [
+            "Issue: The CTA does not make the next step specific enough.",
+            "Suggested rewrite: Get Your Pro Fix Plan.",
+            "Reason: This clarifies the product and outcome before checkout."
+          ]
+        }
+      ],
+      trust: [
+        "Secure checkout.",
+        "One-time payment.",
+        "Sample report available before payment.",
+        "After payment confirmation, the user can generate, view, copy, or export the report."
+      ],
+      plan: [
+        "Add the Quick vs Pro comparison table near the paid CTA.",
+        "Rewrite the paid CTA and support copy.",
+        "Add a sample preview block.",
+        "Add payment reassurance near checkout.",
+        "Add the objection-handling FAQ.",
+        "QA the full flow from diagnosis to checkout to report generation.",
+        "Review analytics events for result-page clicks, checkout views, payment starts, and paid report generation."
+      ],
+      followUp: [
+        "Review click-through rate from result page to checkout.",
+        "Review checkout completion rate.",
+        "Compare Quick and Pro selection.",
+        "Check sample preview clicks.",
+        "Review support questions about payment or report access.",
+        "Confirm refund/support policy links work.",
+        "Test the flow on mobile and desktop."
+      ]
+    };
+  }
+
+  if (archetype === "saas") {
+    return {
+      label: "SaaS signup or demo page",
+      primaryCta: goal.toLowerCase().includes("demo") ? "Book a Product Demo" : "Start Free",
+      overview: `The page should make the path from interest to ${goal.toLowerCase()} more explicit for ${audience}. The strongest opportunity is to connect the product promise to a clear activation path: who the product is for, what workflow improves, what proof supports the claim, and which CTA should be the primary next step.`,
+      scoreRows: [
+        `Positioning clarity | 7/10 | ${audience} need faster clarity on the specific workflow improvement. | Rewrite the hero support copy around the highest-value use case.`,
+        "CTA hierarchy | 5/10 | Signup, demo, pricing, and navigation paths can compete for attention. | Choose one primary CTA for the selected conversion goal.",
+        "Use-case proof | 6/10 | SaaS buyers need proof that teams like theirs adopt and benefit from the product. | Place role-specific proof near the CTA.",
+        "Adoption reassurance | 5/10 | Visitors need to understand setup effort, migration effort, and team fit. | Add concise objection-handling copy near the conversion path.",
+        "Pricing or trial clarity | 6/10 | Visitors need to know what happens after clicking the primary CTA. | Clarify trial, demo, or signup expectations before the click."
+      ],
+      fixes: [
+        {
+          title: "Primary CTA path is not decisive enough",
+          why: `${audience} can delay action when multiple next steps compete with the selected goal.`,
+          change: "Make the primary CTA match the selected conversion goal and make secondary actions visually subordinate.",
+          metric: "Primary CTA click-through rate."
+        },
+        {
+          title: "Workflow value is not concrete enough",
+          why: "Software buyers need to see the exact workflow that improves, not only a broad product promise.",
+          change: "Add a use-case strip that maps the product to one team workflow, one pain, and one outcome.",
+          metric: "Signup or demo start rate."
+        },
+        {
+          title: "Risk reduction is too late",
+          why: "Teams hesitate when setup, migration, security, or team adoption concerns are not answered near the CTA.",
+          change: "Add onboarding, integration, and team-fit reassurance near signup, pricing, or demo entry points.",
+          metric: "CTA-to-signup or CTA-to-demo completion rate."
+        }
+      ],
+      copyBlocks: [
+        {
+          title: "Hero rewrite",
+          lines: [
+            "Headline: Run the product workflow your team needs without losing execution clarity.",
+            `Subheadline: ${product} should connect the product promise to a specific workflow outcome for ${audience}.`,
+            `Primary CTA: ${goal.toLowerCase().includes("demo") ? "Book a Product Demo" : "Start Free"}`
+          ]
+        },
+        {
+          title: "CTA microcopy",
+          lines: [
+            "See how this fits your team's current workflow before committing.",
+            "Clarify what happens after signup or demo request so visitors know the next step."
+          ]
+        }
+      ],
+      trust: [
+        "Show proof from similar teams or roles.",
+        "Clarify onboarding effort.",
+        "Explain integration or migration expectations.",
+        "Place security or reliability reassurance near the CTA."
+      ],
+      plan: [
+        "Choose one primary CTA for the selected goal.",
+        "Rewrite the hero support copy around the strongest workflow outcome.",
+        "Add a use-case block for the target team.",
+        "Move role-specific proof closer to the CTA.",
+        "Add onboarding or adoption reassurance near the conversion path.",
+        "QA signup or demo flow on mobile and desktop.",
+        "Review CTA clicks, signup starts, and form completion."
+      ],
+      followUp: [
+        "Review primary CTA click-through rate.",
+        "Compare signup or demo starts before and after the change.",
+        "Check whether visitors use secondary navigation instead of the main CTA.",
+        "Review objections from sales or support conversations.",
+        "Test a use-case-first hero variant.",
+        "Test CTA microcopy that clarifies the post-click step.",
+        "Validate changes with product analytics and user feedback."
+      ]
+    };
+  }
+
+  return {
+    label: archetype === "ecommerce" ? "Ecommerce page" : archetype === "service" ? "Service lead-generation page" : archetype === "newsletter" ? "Newsletter signup page" : archetype === "course" ? "Course or membership page" : "Generic landing page",
+    primaryCta: archetype === "ecommerce" ? "Add to Cart" : archetype === "newsletter" ? "Subscribe" : archetype === "service" ? "Book a Fit Call" : archetype === "course" ? "Start Learning" : "Take the next step",
+    overview: `The page should make the offer, proof, and next action easier for ${audience} to understand. The strongest opportunity is to connect ${product} to a clearer conversion path for ${goal.toLowerCase()}.`,
+    scoreRows: [
+      "Offer clarity | 6/10 | Visitors need faster clarity on who the offer is for and why it matters. | Tighten the hero message around audience, problem, and outcome.",
+      "CTA clarity | 6/10 | The next step should be specific and low-friction. | Rename the CTA around the visitor's desired outcome.",
+      "Proof strength | 5/10 | Visitors need confidence before acting. | Add relevant proof close to the CTA.",
+      "Objection handling | 5/10 | Unanswered questions create hesitation. | Add concise reassurance near the conversion point.",
+      "Page flow | 6/10 | Landing pages convert better when value, proof, and CTA are easy to scan. | Reorder sections around the decision path."
+    ],
+    fixes: [
+      {
+        title: "The value proposition is not concrete enough",
+        why: "Visitors need to understand the specific outcome before they act.",
+        change: "Rewrite the hero around audience, problem, and result.",
+        metric: "Primary CTA click-through rate."
+      },
+      {
+        title: "The CTA lacks context",
+        why: "A generic CTA makes the next step feel vague.",
+        change: "Use CTA copy that names the action and benefit.",
+        metric: "CTA click-through rate."
+      },
+      {
+        title: "Trust is not close enough to the decision point",
+        why: "Visitors hesitate when proof and reassurance are separated from the action.",
+        change: "Move proof and reassurance near the CTA.",
+        metric: "Conversion completion rate."
+      }
+    ],
+    copyBlocks: [
+      {
+        title: "Hero rewrite",
+        lines: [
+          `Headline: Help ${audience} get the outcome they came for.`,
+          `Subheadline: ${product} should make the problem, value, and next step clear before visitors decide.`,
+          "Primary CTA: Take the next step."
+        ]
+      },
+      {
+        title: "CTA support copy",
+        lines: [
+          "Clarify what happens after the click.",
+          "Explain why the next step is low risk."
+        ]
+      }
+    ],
+    trust: [
+      "Place proof near the CTA.",
+      "Clarify what happens after clicking.",
+      "Answer the top objection before the form or checkout.",
+      "Make the primary path visually obvious."
+    ],
+    plan: [
+      "Rewrite the hero around audience, problem, and outcome.",
+      "Make the primary CTA more specific.",
+      "Move proof closer to the CTA.",
+      "Add a short objection-handling block.",
+      "Simplify the page flow around the conversion path.",
+      "QA the conversion path on mobile and desktop.",
+      "Review CTA clicks and completed conversions."
+    ],
+    followUp: [
+      "Review primary CTA click-through rate.",
+      "Review completion rate after CTA click.",
+      "Check scroll depth to proof and CTA sections.",
+      "Review support or sales questions.",
+      "Test one hero copy variant.",
+      "Test one proof placement variant.",
+      "Validate with analytics and user feedback."
+    ]
+  };
+}
+
+
+function buildPaidSevenDayPlan(kind: PaidReportKind, config: PaidArchetypeConfig, goal: string) {
+  if (kind === "quick") {
+    return [
+      `Day 1: Pick one primary CTA for ${goal.toLowerCase()}. Use "${config.primaryCta}" as the main action and move secondary links below it.`,
+      "Day 2: Rewrite the hero support copy so it names the audience, the use case, and the outcome in one sentence.",
+      "Day 3: Add one proof block near the primary CTA using proof that matches the target audience or use case.",
+      "Day 4: Add one short reassurance line that answers the biggest objection before the visitor clicks.",
+      "Day 5: Check the mobile version and make sure the headline, CTA, proof, and reassurance are visible without friction.",
+      "Day 6: Verify that the conversion path works from CTA click to completion on desktop and mobile.",
+      "Day 7: Review CTA clicks, conversion starts, and completed conversions; keep the strongest change and queue one next test."
+    ];
+  }
 
   return [
-    "# Quick Fix Report",
+    "Day 1: CTA hierarchy and goal alignment",
     "",
-    "## Overview",
-    "The page communicates the core offer, but the paid upgrade path needs clearer value contrast. The $9 Quick Fix Report should feel like a specific next step after the free diagnosis, not a generic paid summary.",
+    "- Page area: hero, navigation, repeated CTA sections, and final CTA.",
+    `- Change: make "${config.primaryCta}" the primary action for ${goal.toLowerCase()} and make secondary actions visually subordinate.`,
+    "- Output: CTA map, revised button copy, and one supporting microcopy line.",
+    "- Metric: primary CTA click-through rate.",
+    "",
+    "Day 2: Hero value proposition rewrite",
+    "",
+    "- Page area: hero headline and subheadline.",
+    "- Change: connect the product promise to one concrete workflow, buyer pain, or desired outcome.",
+    "- Output: two headline variants, one subheadline, and one CTA support line.",
+    "- Metric: hero-to-CTA click-through rate.",
+    "",
+    "Day 3: Proof placement and credibility upgrade",
+    "",
+    "- Page area: proof block closest to the primary conversion action.",
+    "- Change: add proof that matches the target audience, use case, company type, or decision concern.",
+    "- Output: one proof block and one short proof-backed CTA support line.",
+    "- Metric: CTA click-through rate after proof exposure.",
+    "",
+    "Day 4: Objection-handling block",
+    "",
+    "- Page area: section directly before the primary CTA or form.",
+    "- Change: answer the top three objections that can stop the visitor from acting.",
+    "- Output: three short objection-answer pairs.",
+    "- Metric: CTA-to-completion rate.",
+    "",
+    "Day 5: Conversion path QA",
+    "",
+    "- Page area: full path from landing page to conversion completion.",
+    "- Change: remove unclear steps, confusing secondary actions, or missing confirmation copy.",
+    "- Output: desktop and mobile QA notes with screenshots.",
+    "- Metric: conversion-start to conversion-completion rate.",
+    "",
+    "Day 6: Tracking and event verification",
+    "",
+    "- Page area: analytics events and funnel reporting.",
+    "- Change: confirm events fire for primary CTA click, conversion start, and conversion completion.",
+    "- Output: event checklist and baseline funnel numbers.",
+    "- Metric: clean funnel data for the next test.",
+    "",
+    "Day 7: Launch review and next test selection",
+    "",
+    "- Page area: changed sections and analytics dashboard.",
+    "- Change: review early directional data and choose the next highest-leverage test.",
+    "- Output: one keep/change/rollback decision and one follow-up experiment.",
+    "- Metric: improvement in the weakest funnel step."
+  ];
+}
+
+function buildPaidFollowUpChecklist(kind: PaidReportKind, goal: string) {
+  if (kind === "quick") {
+    return [
+      "- Review primary CTA click-through rate.",
+      "- Review conversion-start rate after the CTA click.",
+      "- Check whether secondary CTA clicks are helping or distracting from the primary goal.",
+      "- Review mobile and desktop behavior separately.",
+      "- Collect the top two objections from support, sales, or user feedback.",
+      "- Choose one next copy test based on the biggest drop-off.",
+      "- Validate the winning change with analytics and qualitative feedback."
+    ];
+  }
+
+  return [
+    "- Confirm analytics events fire for primary CTA click, conversion start, and conversion completion.",
+    "- Compare primary CTA click-through rate before and after the copy and hierarchy change.",
+    "- Check whether secondary CTA clicks increased, decreased, or cannibalized the primary action.",
+    "- Review mobile performance separately from desktop performance.",
+    "- Review the conversion path for friction after the first click.",
+    "- Review support, sales, or user feedback for objections about setup, trust, price, timing, or fit.",
+    "- Compare visitors who saw the proof block with visitors who did not.",
+    "- Pick one next A/B test based on the biggest remaining funnel drop-off.",
+    "- Archive the losing copy variant so the team does not reuse it later.",
+    "- Keep a changelog of page edits, dates, and observed metric movement.",
+    "- Re-run the page QA after any design or copy change.",
+    "- Validate changes with analytics, customer feedback, and A/B testing before making larger redesign decisions."
+  ];
+}
+
+function buildAdaptivePaidReport(input: AuditInput, kind: PaidReportKind) {
+  const pageUrl = cleanPaidText(input.url, "Not provided");
+  const product = cleanPaidText(input.product, "Not provided");
+  const audience = cleanPaidText(input.audience, "Not provided");
+  const goal = paidGoalLabel(input);
+  const config = paidArchetypeConfig(input);
+
+  const title = kind === "pro" ? "# Pro Fix Plan" : "# Quick Fix Report";
+  const intro = kind === "pro" ? "## Executive Diagnosis" : "## Overview";
+  const depth = kind === "pro"
+    ? "This Pro Fix Plan expands the diagnosis into prioritized fixes, copy recommendations, CTA guidance, objection handling, testing guidance, and implementation steps for the submitted page."
+    : "This Quick Fix Report focuses on the highest-impact changes that can make the submitted page clearer, more credible, and easier to act on.";
+
+  const lines: string[] = [
+    title,
+    "",
+    intro,
+    config.overview,
+    "",
+    depth,
     "",
     `Page reviewed: ${pageUrl}`,
     `Product or service: ${product}`,
     `Target audience: ${audience}`,
     `Primary conversion goal: ${goal}`,
     "",
+    `Detected page type: ${config.label}`,
+    "",
     "## Conversion Score Breakdown",
     "| Area | Score | Evidence from page context | Specific fix |",
     "|---|---:|---|---|",
-    "| Offer clarity | 7/10 | The offer is understandable, but visitors need a clearer reason to unlock the $9 report. | Show exactly what the Quick Fix Report includes before checkout. |",
-    "| Paid value contrast | 5/10 | The free diagnosis can feel complete without a visible paid-report preview. | Add a compact comparison between the free diagnosis and the $9 Quick Fix Report. |",
-    "| CTA clarity | 6/10 | The paid CTA should make the outcome and price explicit. | Use action-oriented CTA copy that includes the report name and $9 price. |",
-    "| Trust reassurance | 5/10 | Payment reassurance should appear next to the checkout action. | Add secure PayPal checkout, one-time payment, and refund/support policy copy near the button. |",
-    "| Delivery clarity | 6/10 | Visitors should know what happens after payment confirmation. | Explain that the user can generate, view, copy, or export the report after payment confirmation. |",
+    ...config.scoreRows.map((row) => `| ${row} |`),
     "",
-    "## Top 3 Quick Fixes",
-    "",
-    "### Fix 1: Make the $9 deliverable concrete",
-    "- Problem: The page asks users to pay after a free diagnosis, but the paid output is not previewed clearly enough.",
-    "- Recommended fix: Add a short preview block that shows the structure of the Quick Fix Report before checkout.",
-    "- Implementation: Show three bullets: top blocker summary, top 3 fixes ranked by priority, and copy-ready wording changes.",
-    "- Validation metric: Click-through rate from the report page to checkout.",
-    "",
-    "### Fix 2: Rewrite the Quick Fix CTA",
-    "- Problem: A generic paid CTA creates friction because users do not know exactly what they are buying.",
-    "- Recommended fix: Use CTA copy that names the report and price in one line.",
-    "- Implementation: Replace the unlock CTA with \"Unlock My Quick Fix Report - $9\".",
-    "- Validation metric: Checkout starts from users who view the CTA.",
-    "",
-    "### Fix 3: Add payment reassurance at the decision point",
-    "- Problem: New visitors need process clarity before paying for a digital report.",
-    "- Recommended fix: Add payment and delivery reassurance directly above or below the PayPal button.",
-    "- Implementation: Use this copy: \"Secure PayPal checkout. One-time payment of $9. After payment confirmation, you can generate, view, copy, or export your Quick Fix Report.\"",
-    "- Validation metric: Checkout completion rate among visitors who reach the payment page.",
-    "",
-    "## Page Copy Recommendations",
-    "",
-    "### Paid CTA",
-    "Unlock My Quick Fix Report - $9",
-    "",
-    "### CTA support copy",
-    "Get a concise paid report with your top conversion blockers, priority fixes, and copy-ready wording changes for the submitted page.",
-    "",
-    "### Payment reassurance copy",
-    "Secure PayPal checkout. One-time payment of $9. No recurring charge. Refund and support policy available.",
-    "",
-    "### What happens after payment",
-    "After payment confirmation, the user can generate, view, copy, or export the Quick Fix Report.",
-    "",
-    "## Free vs Quick Fix Comparison",
-    "| Feature | Free Diagnosis | Quick Fix Report ($9) |",
-    "|---|---|---|",
-    "| Conversion blocker summary | Yes | Yes |",
-    "| Prioritized fix list | Limited | Yes |",
-    "| Copy-ready wording suggestions | No | Yes |",
-    "| Checkout and CTA guidance | Limited | Yes |",
-    "| Export or copy report | Yes | Yes |",
-    "",
-    "## Trust & Proof Guidance",
-    "- Do not invent testimonials, customer names, revenue results, or performance numbers.",
-    "- Use verified customer proof only after permission is obtained.",
-    "- If verified proof is not available, use a clear explanation of what the report includes instead of a testimonial.",
-    "- Keep payment reassurance factual: secure PayPal checkout, one-time payment, refund/support policy, and post-payment report access.",
-    "",
-    "## 7-Day Action Plan",
-    "Day 1: Add the Free vs Quick Fix comparison table near the unlock CTA.",
-    "Day 2: Replace the paid CTA with \"Unlock My Quick Fix Report - $9\".",
-    "Day 3: Add the payment reassurance copy near the PayPal button.",
-    "Day 4: Add a short preview of the Quick Fix Report structure before checkout.",
-    "Day 5: Test the full flow from free diagnosis to checkout to report generation.",
-    "Day 6: Review analytics for report-page clicks, checkout views, and payment completion.",
-    "Day 7: Use analytics and support questions to decide the next copy iteration.",
+    kind === "pro" ? "## Top 3 Conversion Leaks" : "## Top 3 Quick Fixes",
+    ""
+  ];
+
+  config.fixes.forEach((fix, index) => {
+    lines.push(
+      `### Fix ${index + 1}: ${fix.title}`,
+      "",
+      `- Why it hurts conversion: ${fix.why}`,
+      `- What to change: ${fix.change}`,
+      "- Priority: High",
+      `- Validation metric: ${fix.metric}`,
+      ""
+    );
+  });
+
+  lines.push(kind === "pro" ? "## Priority Fix Roadmap" : "## Page Copy Recommendations", "");
+
+  config.copyBlocks.forEach((block) => {
+    lines.push(`### ${block.title}`, "");
+
+    block.lines.forEach((line) => {
+      const labelMatch = line.match(/^(Headline|Subheadline|Primary CTA|CTA support copy|Secondary CTA|Issue|Suggested rewrite|Reason):\s*(.+)$/);
+
+      if (labelMatch) {
+        lines.push(`${labelMatch[1]}:`, labelMatch[2], "");
+        return;
+      }
+
+      lines.push(line);
+    });
+
+    lines.push("");
+  });
+
+  if (kind === "pro") {
+    lines.push(
+      "## CTA & Conversion Path Fixes",
+      "### Primary CTA",
+      config.primaryCta,
+      "",
+      "### CTA support copy",
+      `Make the next step specific to ${goal.toLowerCase()} and explain what happens after the click.`,
+      "",
+      "### Secondary CTA",
+      "Keep lower-intent actions visible but visually subordinate.",
+      "",
+      "## Trust & Objection Handling",
+      "Add these reassurance points near the main conversion action:",
+      ...config.trust.map((item) => `- ${item}`),
+      "",
+      "## Objection Handling FAQ",
+      "### 1. What should visitors understand before clicking?",
+      "",
+      "They should understand the offer, the expected next step, and why the action is low risk.",
+      "",
+      "### 2. What proof should be closest to the CTA?",
+      "",
+      "Use proof that matches the target audience, use case, or buying concern.",
+      "",
+      "### 3. What should be tested first?",
+      "",
+      "Test the primary CTA, proof placement, and reassurance copy before changing the full page.",
+      "",
+      "## A/B Testing Plan",
+      "### Test 1: Primary CTA clarity",
+      "- Control: Current primary CTA.",
+      `- Variant: CTA copy aligned with ${goal}.`,
+      "- Metric: Primary CTA click-through rate.",
+      "### Test 2: Proof near CTA",
+      "- Control: Current proof placement.",
+      "- Variant: Move the most relevant proof next to the conversion action.",
+      "- Metric: Conversion completion rate.",
+      "### Test 3: Objection-handling copy",
+      "- Control: Current reassurance copy.",
+      "- Variant: Add concise answers to the top visitor concern near the CTA.",
+      "- Metric: CTA-to-completion rate.",
+      ""
+    );
+  } else {
+    lines.push("## Trust & Proof Guidance", ...config.trust.map((item) => `- ${item}`), "");
+  }
+
+  lines.push(
+    "## 7-Day Implementation Plan",
+    ...buildPaidSevenDayPlan(kind, config, goal),
     "",
     "## 14-Day Follow-up Checklist",
-    "- Review click-through rate from report page to checkout.",
-    "- Review checkout completion rate.",
-    "- Compare Quick Fix Report and Pro Fix Plan selection.",
-    "- Check whether users interact with the paid-report preview.",
-    "- Review support questions about payment or report access.",
-    "- Confirm refund/support policy links work.",
-    "- Test the flow on mobile and desktop.",
-    "- Verify that report generation, viewing, copying, and exporting work after payment confirmation.",
+    ...buildPaidFollowUpChecklist(kind, goal),
     "",
     "## Important Note",
-    "These recommendations are strategy hypotheses based on the submitted page context. Validate changes with analytics, customer feedback, and A/B testing. No specific performance improvement is claimed."
-  ].join("\n");
+    "These recommendations are strategy recommendations based on the submitted page context. Validate changes with analytics, customer feedback, and A/B testing. No specific performance improvement is claimed."
+  );
+
+  return lines.join("\n");
+}
+
+function buildStableQuickFixReport(input: AuditInput) {
+  return buildAdaptivePaidReport(input, "quick");
 }
 
 function buildStableProFixPlanReport(input: AuditInput) {
-  const pageUrl = stableProReportValue(input.url, "the submitted page");
-  const product = stableProReportValue(input.product, "the submitted product or service");
-  const audience = stableProReportValue(input.audience, "the target audience");
-  const goal = stableProReportValue(input.problem, "the paid conversion goal");
-
-  return `# Pro Fix Plan
-
-## Executive Diagnosis
-The page communicates the core offer, but the paid upgrade path needs clearer value contrast. Visitors need to understand why the $29 Pro Fix Plan is meaningfully deeper than the $9 Quick Fix Report before they reach checkout.
-
-The strongest opportunity is to show what the Pro Fix Plan adds: prioritized fixes, copy rewrites, CTA and checkout guidance, trust reassurance, objection handling, and implementation guidance.
-
-Page reviewed: ${pageUrl}
-Product or service: ${product}
-Target audience: ${audience}
-Primary conversion goal: ${goal}
-
-## Conversion Score Breakdown
-
-| Area | Score | Evidence from page context | Specific fix |
-|---|---:|---|---|
-| Offer clarity | 7/10 | The offer is understandable, but the difference between free diagnosis, $9 Quick Fix Report, and $29 Pro Fix Plan needs stronger contrast. | Add a compact comparison table near the upgrade CTA. |
-| Paid plan perceived value | 5/10 | The page does not show enough of the deeper paid deliverable before checkout. | Add an anonymized sample section that previews the depth of the Pro Fix Plan. |
-| CTA strength | 6/10 | The upgrade CTA can be more outcome-focused. | Use CTA copy that names the result: "Get Your Pro Fix Plan - $29". |
-| Trust and payment reassurance | 5/10 | Payment reassurance and policy links should be visible at the decision point. | Add secure PayPal checkout, one-time payment, and published refund/support policy copy near the payment action. |
-| Objection handling | 4/10 | Visitors may not understand why they should pay after receiving a free diagnosis. | Add a short FAQ below the upgrade CTA. |
-| Checkout readiness | 6/10 | The checkout page should explain what happens after payment confirmation. | Use one clear line: "After payment confirmation, the user can generate, view, copy, or export the full fix plan." |
-
-## Top 3 Paid Conversion Leaks
-
-### Leak 1: The Pro value gap is not visible enough
-- Why it hurts paid conversion: Visitors can understand the free diagnosis but may not see why the Pro Fix Plan is worth $29.
-- What to change: Add a short comparison table showing what the $9 Quick Fix Report includes and what the $29 Pro Fix Plan adds.
-- Priority: High
-- Validation metric: Click-through rate from the result page to checkout.
-
-### Leak 2: The upgrade CTA lacks a concrete preview
-- Why it hurts paid conversion: Visitors are asked to pay before seeing the type of output they will receive.
-- What to change: Add a small anonymized sample that shows one headline rewrite, one CTA improvement, and one implementation step.
-- Priority: High
-- Validation metric: Clicks on the sample preview and subsequent checkout starts.
-
-### Leak 3: Payment reassurance is too far from the decision point
-- Why it hurts paid conversion: New visitors need trust and process clarity before paying for a digital report.
-- What to change: Place secure checkout, one-time payment, and published refund/support policy copy directly near the Pro CTA and checkout button.
-- Priority: Medium
-- Validation metric: Checkout completion rate among visitors who reach the payment page.
-
-## Priority Fix Roadmap
-
-### Fix 1: Add a paid-plan comparison table
-- Page location: Free diagnosis result page, above the paid CTA area.
-- Implementation effort: Low.
-- Expected impact level: High.
-- Exact copy or UI change:
-
-| Feature | Quick Fix Report ($9) | Pro Fix Plan ($29) |
-|---|---|---|
-| Conversion blocker summary | Yes | Yes |
-| Prioritized fix list | Limited | Full |
-| Copy rewrites | Limited | Yes |
-| CTA and checkout guidance | Limited | Yes |
-| Objection handling | No | Yes |
-| Implementation guidance | Limited | Yes |
-| Copy or export report | Yes | Yes |
-
-### Fix 2: Add a sample Pro preview
-- Page location: Near the Pro Fix Plan CTA.
-- Implementation effort: Low.
-- Expected impact level: High.
-- Exact copy or UI change:
-"See an anonymized sample Pro Fix Plan section before checkout."
-
-Sample preview format:
-- Issue: The current CTA does not make the next step specific enough.
-- Suggested rewrite: "Get Your Pro Fix Plan - $29"
-- Reason: This clarifies the product, price, and outcome in one line.
-
-### Fix 3: Add payment reassurance near checkout
-- Page location: Checkout page, directly above or below the payment button.
-- Implementation effort: Low.
-- Expected impact level: Medium.
-- Exact copy or UI change:
-"Secure PayPal checkout. One-time payment. Link to the published refund/support policy."
-"After payment confirmation, the user can generate, view, copy, or export the full fix plan."
-
-## Hero & Above-the-Fold Rewrite
-
-Recommended headline:
-Fix the conversion blockers on your landing page
-
-Recommended subheadline:
-Start with a free diagnosis, then upgrade to a Pro Fix Plan for prioritized fixes, copy rewrites, CTA improvements, and implementation guidance.
-
-Primary CTA:
-Start Free Diagnosis
-
-CTA microcopy:
-No credit card required for the free diagnosis.
-
-Alternate headline variants:
-1. Find what is blocking paid conversions on your page
-2. Turn your diagnosis into a prioritized fix plan
-
-## CTA & Checkout Unlock Fixes
-
-Primary unlock CTA:
-Get Your Pro Fix Plan - $29
-
-Secondary reassurance line:
-Includes prioritized fixes, copy rewrites, CTA improvements, and implementation guidance for the submitted page.
-
-Button text:
-Get Your Pro Fix Plan
-
-What the user sees after clicking:
-A checkout page with the selected plan name, price, secure PayPal checkout, one-time payment wording, and a short list of what the Pro Fix Plan includes.
-
-What happens after payment:
-After payment confirmation, the user can generate, view, copy, or export the full fix plan.
-
-## Trust & Payment Reassurance
-
-Add these elements near the Pro CTA and payment button:
-- Secure PayPal checkout.
-- One-time payment of $29.
-- Link to the published refund/support policy.
-- Link to an anonymized sample Pro Fix Plan.
-- Clear explanation: "After payment confirmation, the user can generate, view, copy, or export the full fix plan."
-
-## Objection Handling FAQ
-
-### 1. Why pay after the free diagnosis?
-The free diagnosis identifies the main conversion blockers. The Pro Fix Plan turns that diagnosis into prioritized actions, copy rewrites, CTA improvements, and implementation guidance.
-
-### 2. How is Pro different from the Quick Fix Report?
-The $9 Quick Fix Report gives a concise paid summary. The $29 Pro Fix Plan is deeper and includes more complete guidance for copy, CTA, checkout, trust, and implementation.
-
-### 3. Is this specific to my page?
-Yes. The Pro Fix Plan is based on the submitted page URL and the free diagnosis result.
-
-### 4. What if I am not technical?
-The plan is written in plain language. Copy suggestions can be copied into a page builder, and implementation steps can be shared with a developer or designer.
-
-### 5. What happens after payment?
-After payment confirmation, the user can generate, view, copy, or export the full fix plan. For payment or support questions, refer to the published refund/support policy.
-
-## A/B Testing Plan
-
-### Test 1: Pro CTA copy
-- Hypothesis: A clearer outcome-focused CTA will increase checkout starts.
-- Control: Existing Pro CTA.
-- Variant: "Get Your Pro Fix Plan - $29"
-- Metric: Click-through rate from result page to checkout.
-- Minimum data note: Use directional data until traffic volume is large enough for a formal test.
-
-### Test 2: Sample preview
-- Hypothesis: Showing an anonymized sample section will increase paid-plan selection.
-- Control: No sample preview.
-- Variant: Add a sample preview link near the Pro CTA.
-- Metric: Checkout starts among visitors who view the sample.
-- Minimum data note: Compare against the prior baseline.
-
-### Test 3: Payment reassurance
-- Hypothesis: Trust and process clarity near checkout will reduce abandonment.
-- Control: Current checkout page.
-- Variant: Secure checkout, one-time payment, published policy link, and what-happens-after-payment copy.
-- Metric: Checkout completion rate.
-- Minimum data note: Review results after enough checkout visits for a directional comparison.
-
-## 7-Day Implementation Plan
-
-Day 1: Add the comparison table to the free diagnosis result page.
-Day 2: Rewrite the Pro CTA and supporting microcopy.
-Day 3: Add the sample Pro preview link.
-Day 4: Add trust and payment reassurance near the checkout button.
-Day 5: Add the objection-handling FAQ.
-Day 6: QA the full flow from diagnosis to checkout to report generation.
-Day 7: Review analytics events for result-page clicks, checkout views, payment starts, and paid-plan generation.
-
-## 14-Day Follow-up Checklist
-
-- Review click-through rate from result page to checkout.
-- Review checkout completion rate.
-- Compare $9 Quick Fix Report and $29 Pro Fix Plan selection.
-- Check whether users click the sample preview.
-- Review support questions about payment or delivery.
-- Confirm the published refund/support policy link works.
-- Test the flow on mobile and desktop.
-- Verify that report generation, viewing, copying, and exporting work after payment confirmation.
-- Use analytics and user feedback to decide the next iteration.
-
-## Important Note
-All recommendations in this Pro Fix Plan are hypotheses based on the submitted page context. Validate changes with analytics, customer feedback, and A/B testing. No specific performance improvement is claimed.`;
+  return buildAdaptivePaidReport(input, "pro");
 }
 
 
