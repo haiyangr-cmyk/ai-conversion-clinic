@@ -200,7 +200,7 @@ function buildDiagnosisExportText(reportV2: AuditReportV2 | null, input: AuditIn
     "## One-Sentence Diagnosis",
     reportV2.executiveSummary.oneSentenceDiagnosis,
     "",
-    "## Top Conversion Blockers"
+    "## Top 3 Conversion Blockers"
   );
 
   for (const [index, leak] of reportV2.topLeaks.slice(0, 3).entries()) {
@@ -1114,6 +1114,152 @@ function V2Report({ report }: { report: AuditReportV2 }) {
 }
 
 
+
+function DiagnosisCardReport({
+  reportV2,
+  input,
+  fallbackText
+}: {
+  reportV2: AuditReportV2 | null;
+  input: AuditInput | null;
+  fallbackText: string;
+}) {
+  if (!reportV2) {
+    const cleaned = fallbackText.replace(/^#\s+Free Conversion Diagnosis\s*\n+/, "");
+    const scoreMatch = cleaned.match(/(?:Conversion Score\s*\n+)?(\d{1,3})\s*\/\s*100/i);
+    const score = scoreMatch ? safeScore(Number(scoreMatch[1])) : 0;
+    const diagnosisMatch = cleaned.match(/One-Sentence Diagnosis\s*\n+([\s\S]*?)(?=\n+Top\s+3\s+Conversion Blockers|\n+Top Conversion Blockers|\n+Solution Preview|\n+Important Note|$)/i);
+    const oneSentenceDiagnosis = diagnosisMatch?.[1]?.trim() || "The page has likely conversion blockers that should be clarified before asking visitors to act.";
+    const blockerSection = cleaned.match(/Top\s+3\s+Conversion Blockers\s*\n+([\s\S]*?)(?=\n+Solution Preview|\n+Important Note|$)/i)?.[1] || "";
+    const parsedLeaks = Array.from(blockerSection.matchAll(/(?:^|\n)(\d+)\.\s*([^\n]+)\n([\s\S]*?)(?=\n\d+\.\s+[^\n]+|\n*$)/g))
+      .slice(0, 3)
+      .map((match) => {
+        const body = match[3] || "";
+        const severity = body.match(/Severity:\s*([^\n]+)/i)?.[1]?.trim() || "Needs review";
+        const why = body.match(/Why it hurts conversion:\s*([\s\S]*?)(?=\n\s*[-•]\s*Area that needs attention:|\n\s*Area that needs attention:|$)/i)?.[1]?.replace(/^[-•]\s*/, "").trim() || body.replace(/\n+/g, " ").trim();
+        const area = body.match(/Area that needs attention:\s*([\s\S]*?)$/i)?.[1]?.replace(/^[-•]\s*/, "").trim() || "Improve the section closest to the primary conversion action.";
+
+        return {
+          title: match[2].trim(),
+          severity,
+          why,
+          area
+        };
+      });
+
+    const leaks = parsedLeaks.length > 0
+      ? parsedLeaks
+      : [
+          {
+            title: "The page needs a clearer conversion path",
+            severity: "Needs review",
+            why: oneSentenceDiagnosis,
+            area: "Hero copy, proof, CTA, and surrounding context."
+          }
+        ];
+
+    return (
+      <div className="diagnosis-preview-report">
+        <div className="diagnosis-score-card">
+          <span className="diagnosis-score-label">Overall Score</span>
+          <strong className="diagnosis-score-value">{score} / 100</strong>
+          <p>
+            Diagnosis based on the submitted page, product, target customer, and conversion goal.
+          </p>
+        </div>
+
+        <div className="diagnosis-card-grid">
+          <article className="diagnosis-mini-card">
+            <h2>One-Sentence Diagnosis</h2>
+            <p>{oneSentenceDiagnosis}</p>
+          </article>
+
+          <article className="diagnosis-mini-card">
+            <h2>Top Conversion Leak</h2>
+            <p>{leaks[0]?.title || "The page needs a clearer conversion path."}</p>
+          </article>
+        </div>
+
+        <section className="diagnosis-section">
+          <h2>Top 3 Conversion Blockers</h2>
+          <div className="diagnosis-leak-list">
+            {leaks.map((leak, index) => (
+              <article className="diagnosis-leak-card" key={`${leak.title}-${index}`}>
+                <h3>{index + 1}. {leak.title}</h3>
+                <p className="diagnosis-leak-meta">Severity: {leak.severity}</p>
+                <p><strong>Why it hurts conversion:</strong> {leak.why}</p>
+                <p><strong>Area that needs attention:</strong> {leak.area}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <div className="diagnosis-action-strip">
+          <strong>Solution Preview:</strong>{" "}
+          Unlock the full fix plan to get copy-ready recommendations, CTA fixes, trust and proof guidance, and a practical 7-day action plan.
+        </div>
+
+        <div className="diagnosis-details-grid" aria-label="Diagnosis details">
+          <p><strong>Page URL:</strong> {input?.url || "Not provided"}</p>
+          <p><strong>Product / service:</strong> {input?.product || "Not provided"}</p>
+          <p><strong>Target customer:</strong> {input?.audience || "Not provided"}</p>
+          <p><strong>Conversion goal:</strong> {conversionGoalLabel(input?.conversionGoal)}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const score = safeScore(reportV2.executiveSummary.overallScore);
+  const topLeaks = reportV2.topLeaks.slice(0, 3);
+  const primaryLeak = topLeaks[0];
+
+  return (
+    <div className="diagnosis-preview-report">
+      <div className="diagnosis-score-card">
+        <span className="diagnosis-score-label">Overall Score</span>
+        <strong className="diagnosis-score-value">{score} / 100</strong>
+        <p>{input?.product || reportV2.meta.product || "Landing page"}</p>
+      </div>
+
+      <div className="diagnosis-card-grid">
+        <article className="diagnosis-mini-card">
+          <h2>One-Sentence Diagnosis</h2>
+          <p>{reportV2.executiveSummary.oneSentenceDiagnosis}</p>
+        </article>
+        <article className="diagnosis-mini-card">
+          <h2>Top Conversion Leak</h2>
+          <p>{primaryLeak ? primaryLeak.title : "The page needs a clearer conversion path."}</p>
+        </article>
+      </div>
+
+      <section className="diagnosis-section">
+        <h2>Top 3 Conversion Blockers</h2>
+        <div className="diagnosis-leak-list">
+          {topLeaks.map((leak, index) => (
+            <article className="diagnosis-leak-card" key={`${leak.title}-${index}`}>
+              <h3>{index + 1}. {leak.title}</h3>
+              <p className="diagnosis-leak-meta">Severity: {impactLabels[leak.impact] || leak.impact}</p>
+              <p><strong>Why it hurts conversion:</strong> {leak.whyItHurts}</p>
+              <p><strong>Area that needs attention:</strong> {leak.whatToChange}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <div className="diagnosis-action-strip">
+        <strong>Solution Preview:</strong> Unlock the full fix plan to get copy-ready recommendations, CTA fixes, trust and proof guidance, and a practical 7-day action plan.
+      </div>
+
+      <div className="diagnosis-details-grid" aria-label="Diagnosis details">
+        <p><strong>Page URL:</strong> {input?.url || reportV2.meta.pageUrl || "Not provided"}</p>
+        <p><strong>Product / service:</strong> {input?.product || reportV2.meta.product || "Not provided"}</p>
+        <p><strong>Target customer:</strong> {input?.audience || reportV2.meta.targetAudience || "Not provided"}</p>
+        <p><strong>Conversion goal:</strong> {conversionGoalLabel(input?.conversionGoal)}</p>
+      </div>
+    </div>
+  );
+}
+
 function FormattedTextReport({ text }: { text: string }) {
   const normalizedText = normalizeExportMarkdownSpacing(text || "");
   const rawLines = normalizedText
@@ -1292,7 +1438,7 @@ export default function ReportPage() {
           <div className="report-header">
             <div>
               <span className="eyebrow">{reportMode === "diagnosis" ? "Generated diagnosis" : "Generated fix plan"}</span>
-              <h1>{reportMode === "diagnosis" ? "Your Conversion Diagnosis" : solutionTitle(input)}</h1>
+              <h1>{reportMode === "diagnosis" ? "Free Conversion Diagnosis" : solutionTitle(input)}</h1>
             </div>
 
                         <button
@@ -1315,103 +1461,8 @@ export default function ReportPage() {
 <button className="cta copy-button" onClick={copyReport}>{copied ? "Copied" : reportMode === "diagnosis" ? "Copy diagnosis" : "Copy fix plan"}</button>
           </div>
 
-          {reportMode === "diagnosis" && reportV2 ? (
-            <section className="diagnosis-result">
-              <div className="diagnosis-score-card">
-                <span>Conversion Score</span>
-                <strong>{reportV2.executiveSummary.overallScore} / 100</strong>
-                <p>{reportV2.executiveSummary.oneSentenceDiagnosis}</p>
-              </div>
-
-              <div className="diagnosis-section">
-                <p className="eyebrow">Free Diagnosis</p>
-                <h2>Top Conversion Blockers</h2>
-
-                <div className="diagnosis-blocker-grid">
-                  {reportV2.topLeaks.slice(0, 3).map((leak, index) => (
-                    <article className="diagnosis-blocker-card" key={`${leak.title}-${index}`}>
-                      <span>#{index + 1} · {leak.impact} severity</span>
-                      <h3>{leak.title}</h3>
-                      <p>{leak.whyItHurts}</p>
-                    </article>
-                  ))}
-                </div>
-              </div>
-
-              <div className="diagnosis-section solution-preview-box">
-                <p className="eyebrow">Fix Plan Preview</p>
-                <h2>We found practical fixes for this page.</h2>
-                <p>
-                  Unlock the full fix plan to get copy-ready recommendations for positioning,
-                  hero copy, CTA, trust proof, offer framing, implementation steps, and follow-up copy.
-                </p>
-                <p>
-                  <a href="/sample-report">View a sample report before unlocking →</a>
-                </p>
-              </div>
-
-              <section className="locked-solution-card">
-                <div>
-                  <p className="eyebrow">Locked Fix Plan</p>
-                  <h2>Unlock your full fix plan</h2>
-
-                  <ul className="report-trust-bar" aria-label="Payment trust signals">
-                    <li>Secure PayPal checkout</li>
-                    <li>Generate after payment confirmation</li>
-                    <li>Sample report available</li>
-                    <li>Refund policy available</li>
-                  </ul>
-
-                  <div className="payment-flow-card" aria-label="What happens after payment">
-                    <div className="payment-flow-header">
-                      <span>What happens after payment</span>
-                      <strong>After payment confirmation, you can generate, view, copy, or export the full fix plan.</strong>
-                    </div>
-
-                    <ol className="payment-flow-steps">
-                      <li>
-                        <strong>Pay securely with PayPal</strong>
-                        <span>You complete checkout through PayPal. We do not store card or bank details.</span>
-                      </li>
-                      <li>
-                        <strong>Return to checkout automatically</strong>
-                        <span>After PayPal confirms the payment, the checkout page unlocks report generation.</span>
-                      </li>
-                      <li>
-                        <strong>Generate your full fix plan</strong>
-                        <span>Your paid plan includes copy-ready recommendations, structure fixes, proof improvements, and implementation steps.</span>
-                      </li>
-                      <li>
-                        <strong>Download or copy the report</strong>
-                        <span>You can export the result or copy it into your working document.</span>
-                      </li>
-                      <li>
-                        <strong>Support if anything fails</strong>
-                        <span>If payment succeeds but generation fails, contact support with your PayPal order ID.</span>
-                      </li>
-                    </ol>
-                  </div>
-
-                  <p>
-                    Get the exact recommendations and copy-ready assets needed to improve this page.
-                  </p>
-                </div>
-
-                <ul>
-                  <li>Recommended positioning</li>
-                  <li>Hero rewrite</li>
-                  <li>CTA fixes</li>
-                  <li>Trust & proof fixes</li>
-                  <li>Pricing / offer fixes</li>
-                  <li>7-day action plan</li>
-                  <li>Product Hunt / Reddit follow-up copy</li>
-                </ul>
-
-                <button className="cta" type="button" onClick={unlockConversionSolution}>
-                  Unlock Full Fix Plan
-                </button>
-              </section>
-            </section>
+          {reportMode === "diagnosis" ? (
+            <DiagnosisCardReport reportV2={reportV2} input={input} fallbackText={exportText} />
           ) : reportV2 ? (
             <V2Report report={reportV2} />
           ) : (
