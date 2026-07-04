@@ -201,7 +201,7 @@ export default function HomePage() {
           {
             type: "hero_headline",
             before: "AI-powered landing page audit",
-            after: "Find out why your landing page isn’t converting.",
+            after: "Find the conversion leaks on your landing page before spending more on ads.",
             whyThisWorks: "It names the pain directly and creates a reason to run the diagnosis."
           },
           {
@@ -299,7 +299,7 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
           <div className="hero">
             <div className="eyebrow">AI-powered landing page audit</div>
             <h1>Find out why your landing page isn’t converting.</h1>
-            <p>AI Conversion Clinic diagnoses your landing page, identifies the biggest conversion blockers, and generates a practical fix plan you can ship this week.</p>
+            <p>Get a practical AI landing page audit with headline fixes, CTA ideas, trust improvements, and a 7-day action plan you can ship this week.</p>
 
             <div className="hero-actions">
               <a className="mini-cta" href="#audit-form">Run Free Diagnosis</a>
