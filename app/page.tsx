@@ -298,7 +298,7 @@ We found practical fixes for positioning, hero copy, CTA, trust proof, offer fra
         <section className="grid">
           <div className="hero">
             <div className="eyebrow">AI-powered landing page audit</div>
-            <h1>Find out why your landing page isn’t converting.</h1>
+            <h1>Find the conversion leaks on your landing page before spending more on ads.</h1>
             <p>Get a practical AI landing page audit with headline fixes, CTA ideas, trust improvements, and a 7-day action plan you can ship this week.</p>
 
             <div className="hero-actions">
