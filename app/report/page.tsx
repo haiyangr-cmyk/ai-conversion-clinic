@@ -1469,7 +1469,7 @@ export default function ReportPage() {
             <FormattedTextReport text={report} />
           )}
 
-          {reportMode === "diagnosis" && !reportV2 ? (
+          {reportMode === "diagnosis" ? (
             <section className="locked-solution-card fallback-unlock-card">
               <div>
                 <p className="eyebrow">Locked Fix Plan</p>
