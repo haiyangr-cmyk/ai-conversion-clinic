@@ -2593,6 +2593,19 @@ type DiagnosisCachePayload = {
   generatedAt: string;
 };
 
+
+class ApiError extends Error {
+  status: number;
+
+  constructor(message: string, status = 500) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
+const DAILY_GLOBAL_FREE_DIAGNOSIS_LIMIT = Number.parseInt(process.env.DAILY_FREE_DIAGNOSIS_LIMIT || "200", 10);
+
 let redisClient: Redis | null | undefined;
 
 function getRedisClient() {
@@ -2658,13 +2671,20 @@ function buildDiagnosisCacheKey(fingerprint: string) {
 }
 
 function getClientIp(request: Request) {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0].trim();
+  const candidates = [
+    request.headers.get("cf-connecting-ip"),
+    request.headers.get("x-real-ip"),
+    request.headers.get("x-vercel-forwarded-for"),
+    request.headers.get("x-forwarded-for")?.split(",").map((part) => part.trim()).filter(Boolean).pop()
+  ];
 
-  return request.headers.get("x-real-ip")
-    || request.headers.get("cf-connecting-ip")
-    || "unknown";
+  const value = candidates.find((candidate) => candidate && candidate.length <= 128) || "unknown";
+
+  return value
+    .replace(/[^a-zA-Z0-9:.\-]/g, "")
+    .slice(0, 128) || "unknown";
 }
+
 
 function todayKeyPart() {
   return new Date().toISOString().slice(0, 10);
@@ -2703,29 +2723,58 @@ async function incrementDailyCounter(key: string) {
 
 async function enforceDiagnosisRateLimits(input: AuditInput, request: Request) {
   const redis = getRedisClient();
-  if (!redis) return;
+
+  if (!redis) {
+    throw new ApiError(
+      "Free diagnosis is temporarily unavailable because the abuse-prevention service is not configured. Please try again later or view the sample report.",
+      503
+    );
+  }
 
   const day = todayKeyPart();
+  const clientIp = getClientIp(request);
+  const visitorPart = safeLimitKeyPart(input.visitorId || "anonymous");
+  const ipPart = safeLimitKeyPart(clientIp);
+  const urlPart = safeLimitKeyPart(normalizeDiagnosisUrl(input.url));
 
-  const visitorKey = `acc2:rl:visitor:${day}:${safeLimitKeyPart(input.visitorId || "anonymous")}`;
-  const ipKey = `acc2:rl:ip:${day}:${safeLimitKeyPart(getClientIp(request))}`;
-  const urlKey = `acc2:rl:url:${day}:${safeLimitKeyPart(normalizeDiagnosisUrl(input.url))}`;
+  const globalKey = `acc2:rl:global:${day}`;
+  const visitorIpKey = `acc2:rl:visitor_ip:${day}:${visitorPart}:${ipPart}`;
+  const ipKey = `acc2:rl:ip:${day}:${ipPart}`;
+  const urlKey = `acc2:rl:url:${day}:${urlPart}`;
 
-  const visitorCount = await incrementDailyCounter(visitorKey);
-  if (visitorCount > 3) {
-    throw new Error("You have reached today’s free diagnosis limit. Please try again tomorrow, view the sample report, or unlock the full fix plan from an existing diagnosis.");
+  const globalCount = await incrementDailyCounter(globalKey);
+  if (globalCount > DAILY_GLOBAL_FREE_DIAGNOSIS_LIMIT) {
+    throw new ApiError(
+      "The daily free diagnosis capacity has been reached. Please try again tomorrow or view the sample report.",
+      429
+    );
+  }
+
+  const visitorIpCount = await incrementDailyCounter(visitorIpKey);
+  if (visitorIpCount > 3) {
+    throw new ApiError(
+      "You have reached today’s free diagnosis limit. Please try again tomorrow, view the sample report, or unlock the full fix plan from an existing diagnosis.",
+      429
+    );
   }
 
   const ipCount = await incrementDailyCounter(ipKey);
   if (ipCount > 20) {
-    throw new Error("Too many free diagnoses have been requested from this network today. Please try again later.");
+    throw new ApiError(
+      "Too many free diagnoses have been requested from this network today. Please try again later.",
+      429
+    );
   }
 
   const urlCount = await incrementDailyCounter(urlKey);
   if (urlCount > 5) {
-    throw new Error("This page has reached the daily limit for new diagnosis variations. Please reuse an existing diagnosis or try again tomorrow.");
+    throw new ApiError(
+      "This page has reached the daily limit for new diagnosis variations. Please reuse an existing diagnosis or try again tomorrow.",
+      429
+    );
   }
 }
+
 
 async function runDiagnosisWithCache(input: AuditInput, request: Request) {
   const fingerprint = buildDiagnosisFingerprint(input);
@@ -3476,6 +3525,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("GENERATE_REPORT_ERROR", error);
-    return Response.json({ ok: false, error: error instanceof Error ? error.message : "Generation failed" }, { status: 500 });
+    const status = error instanceof ApiError ? error.status : 500;
+    return Response.json({ ok: false, error: error instanceof Error ? error.message : "Generation failed" }, { status });
   }
 }
