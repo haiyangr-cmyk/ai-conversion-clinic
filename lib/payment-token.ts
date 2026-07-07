@@ -11,9 +11,15 @@ type PaymentTokenPayload = {
 };
 
 function getSigningSecret() {
-  const secret = process.env.PAYMENT_TOKEN_SECRET || process.env.PAYPAL_CLIENT_SECRET;
-  if (!secret) throw new Error("Missing PAYMENT_TOKEN_SECRET or PAYPAL_CLIENT_SECRET");
-  return secret;
+  const secret = process.env.PAYMENT_TOKEN_SECRET;
+
+  if (secret) return secret;
+
+  if (process.env.NODE_ENV === "development" && process.env.PAYPAL_CLIENT_SECRET) {
+    return process.env.PAYPAL_CLIENT_SECRET;
+  }
+
+  throw new Error("Missing PAYMENT_TOKEN_SECRET");
 }
 
 function signPayload(payloadBase64: string) {
@@ -38,7 +44,13 @@ export function verifyPaymentToken(token: string, tier: Tier) {
   }
 
   const expectedSignature = signPayload(payloadBase64);
-  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
+  const actualSignatureBuffer = Buffer.from(signature);
+  const expectedSignatureBuffer = Buffer.from(expectedSignature);
+
+  if (
+    actualSignatureBuffer.length !== expectedSignatureBuffer.length
+    || !crypto.timingSafeEqual(actualSignatureBuffer, expectedSignatureBuffer)
+  ) {
     throw new Error("Invalid payment token signature");
   }
 
